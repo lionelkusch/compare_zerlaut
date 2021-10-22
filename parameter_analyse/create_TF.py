@@ -1,3 +1,5 @@
+#  Copyright 2021 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 from parameter_analyse.function_fitting_parameters import engin
 from parameters import excitatory_param, inhibitory_param, params_all
 import numpy as np

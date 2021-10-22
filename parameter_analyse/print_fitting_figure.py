@@ -1,3 +1,5 @@
+#  Copyright 2021 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import matplotlib.pyplot as plt
 import matplotlib.lines as lines
 import matplotlib as mpl
