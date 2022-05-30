@@ -1,6 +1,7 @@
 #  Copyright 2021 Aix-Marseille Université
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import matplotlib.pyplot as plt
+from matplotlib.text import Text
 import matplotlib.lines as lines
 import matplotlib as mpl
 import matplotlib.cm as cm
@@ -44,7 +45,8 @@ def print_result_std(result_n, name_fig):
         plt.xlabel('excitatory input frequency in Hz', {"fontsize": 30.0})
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
-        plt.text(10, -7, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0)
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        plt.subplots_adjust(bottom=0.18)
         name_fig_i = name_fig + str(i) + '.svg'
         plt.savefig(name_fig_i)
 
@@ -82,7 +84,8 @@ def print_result_box_plot(result_n, name_fig, nb_value_finh, nb_value_fexc):
         plt.xlabel('excitatory input frequency in Hz', {"fontsize": 30.0})
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
-        plt.text(10, -7, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0)
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        plt.subplots_adjust(bottom=0.1,top=0.9)
         name_fig_i = name_fig + 'box_plot_' + str(i) + '.svg'
         plt.savefig(name_fig_i, dpi=600)
         plt.close('all')
@@ -148,7 +151,8 @@ def print_result(result_n, function_fit, P_relatif, P_absolute, name_fig, nb_val
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
         plt.legend()
-        plt.text(10, -7, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0)
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        plt.subplots_adjust(bottom=0.18)
         for j in range(nb_value_finh):
             for k in range(nb_value_fexc):
                 if not np.isnan(result_n[k, j, i, 0]):
@@ -181,7 +185,8 @@ def print_result_1(result_n, function_fit, P, name_fig, nb_value_finh, nb_value_
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
         plt.legend()
-        plt.text(10, -7, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0)
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        plt.subplots_adjust(bottom=0.18)
         for j in range(nb_value_finh):
             for k in range(nb_value_fexc):
                 if not np.isnan(result_n[k, j, i, 0]):
@@ -221,8 +226,10 @@ def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_fin
             plt.xlabel('excitatory input frequency in Hz', {"fontsize": 30.0})
             plt.tick_params(labelsize=10.0)
             np.set_printoptions(precision=2)
-            plt.text(np.max( result_n[:, :, i, 1] * 1e3)/2, 180, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
-                     fontsize=20.0)
+            fig.add_artist(
+                Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
+                     fontsize=20.0))
+            plt.subplots_adjust(bottom=0.18)
             # print error without adaptation
             for j in range(nb_value_finh):
                 for k in range(nb_value_fexc):

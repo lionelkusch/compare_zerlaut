@@ -8,9 +8,9 @@ logging.getLogger('tvb').setLevel('ERROR')
 import os
 import numpy as np
 from .generate_data import generate_rates, remove_outlier
-from .fitting_function_zerlaut import fitting_model_zerlaut,create_transfer_function
+from .fitting_function_zerlaut import fitting_model_zerlaut, create_transfer_function
 from .print_fitting_figure import print_result_box_plot, print_result_std, print_result_curve_box_std, \
-     print_result_zerlaut
+    print_result_zerlaut
 
 
 def engin(parameters, parameters_all, excitatory,
@@ -21,7 +21,7 @@ def engin(parameters, parameters_all, excitatory,
           nb_neurons=50,
           name_file_fig='./',
           dt=1e-4, tstop=10.0,
-          print_details=False,print_error=False):
+          print_details=False, print_error=False, print_details_brut=False):
     # file name
     name_file = name_file_fig
     for name, value in parameters.items():
@@ -44,6 +44,44 @@ def engin(parameters, parameters_all, excitatory,
     # structure data
     results = np.load(name_file + '/fout.npy').reshape(nb_value_adaptation * nb_value_fexc * nb_value_finh,
                                                        nb_neurons) * 1e-3
+    # Print data
+    if excitatory:
+        name_file_fig += "/ex_"
+    else:
+        name_file_fig += "/in_"
+
+    if print_details_brut:
+        brut_feOut = np.nanmean(results, axis=1)
+        brut_feOut_std = np.nanstd(results, axis=1).ravel()
+        brut_feOut_med = np.median(results, axis=1).ravel()
+        brut_feSim = np.load(name_file + '/fin.npy').ravel() * 1e-3
+        brut_fiSim = np.repeat([np.repeat(np.linspace(MINfinh, MAXfinh, nb_value_finh), nb_value_adaptation)],
+                               nb_value_fexc,
+                               axis=0).ravel() * 1e-3
+        brut_adaptation = np.repeat(
+            [np.repeat([np.linspace(MINadaptation, MAXadaptation, nb_value_adaptation)], nb_value_finh, axis=0)],
+            nb_value_fexc, axis=0).ravel()
+        # shape data adn remove fe higher than some values
+        i = 0
+        result_n_brut = np.empty((nb_value_fexc, nb_value_finh, nb_value_adaptation, 6 + nb_neurons))
+        result_n_brut[:] = np.NAN
+        fe_model = -1
+        np.linspace(MINadaptation, MAXadaptation, nb_value_adaptation)
+        while i != len(brut_fiSim):
+            fi_model = np.where(brut_fiSim[i] == np.linspace(MINfinh, MAXfinh, nb_value_finh) * 1e-3)[0][0]
+            w_model = np.where(brut_adaptation[i] == np.linspace(MINadaptation, MAXadaptation, nb_value_adaptation))[0][
+                0]
+            if brut_adaptation[i] < brut_adaptation[i - 1]:
+                if brut_fiSim[i] < brut_fiSim[i - 1]:
+                    fe_model += 1
+            result_n_brut[fe_model, fi_model, w_model, :6] = [brut_feOut[i], brut_feSim[i], brut_fiSim[i],
+                                                              brut_adaptation[i], brut_feOut_std[i], brut_feOut_med[i]]
+            result_n_brut[fe_model, fi_model, w_model, 6:] = results[i]
+            i += 1
+        # print_result_box_plot(result_n_brut,name_file_fig+'_data_brute_',nb_value_finh,nb_value_fexc)
+        # print_result_std(result_n_brut, name_file_fig + '_data_brute_')
+        # print_result_curve_box_std(result_n_brut, name_file_fig+'_data_brute_', nb_value_finh, nb_value_fexc)
+
     # remove outlier
     feOut = np.nanmean(remove_outlier(results), axis=1)
     feOut_std = np.nanstd(remove_outlier(results), axis=1).ravel()
@@ -75,29 +113,26 @@ def engin(parameters, parameters_all, excitatory,
             data.append([feOut[i], feSim[i], fiSim[i], adaptation[i]])
         i += 1
     data = np.array(data)
-    # Print data
-    if excitatory:
-        name_file_fig += "/ex_"
-    else:
-        name_file_fig += "/in_"
 
     if os.path.exists(name_file + '/P.npy'):
         # check if polynome is already compute
         p_with = np.load(name_file + '/P.npy')
         p_without = np.load(name_file + '/P_no_adpt.npy')
-        TF= create_transfer_function(parameters_all, excitatory=excitatory)
+        TF = create_transfer_function(parameters_all, excitatory=excitatory)
     else:
         # Fitting data Zerlaut
-        p_with, p_without, TF = fitting_model_zerlaut(data[:, 0], data[:, 1], data[:, 2], data[:, 3], parameters_all, nb_value_fexc,
+        p_with, p_without, TF = fitting_model_zerlaut(data[:, 0], data[:, 1], data[:, 2], data[:, 3], parameters_all,
+                                                      nb_value_fexc,
                                                       nb_value_finh, nb_value_adaptation,
-                                                      MINadaptation, MAXadaptation, MINfinh, MAXfinh, MAXfexc, excitatory)
-        np.save(name_file + '/P.npy',p_with)
-        np.save(name_file + '/P_no_adpt.npy',p_without)
+                                                      MINadaptation, MAXadaptation, MINfinh, MAXfinh, MAXfexc,
+                                                      excitatory)
+        np.save(name_file + '/P.npy', p_with)
+        np.save(name_file + '/P_no_adpt.npy', p_without)
     if print_details:
         print_result_box_plot(result_n,name_file_fig,nb_value_finh,nb_value_fexc)
         print_result_std(result_n,name_file_fig)
-        print_result_curve_box_std(result_n,name_file_fig,nb_value_finh,nb_value_fexc)
+        print_result_curve_box_std(result_n, name_file_fig, nb_value_finh, nb_value_fexc)
     if print_error:
         print_result_zerlaut(result_n, TF, p_with, p_without, name_file_fig + 'zerlaut_', nb_value_finh,
-                         nb_value_fexc)
+                             nb_value_fexc)
     return p_with
