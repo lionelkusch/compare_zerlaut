@@ -166,9 +166,13 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
     ## Integrator
     if not parameter_integrator['stochastic']:
         if parameter_integrator['type'] == 'Heun':
-            integrator = lab.integrators.HeunDeterministic(dt=np.array(parameter_integrator['dt']))
+            integrator = lab.integrators.HeunDeterministic(dt=parameter_integrator['dt'])
         elif parameter_integrator['type'] == 'Euler':
-            integrator = lab.integrators.EulerDeterministic(dt=np.array(parameter_integrator['dt']))
+            integrator = lab.integrators.EulerDeterministic(dt=parameter_integrator['dt'])
+        elif parameter_integrator['type'] == 'Indentity':
+            integrator = lab.integrators.Identity(dt=parameter_integrator['dt'])
+        elif parameter_integrator['type'] == 'RungeKutta4th':
+            integrator = lab.integrators.RungeKutta4thOrderDeterministic(dt=parameter_integrator['dt'])
         else:
             raise Exception('Bad type for the integrator')
     else:
@@ -183,6 +187,8 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
             integrator = lab.integrators.HeunStochastic(noise=noise, dt=parameter_integrator['dt'])
         elif parameter_integrator['type'] == 'Euler':
             integrator = lab.integrators.EulerStochastic(noise=noise, dt=parameter_integrator['dt'])
+        elif parameter_integrator['type'] == 'Indentity':
+            integrator = lab.integrators.IdentityStochastic(noise=noise, dt=parameter_integrator['dt'])
         else:
             raise Exception('Bad type for the integrator')
 
