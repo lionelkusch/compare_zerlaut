@@ -123,7 +123,7 @@ def network_connection(pop_ex, pop_inh, param_connexion):
     nest.Connect(pop_inh, pop_inh, conn_dict_inh, syn_spec="inhibitory")
 
 
-def network_device(pop_ex, pop_inh,  min_time, time_simulation, param_background):
+def network_device(pop_ex, pop_inh,  min_time, time_simulation, param_background, param_topology, param_connexion):
     """
     Create and Connect different record or input device
     :param pop_ex: excitatory neurons
@@ -133,15 +133,24 @@ def network_device(pop_ex, pop_inh,  min_time, time_simulation, param_background
     :return: the list of multimeter and spike detector
     """
     frequency = param_background['frequency']
-    rate = param_background['rate']
+    if param_background['rate_equals_amplitude']:
+        rate = param_background['amplitude']
+    else:
+        rate = param_background['rate']
     amplitude = param_background['amplitude']
     Qe = param_background['weight']
+    nb_excitatory = int(param_topology['nb_neuron']*(1-param_topology['ratio_inhibitory']))
+    prbC_ex = param_connexion['p_connect_ex']
+    # create input
+    parrot = nest.Create('parrot_neuron', nb_excitatory)
     # create sinusoidal input
-    Poisson_sin = nest.Create('sinusoidal_poisson_generator',
+    Poisson_sin = nest.Create('sinusoidal_poisson_generator', nb_excitatory,
                               params={'rate': rate, 'frequency': frequency, 'amplitude': amplitude, 'phase': 0.0})
+    nest.Connect(Poisson_sin, parrot, 'one_to_one', syn_spec="static_synapse")
     nest.CopyModel("static_synapse", "poisson", {"weight": Qe, "delay": nest.GetKernelStatus("min_delay")})
-    nest.Connect(Poisson_sin, pop_inh, 'all_to_all', syn_spec="poisson")
-    nest.Connect(Poisson_sin, pop_ex, 'all_to_all', syn_spec="poisson")
+    conn_dict_ex = {'rule': 'pairwise_bernoulli', 'p': prbC_ex, 'allow_autapses': False, 'allow_multapses': False}
+    nest.Connect(parrot, pop_inh, conn_dict_ex, syn_spec="poisson")
+    nest.Connect(parrot, pop_ex, conn_dict_ex, syn_spec="poisson")
 
     # Spike Detector
     # parameter of spike detector
@@ -180,7 +189,8 @@ def simulate(results_path, begin, end,
     # Connection and Device
     tic = time.time()
     network_connection(excitaotry_neurons, inhibitory_neurons, param_connexion)
-    id_spike_recorder_ex,id_spike_recorder_in = network_device(excitaotry_neurons, inhibitory_neurons, begin, end, param_background)
+    id_spike_recorder_ex, id_spike_recorder_in = network_device(excitaotry_neurons, inhibitory_neurons, begin, end, param_background,
+                                                               param_topology, param_connexion)
     toc = time.time() - tic
     print("Time to create the connections and devices: %.2f s" % toc)
 

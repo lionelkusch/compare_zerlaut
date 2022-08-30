@@ -80,6 +80,7 @@ param_background = {
     'frequency': 0.0,
     # the mean firing rate of sinusoidal poisson_generator
     'rate': 0.0,
+    'rate_equals_amplitude': False,
     # amplitude of the mean firing rate of the sinusoidal poisson_generator
     'amplitude': 1,
     # the weight on the connexion

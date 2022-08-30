@@ -46,7 +46,7 @@ def getData(data_base, table_name, list_variable, name_analysis='global'):
     return datas
 
 
-def grid(x, y, z, res, resX, resY):
+def grid(x, y, z, res, resX, resY, id=None):
     """
     Convert 3 column data to matplotlib grid
 
@@ -64,7 +64,8 @@ def grid(x, y, z, res, resX, resY):
         Z = griddata(x, y, z, xi, yi, interp='linear')
         X, Y = meshgrid(xi, yi)
         return X, Y, Z
-    id = np.where(np.array(z) != None)
+    if id is None:
+        id = np.where(np.array(z) != None)
     result_x = np.array(x, dtype='float64')[id]
     result_y = np.array(y, dtype='float64')[id]
     result_z = np.array(z, dtype='float64')[id]
@@ -310,10 +311,10 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     #### timescale
     ax = axs_rate.ravel()[3]
     X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['timescale_w5ms'], res=resolution,
-                   resX=resX,
-                   resY=resY)
+                   resX=resX, resY=resY,
+                   id=np.where(np.logical_and(data_global['timescale_w5ms'], data_global['ISI_min'])))
     X1, Y1, Z1 = grid(data_global[name_var1], data_global[name_var2], data_global['ISI_min'], res=resolution,
-                      resX=resX, resY=resY)
+                      resX=resX, resY=resY, id=np.where(np.logical_and(data_global['timescale_w5ms'], data_global['ISI_min'])))
     draw_line_level(ax, X, Y, Z - Z1, resolution, 0.0, 'red')
     draw_contour_limit(fig_rate, ax, X, Y, Z, resolution, ' times scale w5 ms', title_var1, title_var2,
                        'ms', 5.0, 50.0, label_size, number_size)
@@ -357,10 +358,11 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     #### timescale
     ax = axs_rate.ravel()[3]
     X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['timescale_5ms'], res=resolution,
-                   resX=resX,
-                   resY=resY)
+                   resX=resX, resY=resY,
+                   id=np.where(np.logical_and(data_global['timescale_5ms'], data_global['ISI_min'])))
     X1, Y1, Z1 = grid(data_global[name_var1], data_global[name_var2], data_global['ISI_min'], res=resolution,
-                      resX=resX, resY=resY)
+                      resX=resX, resY=resY,
+                      id=np.where(np.logical_and(data_global['timescale_5ms'], data_global['ISI_min'])))
     draw_line_level(ax, X, Y, Z - Z1, resolution, 0.0, 'red')
     draw_contour_limit(fig_rate, ax, X, Y, Z, resolution, ' times scale 5 ms', title_var1, title_var2,
                        'ms', 5.0, 50.0, label_size, number_size)
@@ -405,9 +407,11 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     ax = axs_rate.ravel()[3]
     X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['timescale_0_1ms'], res=resolution,
                    resX=resX,
-                   resY=resY)
+                   resY=resY,
+                   id=np.where(np.logical_and(data_global['timescale_0_1ms'], data_global['ISI_min'])))
     X1, Y1, Z1 = grid(data_global[name_var1], data_global[name_var2], data_global['ISI_min'], res=resolution,
-                      resX=resX, resY=resY)
+                      resX=resX, resY=resY,
+                   id=np.where(np.logical_and(data_global['timescale_0_1ms'], data_global['ISI_min'])))
     draw_line_level(ax, X, Y, Z - Z1, resolution, 0.0, 'red')
     draw_contour_limit(fig_rate, ax, X, Y, Z, resolution, ' times scale 0.1 ms', title_var1, title_var2,
                        'ms', 5.0, 50.0, label_size, number_size)
@@ -452,9 +456,11 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     ax = axs_rate.ravel()[3]
     X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['timescale_1ms'], res=resolution,
                    resX=resX,
-                   resY=resY)
+                   resY=resY,
+                   id=np.where(np.logical_and(data_global['timescale_1ms'], data_global['ISI_min'])))
     X1, Y1, Z1 = grid(data_global[name_var1], data_global[name_var2], data_global['ISI_min'], res=resolution,
-                      resX=resX, resY=resY)
+                      resX=resX, resY=resY,
+                   id=np.where(np.logical_and(data_global['timescale_1ms'], data_global['ISI_min'])))
     draw_line_level(ax, X, Y, Z - Z1, resolution, 0.0, 'red')
     draw_contour_limit(fig_rate, ax, X, Y, Z, resolution, ' times scale 1 ms', title_var1, title_var2,
                        'ms', 5.0, 50.0, label_size, number_size)
@@ -1000,13 +1006,26 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
 
 
 if __name__ == "__main__":
+    # folder = 'simulation_3'
+    # folder = 'simulation_rate_2.5'
+    # folder = 'simulation_rate_7.0'
+    folder = 'simulation_rate_amplitude'
     for name_population in ['excitatory', 'inhibitory']:
         print_exploration_analysis_pdf(
-            '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/simulation/figure/figure_test_' + str(
+            '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/figure/figure_test_' + str(
                 name_population) + '.pdf',
-            '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/amplitude_frequency_2.db',
+            '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/amplitude_frequency.db',
             'first_exploration',
             [
-                {'name': 'amplitude', 'title': 'amplitude ', 'min': 0., 'max': 500000.0},
+                {'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 500000.0},
                 {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
             ], population=name_population)
+        # print_exploration_analysis_pdf(
+        #     '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/figure/figure_test_2' + str(
+        #         name_population) + '.pdf',
+        #     '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/amplitude_frequency.db',
+        #     'first_exploration',
+        #     [
+        #         {'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 1.5},
+        #         {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
+        #     ], population=name_population)
