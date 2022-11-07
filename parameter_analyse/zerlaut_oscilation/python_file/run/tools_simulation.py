@@ -284,7 +284,7 @@ def run_simulation(simulator, time, parameter_simulation, parameter_monitor):
         if result[0][0] >= parameter_simulation['save_time'] * (
                 count + 1):  # check if the time for saving at some time step
             print('simulation time :' + str(result[0][0]) + '\r')
-            np.save(parameter_simulation['path_result'] + '/step_' + str(count) + '.npy', save_result)
+            np.save(parameter_simulation['path_result'] + '/step_' + str(count) + '.npy', np.array(save_result, dtype=object))
             save_result = []
             for i in range(nb_monitor):
                 save_result.append([])

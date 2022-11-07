@@ -75,7 +75,7 @@ class Parameter:
             'stochastic': True,
             'noise_type': 'Additive',  # choice : Additive
             'noise_parameter': {
-                'nsig': [1.0*1e-6, 1.0*1e-6, 0.0, 0.0, 0.0, 0.0, 0.0],
+                'nsig': [1.0*1e-6, 1.0*1e-6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 'ntau': 0.0,
                 'dt': 0.1
             },

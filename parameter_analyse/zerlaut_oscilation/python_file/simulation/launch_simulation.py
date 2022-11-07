@@ -33,7 +33,7 @@ def run_rate_deterministe(rate_frequency):
                                                                                                   rate * 1e-3]
     parameters.parameter_stimulus['frequency'] = frequency * 1e-3
     parameters.parameter_stimulus['amp'] = (np.concatenate((np.arange(0.1, 1.5, 0.1),
-                                                            np.arange(0.5, 7., 0.5)
+                                                            np.arange(1.5, 7., 0.5)
                                                             )) * 1e-3).tolist()
     parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
     parameters.parameter_monitor['Raw'] = True
@@ -42,18 +42,20 @@ def run_rate_deterministe(rate_frequency):
     parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
                                                      + "/frequency_" + str(frequency) + "/"
     print(parameters.parameter_simulation['path_result'])
-    simulator = tools.init(parameters.parameter_simulation,
-                           parameters.parameter_model,
-                           parameters.parameter_connection_between_region,
-                           parameters.parameter_coupling,
-                           parameters.parameter_integrator,
-                           parameters.parameter_monitor,
-                           parameter_stimulation=parameters.parameter_stimulus)
-    tools.run_simulation(simulator,
-                         duration,
-                         parameters.parameter_simulation,
-                         parameters.parameter_monitor)
-    if not check_already_analyse_database(database, table_name, path_simulation, 'excitatory'):
+    if not os.path.exists(parameters.parameter_simulation['path_result']):
+        simulator = tools.init(parameters.parameter_simulation,
+                               parameters.parameter_model,
+                               parameters.parameter_connection_between_region,
+                               parameters.parameter_coupling,
+                               parameters.parameter_integrator,
+                               parameters.parameter_monitor,
+                               parameter_stimulation=parameters.parameter_stimulus)
+        tools.run_simulation(simulator,
+                             duration,
+                             parameters.parameter_simulation,
+                             parameters.parameter_monitor)
+    if not check_already_analyse_database(database, table_name,
+                                          parameters.parameter_simulation['path_result'], 'excitatory'):
         results = analysis(parameters.parameter_simulation['path_result'], end=duration)
         insert_database(database, table_name, results)
 
@@ -91,7 +93,7 @@ def run_rate_stochastic(rate_frequency):
                                                                                                   rate * 1e-3]
     parameters.parameter_stimulus['frequency'] = frequency * 1e-3
     parameters.parameter_stimulus['amp'] = (np.concatenate((np.arange(0.1, 1.5, 0.1),
-                                                            np.arange(0.5, 7., 0.5)
+                                                            np.arange(1.5, 7., 0.5)
                                                             )) * 1e-3).tolist()
     parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
     parameters.parameter_monitor['Raw'] = True
@@ -100,23 +102,32 @@ def run_rate_stochastic(rate_frequency):
     parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
                                                      + "/frequency_" + str(frequency) + "/"
     print(parameters.parameter_simulation['path_result'])
-    simulator = tools.init(parameters.parameter_simulation,
-                           parameters.parameter_model,
-                           parameters.parameter_connection_between_region,
-                           parameters.parameter_coupling,
-                           parameters.parameter_integrator,
-                           parameters.parameter_monitor,
-                           parameter_stimulation=parameters.parameter_stimulus)
-    tools.run_simulation(simulator,
-                         duration,
-                         parameters.parameter_simulation,
-                         parameters.parameter_monitor)
-    if not check_already_analyse_database(database, table_name, path_simulation, 'excitatory'):
+    if not os.path.exists(parameters.parameter_simulation['path_result']):
+        simulator = tools.init(parameters.parameter_simulation,
+                               parameters.parameter_model,
+                               parameters.parameter_connection_between_region,
+                               parameters.parameter_coupling,
+                               parameters.parameter_integrator,
+                               parameters.parameter_monitor,
+                               parameter_stimulation=parameters.parameter_stimulus)
+        tools.run_simulation(simulator,
+                             duration,
+                             parameters.parameter_simulation,
+                             parameters.parameter_monitor)
+    if not check_already_analyse_database(database, table_name,
+                                          parameters.parameter_simulation['path_result'], 'excitatory'):
         results = analysis(parameters.parameter_simulation['path_result'], end=duration)
         insert_database(database, table_name, results)
 
 
 if __name__ == "__main__":
+    # test 1
+    run_rate_deterministe({'rate': 7.0, 'frequency': 30.0, 'path':'/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/' ,
+                                     'duration': 20001.0, 'database': '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/database.db',
+                           'table_name': "exploration"
+                                    })
+
+
     p = mp.ProcessingPool(ncpus=8)
     path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/'
     database = path_simulation + "/database.db"
