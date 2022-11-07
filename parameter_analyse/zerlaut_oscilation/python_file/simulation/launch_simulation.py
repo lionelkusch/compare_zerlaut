@@ -1,65 +1,149 @@
 import numpy as np
 import os
-import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
-from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
-import matplotlib.pyplot as plt
-
-path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/'
-
-# for noise in np.arange(1e-9, 1e-8, 1e-9):
-# for noise in np.arange(1e-8, 1e-7, 1e-8):
-# for noise in np.arange(0.0, 1e-5, 5e-7):
-#     for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
-for noise in [1e-8]:
-    for frequency in [1]:
-        parameters = Parameter()
-        parameters.parameter_integrator['noise_parameter']['dt'] = 0.001
-        parameters.parameter_integrator['dt'] = 0.001
-
-        parameters.parameter_stimulus['frequency'] = frequency*1e-3
-        parameters.parameter_integrator['noise_parameter']['nsig'][0] = noise
-        parameters.parameter_integrator['noise_parameter']['nsig'][1] = noise
-        parameters.parameter_simulation['path_result'] = path_simulation + "aprecise_frequency_"+str(frequency)+"_noise_"+str(noise)+"/"
-
-        print(parameters.parameter_simulation['path_result'])
-        if not os.path.exists(parameters.parameter_simulation['path_result']):
+from parameter_analyse.zerlaut_oscilation.python_file.analysis.insert_database import init_database
+import pathos.multiprocessing as mp
+import dill
 
 
-            simulator = tools.init(parameters.parameter_simulation,
-                                   parameters.parameter_model,
-                                   parameters.parameter_connection_between_region,
-                                   parameters.parameter_coupling,
-                                   parameters.parameter_integrator,
-                                   parameters.parameter_monitor,
-                                   parameter_stimulation=parameters.parameter_stimulus)
+def run_rate_deterministe(rate_frequency):
+    """
+    run deterministic simulation
+    :param rate_frequency: list of parameters
+    :return:
+    """
+    # parameters of the function
+    rate = rate_frequency['rate']
+    frequency = rate_frequency['frequency']
+    path_simulation = rate_frequency['path']
+    duration = rate_frequency['duration']
+    database = rate_frequency['database']
+    table_name = rate_frequency['table_name']
 
-            tools.run_simulation(simulator,
-                                 20000.0,
-                                 parameters.parameter_simulation,
-                                 parameters.parameter_monitor)
+    # import function
+    import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
+    from parameter_analyse.zerlaut_oscilation.python_file.analysis.analysis import analysis
+    from parameter_analyse.zerlaut_oscilation.python_file.analysis.insert_database import\
+        insert_database, check_already_analyse_database
+    from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
+    parameters = Parameter()
+    parameters.parameter_integrator['stochastic'] = False
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate* 1e-3,
+                                                                                                  rate * 1e-3]
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_inhibitory"] = [rate * 1e-3,
+                                                                                                  rate * 1e-3]
+    parameters.parameter_stimulus['frequency'] = frequency * 1e-3
+    parameters.parameter_stimulus['amp'] = (np.concatenate((np.arange(0.1, 1.5, 0.1),
+                                                            np.arange(0.5, 7., 0.5)
+                                                            )) * 1e-3).tolist()
+    parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
+    parameters.parameter_monitor['Raw'] = True
+    # parameters.parameter_monitor['TemporalAverage'] = True
+    # parameters.parameter_monitor['parameter_TemporalAverage']['period'] = 0.1
+    parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
+                                                     + "/frequency_" + str(frequency) + "/"
+    print(parameters.parameter_simulation['path_result'])
+    simulator = tools.init(parameters.parameter_simulation,
+                           parameters.parameter_model,
+                           parameters.parameter_connection_between_region,
+                           parameters.parameter_coupling,
+                           parameters.parameter_integrator,
+                           parameters.parameter_monitor,
+                           parameter_stimulation=parameters.parameter_stimulus)
+    tools.run_simulation(simulator,
+                         duration,
+                         parameters.parameter_simulation,
+                         parameters.parameter_monitor)
+    if not check_already_analyse_database(database, table_name, path_simulation, 'excitatory'):
+        results = analysis(parameters.parameter_simulation['path_result'], end=duration)
+        insert_database(database, table_name, results)
 
-# result = tools.get_result(parameters.parameter_simulation['path_result'], 0.0, 20000.0)
-#
-# times = result[0][0]
-# rateE = result[0][1][:, 0, :]
-# stdE = result[0][1][:, 2, :]
-# rateI = result[0][1][:, 1, :]
-# stdI = result[0][1][:, 4, :]
-# corrEI = result[0][1][:, 3, :]
-# adaptationE = result[0][1][:, 5, :]
-#
-# #Plot the excitatory and inhibitory signals, excitatory neuron adaptation, and noise input
-# # to the stimulated node
-# for i in range(50):
-#     plt.figure(figsize=(20,4))
-#     plt.rcParams.update({'font.size': 14})
-#     ax0 = plt.subplot(211)
-#     ax0.plot(result[0][0]*1e-3,result[0][1][:,0,i]*1e3, 'c')
-#     ax0.plot(result[0][0]*1e-3,result[0][1][:,1,i]*1e3, 'r')
-#     ax0.set_xlabel('time [s]')
-#     ax0.set_ylabel('firing rate [Hz]')
-#     ax1 = plt.subplot(212)
-#     ax1.plot(result[0][0]*1e-3,result[0][1][:,5,i], 'k')
-#     ax1.set_xlabel('time [s]')
-#     ax1.set_ylabel('adaptation [nA]')
-# plt.show()
+
+def run_rate_stochastic(rate_frequency):
+    """
+    run stochastic
+    :param rate_frequency: parameters of the frequency
+    :return:
+    """
+    # parameters
+    rate = rate_frequency['rate']
+    frequency = rate_frequency['frequency']
+    noise = rate_frequency['noise']
+    path_simulation = rate_frequency['path']
+    duration = rate_frequency['duration']
+    database = rate_frequency['database']
+    table_name = rate_frequency['table_name']
+
+    # import
+    import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
+    from parameter_analyse.zerlaut_oscilation.python_file.analysis.analysis import analysis
+    from parameter_analyse.zerlaut_oscilation.python_file.analysis.insert_database import \
+        insert_database, check_already_analyse_database
+    from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
+
+    # parameters
+    parameters = Parameter()
+    parameters.parameter_integrator['stochastic'] = True
+    parameters.parameter_integrator['noise_parameter']['nsig'][0] = noise
+    parameters.parameter_integrator['noise_parameter']['nsig'][1] = noise
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate* 1e-3,
+                                                                                                  rate * 1e-3]
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_inhibitory"] = [rate * 1e-3,
+                                                                                                  rate * 1e-3]
+    parameters.parameter_stimulus['frequency'] = frequency * 1e-3
+    parameters.parameter_stimulus['amp'] = (np.concatenate((np.arange(0.1, 1.5, 0.1),
+                                                            np.arange(0.5, 7., 0.5)
+                                                            )) * 1e-3).tolist()
+    parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
+    parameters.parameter_monitor['Raw'] = True
+    # parameters.parameter_monitor['TemporalAverage'] = True
+    # parameters.parameter_monitor['parameter_TemporalAverage']['period'] = 0.1
+    parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
+                                                     + "/frequency_" + str(frequency) + "/"
+    print(parameters.parameter_simulation['path_result'])
+    simulator = tools.init(parameters.parameter_simulation,
+                           parameters.parameter_model,
+                           parameters.parameter_connection_between_region,
+                           parameters.parameter_coupling,
+                           parameters.parameter_integrator,
+                           parameters.parameter_monitor,
+                           parameter_stimulation=parameters.parameter_stimulus)
+    tools.run_simulation(simulator,
+                         duration,
+                         parameters.parameter_simulation,
+                         parameters.parameter_monitor)
+    if not check_already_analyse_database(database, table_name, path_simulation, 'excitatory'):
+        results = analysis(parameters.parameter_simulation['path_result'], end=duration)
+        insert_database(database, table_name, results)
+
+
+if __name__ == "__main__":
+    p = mp.ProcessingPool(ncpus=8)
+    path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/'
+    database = path_simulation + "/database.db"
+    table_name = "exploration"
+    duration = 20001.0
+    init_database(database, table_name)
+    for rate in [7.0, 0.0, 2.5]:
+        list_parameters = []
+        if not os.path.exists(path_simulation + "/rate_" + str(rate)):
+            os.mkdir(path_simulation + "/rate_" + str(rate))
+        for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
+            list_parameters.append({'rate': rate, 'frequency': frequency, 'path': path_simulation,
+                                     'duration': duration, 'database': database, 'table_name': table_name
+                                    })
+        p.map(dill.copy(run_rate_deterministe), list_parameters)
+
+        list_parameters = []
+        for noise in [1e-9, 1e-8]:
+            path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/stochastic_' + str(
+                noise) + '/'
+            database = path_simulation + "/database.db"
+            if not os.path.exists(path_simulation + "/rate_" + str(rate)):
+                os.mkdir(path_simulation + "/rate_" + str(rate))
+            init_database(database, table_name)
+            for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
+                list_parameters.append(
+                    {'noise': noise, 'rate': rate, 'frequency': frequency, 'path': path_simulation,
+                     'duration': duration, 'database': database, 'table_name': table_name
+                     })
+        p.map(dill.copy(run_rate_stochastic), list_parameters)

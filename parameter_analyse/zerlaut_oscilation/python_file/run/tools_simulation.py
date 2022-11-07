@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 from scipy.optimize import fsolve
+import parameter_analyse.zerlaut_oscilation.python_file.run.zerlaut as zerlaut
 
 
 def init(parameter_simulation, parameter_model, parameter_connection_between_region, parameter_coupling,
@@ -30,9 +31,13 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
 
     ## Model
     if parameter_model['order'] == 1:
-        model = lab.models.ZerlautAdaptationFirstOrder(variables_of_interest='E I W_e W_i'.split())
+        model = zerlaut.ZerlautAdaptationFirstOrder(variables_of_interest='E I W_e W_i ou_drift '\
+                      'external_input_excitatory_to_excitatory external_input_excitatory_to_inhibitory ' \
+                      'external_input_inhibitory_to_inhibitory external_input_inhibitory_to_inhibitory'.split())
     elif parameter_model['order'] == 2:
-        model = lab.models.ZerlautAdaptationSecondOrder(variables_of_interest='E I C_ee C_ei C_ii W_e W_i'.split())
+        model = zerlaut.ZerlautAdaptationSecondOrder(variables_of_interest='E I C_ee C_ei C_ii W_e W_i ou_drift '\
+                      'external_input_excitatory_to_excitatory external_input_excitatory_to_inhibitory ' \
+                      'external_input_inhibitory_to_inhibitory external_input_inhibitory_to_inhibitory'.split())
     else:
         raise Exception('Bad order for the model')
 
@@ -61,10 +66,6 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
     model.P_i = np.array(parameter_model['P_i'])
     model.K_ext_e = np.array(parameter_model['K_ext_e'])
     model.K_ext_i = np.array(parameter_model['K_ext_i'])
-    model.external_input_ex_ex = np.array(parameter_model['external_input_ex_ex'])
-    model.external_input_ex_in = np.array(parameter_model['external_input_ex_in'])
-    model.external_input_in_ex = np.array(parameter_model['external_input_in_ex'])
-    model.external_input_in_in = np.array(parameter_model['external_input_in_in'])
     model.state_variable_range['E'] = np.array(parameter_model['initial_condition']['E'])
     model.state_variable_range['I'] = np.array(parameter_model['initial_condition']['I'])
     if parameter_model['order'] == 2:
@@ -73,6 +74,14 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
         model.state_variable_range['C_ii'] = np.array(parameter_model['initial_condition']['C_ii'])
     model.state_variable_range['W_e'] = np.array(parameter_model['initial_condition']['W_e'])
     model.state_variable_range['W_i'] = np.array(parameter_model['initial_condition']['W_i'])
+    model.state_variable_range['ou_drift'] = np.array(parameter_model['initial_condition']['noise'])
+    model.state_variable_range['external_input_excitatory_to_excitatory'] = np.array(parameter_model['initial_condition']['external_input_excitatory_to_excitatory'])
+    model.state_variable_range['external_input_excitatory_to_inhibitory'] = np.array(parameter_model['initial_condition']['external_input_excitatory_to_inhibitory'])
+    model.state_variable_range['external_input_inhibitory_to_excitatory'] = np.array(parameter_model['initial_condition']['external_input_inhibitory_to_excitatory'])
+    model.state_variable_range['external_input_inhibitory_to_inhibitory'] = np.array(parameter_model['initial_condition']['external_input_inhibitory_to_inhibitory'])
+    model.tau_OU = np.array(parameter_model['tau_OU'])
+    model.weight_noise = np.array(parameter_model['weight_noise'])
+    model.S_i = np.array(parameter_model['S_i'])
 
     connection = lab.connectivity.Connectivity(
         number_of_regions=parameter_connection_between_region['number_of_regions'],
@@ -92,12 +101,12 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
         class Sinusoid(lab.equations.TemporalApplicableEquation):
             equation = Final(
                 label="Sinusoid Equation",
-                default="where (rate+sin(6.283185307179586 * frequency * var) >= 0, rate+amp*sin(6.283185307179586 * frequency * var), 0) ",
-                doc=""":math:`amp \\sin(2.0 \\pi frequency x)` """)
+                default="amp*cos(frequency * var) ",
+                doc=""":math:`derivate sin(frequency x)` """)
             parameters = Attr(
                 field_type=dict,
                 label="Sinusoid Parameters",
-                default=lambda: {"amp": 1.0, "frequency": 0.01, "rate":0.0}) #kHz #"pi": numpy.pi,
+                default=lambda: {"amp": 1.0, "frequency": 0.01}) #kHz #"pi": numpy.pi,
 
         class StimuliRegion(lab.patterns.StimuliRegion):
                 def configure_time(self, time):
@@ -113,9 +122,8 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
                     return self._temporal_pattern[0, temporal_indices]
 
         eqn_t = Sinusoid()
-        eqn_t.parameters["amp"] = np.array(parameter_stimulation["amp"]).reshape((50, 1))  # ms
+        eqn_t.parameters["amp"] = np.array(parameter_stimulation["amp"]).reshape((len(parameter_stimulation["amp"]), 1))  # ms
         eqn_t.parameters["frequency"] = np.array(parameter_stimulation["frequency"])  # ms
-        eqn_t.parameters["rate"] = np.array(parameter_stimulation["rate"])  # ms
         stimulation = StimuliRegion(temporal=eqn_t,
                                      connectivity=connection,
                                      weight=np.array(parameter_stimulation['weights']))
@@ -198,7 +206,7 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
         monitors.append(lab.monitors.Raw())
     if parameter_monitor['TemporalAverage']:
         monitor_TAVG = lab.monitors.TemporalAverage(
-            variables_of_interest=parameter_monitor['parameter_TemporalAverage']['variables_of_interest'],
+            variables_of_interest=np.array(parameter_monitor['parameter_TemporalAverage']['variables_of_interest']),
             period=parameter_monitor['parameter_TemporalAverage']['period'])
         monitors.append(monitor_TAVG)
     if parameter_monitor['Bold']:
@@ -282,7 +290,7 @@ def run_simulation(simulator, time, parameter_simulation, parameter_monitor):
                 save_result.append([])
             count += 1
     # save the last part
-    np.save(parameter_simulation['path_result'] + '/step_' + str(count) + '.npy', save_result)
+    np.save(parameter_simulation['path_result'] + '/step_' + str(count) + '.npy', np.array(save_result, dtype=object))
 
 
 def get_result(path, time_begin, time_end):

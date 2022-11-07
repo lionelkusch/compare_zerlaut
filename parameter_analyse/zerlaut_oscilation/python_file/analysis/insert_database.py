@@ -33,7 +33,7 @@ def init_database(data_base, table_name):
     variable = ''
     key_variable = ',amplitude,frequency,noise,'
     measures_name = ['path_file', 'names_population', 'frequency_dom', 'PLV_value', 'PLV_angle', 'max_rates',
-                     'min_rates', 'mean_rates', 'std_rates', 'amplitude', 'frequency', 'noise']
+                     'min_rates', 'mean_rates', 'std_rates', 'amplitude', 'frequency', 'rate', 'noise']
     measures_name.remove('names_population')
     measures_name.remove('path_file')
     measures = ''

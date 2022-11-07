@@ -7,7 +7,7 @@ from scipy.interpolate import griddata
 import numpy as np
 
 
-def getData(data_base, table_name, list_variable, name_analysis='global', noise=0.0):
+def getData(data_base, table_name, list_variable, name_analysis='global', cond=""):
     """
     get data from database
     :param data_base: path of the database
@@ -27,7 +27,7 @@ def getData(data_base, table_name, list_variable, name_analysis='global', noise=
         " AND " + list_variable[0]['name'] + ' <= ' + str(list_variable[0]['max']) +
         " AND " + list_variable[1]['name'] + ' >= ' + str(list_variable[1]['min']) +
         " AND " + list_variable[1]['name'] + ' <= ' + str(list_variable[1]['max']) +
-        " AND noise = " + str(noise) +
+        cond +
         " ORDER BY " + list_variable[0]['name'] + ')'
                                                   " ORDER BY " + list_variable[1]['name']
     )
@@ -173,12 +173,35 @@ def draw_zone_level(ax, X, Y, Z, resolution, level, color):
     :return:
     """
     if len(Z) > 3:
-        if np.min(Z) <= level:
+        if np.min(Z) <= level and np.max(Z) >= level:
             draw_line_level(ax, X, Y, Z, resolution, level, color)
             if resolution:
                 ax.contourf(X, Y, Z, levels=[np.min(Z), level], colors=[color], alpha=0.2)
             else:
                 ax.tricontourf(X, Y, Z, levels=[np.min(Z), level], colors=[color], alpha=0.2)
+    else:
+        Warning('not enough values')
+
+
+def draw_zone_levels(ax, X, Y, Z, resolution, levels, color):
+    """
+    draw a zone of color in transparency
+    :param ax: axis of the graph
+    :param X: x values
+    :param Y: y values
+    :param Z: z values
+    :param resolution: boolean if resolution
+    :param level: level of plotting
+    :param color: color of the zone
+    :return:
+    """
+    if len(Z) > 3:
+        if np.all(np.min(Z) <= levels) and np.all(np.max(Z) >= levels):
+            draw_line_levels(ax, X, Y, Z, resolution, levels, color)
+            if resolution:
+                ax.contourf(X, Y, Z, levels=levels, colors=[color], alpha=0.2)
+            else:
+                ax.tricontourf(X, Y, Z, levels=levels, colors=[color], alpha=0.2)
     else:
         Warning('not enough values')
 
@@ -200,6 +223,27 @@ def draw_line_level(ax, X, Y, Z, resolution, level, color):
             ax.contour(X, Y, Z, levels=[level], colors=[color], linewidths=2.0)
         else:
             ax.tricontour(X, Y, Z, levels=[level], colors=[color], linewidths=2.0)
+    else:
+        Warning('not enough values')
+
+
+def draw_line_levels(ax, X, Y, Z, resolution, levels, color):
+    """
+    draw a line
+    :param ax: axis of the graph
+    :param X: x values
+    :param Y: y values
+    :param Z: z values
+    :param resolution: boolean if resolution
+    :param level: level of plotting
+    :param color: color of the line
+    :return:
+    """
+    if len(Z) > 3:
+        if resolution:
+            ax.contour(X, Y, Z, levels=levels, colors=[color], linewidths=2.0)
+        else:
+            ax.tricontour(X, Y, Z, levels=levels, colors=[color], linewidths=2.0)
     else:
         Warning('not enough values')
 
@@ -232,8 +276,7 @@ def min_max(data):
 
 
 def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_variable, resX=None, resY=None,
-                                   label_size=30.0, number_size=20.0, level_percentage=0.95, population= 'excitatory',
-                                   noise=0.0):
+                                   label_size=30.0, number_size=20.0, level_percentage=0.95, population= 'excitatory', cond=''):
     """
     create pdf with all the analysis
     :param path_figure: path to save the figure
@@ -250,7 +293,7 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     name_var2 = list_variable[1]['name']
     title_var1 = list_variable[0]['title']
     title_var2 = list_variable[1]['title']
-    data_global = getData(data_base, table_name, list_variable, population, noise=noise)
+    data_global = getData(data_base, table_name, list_variable, population, cond=cond)
     resolution = resX != None and resY != None
     if resX == None:
         resX = len(np.unique(data_global[name_var1]))
@@ -303,9 +346,20 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['frequency_dom'], res=resolution, resX=resX,
                    resY=resY)
     draw_contour(fig_rate, ax, X, Y, Z, resolution, ' frequency dominant ', title_var1, title_var2,
-                 'ms', label_size, number_size)
+                 'Hz', label_size, number_size)
     draw_point(ax, X, Y)
     set_lim(ax, ymax, ymin, xmax, xmin, number_size)
+
+    #### ISI
+    ax = axs_rate.ravel()[3]
+    X, Y, Z = grid(data_global[name_var1], data_global[name_var2], np.array(data_global['frequency_dom'])-np.array(data_global['frequency']), res=resolution, resX=resX,
+                   resY=resY)
+    draw_contour(fig_rate, ax, X, Y, Z, resolution, ' frequency dominant - input ', title_var1, title_var2,
+                 'Hz', label_size, number_size)
+    draw_zone_levels(ax, X, Y, Z, resolution, [-1e-12, 1e-12], 'red')
+    draw_point(ax, X, Y)
+    set_lim(ax, ymax, ymin, xmax, xmin, number_size)
+
 
     plt.savefig(file, format='pdf')
     plt.close('all')
@@ -348,16 +402,32 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     file.close()
 
 if __name__ == "__main__":
-    path_root = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/'
-    database = path_root + "/database_2.db"
-    # for noise in np.arange(1e-9, 1e-8, 1e-9):
-    # for noise in np.arange(1e-8, 1e-7, 1e-8):
-    for noise in np.arange(0.0, 1e-5, 5e-7):
-        for name_population in ['excitatory', 'inhibitory']:
-            print_exploration_analysis_pdf(path_root+'/figure/figure_test_'+str(name_population)+'_'+str(noise)+'.pdf',
-                                           database,
-                                           'exploration',
-                                           [
-                    {'name': 'amplitude', 'title': 'amplitude ', 'min': 0., 'max': 500000.0},
-                   {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
-                                           ], population=name_population, noise=noise)
+    # path_root = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/'
+    # database = path_root + "/database_2.db"
+    # # for noise in np.arange(1e-9, 1e-8, 1e-9):
+    # # for noise in np.arange(1e-8, 1e-7, 1e-8):
+    # for noise in np.arange(0.0, 1e-5, 5e-7):
+    #     for name_population in ['excitatory', 'inhibitory']:
+    #         print_exploration_analysis_pdf(path_root+'/figure/figure_test_'+str(name_population)+'_'+str(noise)+'.pdf',
+    #                                        database,
+    #                                        'exploration',
+    #                                        [
+    #                 {'name': 'amplitude', 'title': 'amplitude ', 'min': 0., 'max': 500000.0},
+    #                {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
+    #                                        ], population=name_population, cond=" AND noise = " + str(noise))
+    paths = ['/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/',
+             '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/stochastic_1e-08/',
+             '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/stochastic_1e-09/',
+             ]
+    for path_root  in paths:
+        database = path_root + "/database.db"
+        for rate in [0.0, 2.5, 7.0]:
+            for name_population in ['excitatory', 'inhibitory']:
+                print_exploration_analysis_pdf(
+                    path_root + '/figure/figure_determinitic_'+str(rate)+'.pdf',
+                    database,
+                    'exploration',
+                    [
+                        {'name': 'amplitude', 'title': 'amplitude ', 'min': 0., 'max': 5000000.0},
+                        {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
+                    ], population=name_population, cond=" AND rate == " + str(rate))
