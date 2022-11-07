@@ -27,7 +27,7 @@ def run_rate_deterministe(rate_frequency):
     from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
     parameters = Parameter()
     parameters.parameter_integrator['stochastic'] = False
-    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate* 1e-3,
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
     parameters.parameter_model['initial_condition']["external_input_excitatory_to_inhibitory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
@@ -87,7 +87,7 @@ def run_rate_stochastic(rate_frequency):
     parameters.parameter_integrator['stochastic'] = True
     parameters.parameter_integrator['noise_parameter']['nsig'][0] = noise
     parameters.parameter_integrator['noise_parameter']['nsig'][1] = noise
-    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate* 1e-3,
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
     parameters.parameter_model['initial_condition']["external_input_excitatory_to_inhibitory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
@@ -121,11 +121,11 @@ def run_rate_stochastic(rate_frequency):
 
 
 if __name__ == "__main__":
-    # test 1
-    run_rate_deterministe({'rate': 7.0, 'frequency': 30.0, 'path':'/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/' ,
-                                     'duration': 20001.0, 'database': '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/database.db',
-                           'table_name': "exploration"
-                                    })
+    # # test 1
+    # run_rate_deterministe({'rate': 7.0, 'frequency': 30.0, 'path':'/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/' ,
+    #                        'duration': 2001.0, 'database': '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/database.db',
+    #                        'table_name': "exploration"
+    #                                 })
 
 
     p = mp.ProcessingPool(ncpus=8)

@@ -101,8 +101,8 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
         class Sinusoid(lab.equations.TemporalApplicableEquation):
             equation = Final(
                 label="Sinusoid Equation",
-                default="amp*cos(frequency * var) ",
-                doc=""":math:`derivate sin(frequency x)` """)
+                default="(amp*frequency* 6.283185307179586)*cos(frequency * var * 6.283185307179586) ",
+                doc=""":math:`derivate amp*sin(frequency * x * 2pi)` """)
             parameters = Attr(
                 field_type=dict,
                 label="Sinusoid Parameters",

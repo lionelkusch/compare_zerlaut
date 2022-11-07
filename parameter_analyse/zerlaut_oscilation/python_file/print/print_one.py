@@ -38,14 +38,24 @@ def print_result(path_simulation, begin, end):
 
     plt.figure()
     plt.plot(times, noise[:, -1], label='noise', alpha=0.2)
-    plt.plot(times, external_input_excitatory_to_excitatory[:, -1], label='external_input_excitatory_to_excitatory', alpha=0.2)
-    plt.plot(times, external_input_excitatory_to_inhibitory[:, -1], label='external_input_excitatory_to_inhibitory', alpha=0.2)
-    plt.plot(times, external_input_inhibitory_to_excitatory[:, -1], label='external_input_inhibitory_to_excitatory', alpha=0.2)
-    plt.plot(times, external_input_inhibitory_to_inhibitory[:, -1], label='external_input_inhibitory_to_inhibitory', alpha=0.2)
+    plt.plot(times, external_input_excitatory_to_excitatory[:, -1], '.', label='external_input_excitatory_to_excitatory', alpha=0.2)
+    plt.plot(times, external_input_excitatory_to_inhibitory[:, -1], '.', label='external_input_excitatory_to_inhibitory', alpha=0.2)
+    plt.plot(times, external_input_inhibitory_to_excitatory[:, -1], '.', label='external_input_inhibitory_to_excitatory', alpha=0.2)
+    plt.plot(times, external_input_inhibitory_to_inhibitory[:, -1], '.', label='external_input_inhibitory_to_inhibitory', alpha=0.2)
+    plt.legend()
+
+    region = 19
+    plt.figure()
+    plt.plot(times, rateE[:, region], label='excitatory')
+    plt.plot(times, rateI[:, region], label='inhibitory')
+    plt.plot(times, external_input_excitatory_to_excitatory[:, region], label='external_input_excitatory_to_excitatory', alpha=0.2)
+    plt.plot(times, external_input_excitatory_to_inhibitory[:, region], label='external_input_excitatory_to_inhibitory', alpha=0.2)
+    plt.plot(times, external_input_inhibitory_to_excitatory[:, region], label='external_input_inhibitory_to_excitatory', alpha=0.2)
+    plt.plot(times, external_input_inhibitory_to_inhibitory[:, region], label='external_input_inhibitory_to_inhibitory', alpha=0.2)
     plt.legend()
     plt.show()
 
 if __name__ == "__main__":
-    path = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/test/rate_7.0/'
-    path += "/frequency_1_42/"
-    print_result(path, 0.0, 200.0)
+    path = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/rate_7.0/'
+    path += "/frequency_30.0/"
+    print_result(path, 0.0, 1100.0)
