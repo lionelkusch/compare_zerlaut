@@ -2,7 +2,21 @@ from parameter_analyse.print_figure.plot_figure.plot import plot_noise_frequency
 import matplotlib.pyplot as plt
 # # example of plot
 # plot_noise_frequency(6.500000000000001, 50.0, 7.0, 19000.0, 19999.9)
+# plt.savefig('figure/test.png'); plt.close('all')
 # plot_compare_frequence(0.1, 1.0, 0.0, 19000.0, 19200.9, resolution=0.2, window_size=5.0, linewidth=[1.0, 1.0])
+# plt.savefig('figure/test.png'); plt.close('all')
+# plot_compare_frequence_noise(6.0, 20.0, 0.0, 15000.0, 15500.0, resolution=0.2, window_size=5.0, linewidth=[0.5, 1.0],
+#                              zoom_frequency=100,
+#                              path_mean_fields=['deterministe', 'stochastic_1e-09', 'stochastic_1e-08'],)
+# plt.savefig('figure/test.png'); plt.close('all')
+# plot_compare(1.0, 1.0, 7.0, 12000.0, 18000.0, resolution=0.2, window_size=5.0, linewidth=[0.5, 2.0])
+# plt.savefig('figure/test.png'); plt.close('all')
+# plot_compare_all(0.30000000000000004, 1.0, 0.0, 10000.0, 20000.0, resolution=0.2, window_size=5.0,
+#              linewidth=[1.0, 1.0], path_mean_fields=['deterministe', 'stochastic_1e-09', 'stochastic_1e-08'],
+#              max_E=5.0)
+# plt.savefig('figure/test.png'); plt.close('all')
+
+
 
 # result low amplitude :
 plot_compare_frequence(0.30000000000000004, 1.0, 0.0, 10000.0, 20000.0, resolution=0.2, window_size=5.0,

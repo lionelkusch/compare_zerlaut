@@ -45,7 +45,8 @@ def print_result_std(result_n, name_fig):
         plt.xlabel('excitatory input frequency in Hz', {"fontsize": 30.0})
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
-        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
+                            fontsize=20.0))
         plt.subplots_adjust(bottom=0.18)
         name_fig_i = name_fig + str(i) + '.svg'
         plt.savefig(name_fig_i)
@@ -84,8 +85,9 @@ def print_result_box_plot(result_n, name_fig, nb_value_finh, nb_value_fexc):
         plt.xlabel('excitatory input frequency in Hz', {"fontsize": 30.0})
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
-        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
-        plt.subplots_adjust(bottom=0.1,top=0.9)
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
+                            fontsize=20.0))
+        plt.subplots_adjust(bottom=0.1, top=0.9)
         name_fig_i = name_fig + 'box_plot_' + str(i) + '.svg'
         plt.savefig(name_fig_i, dpi=600)
         plt.close('all')
@@ -151,7 +153,8 @@ def print_result(result_n, function_fit, P_relatif, P_absolute, name_fig, nb_val
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
         plt.legend()
-        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
+                            fontsize=20.0))
         plt.subplots_adjust(bottom=0.18)
         for j in range(nb_value_finh):
             for k in range(nb_value_fexc):
@@ -185,7 +188,8 @@ def print_result_1(result_n, function_fit, P, name_fig, nb_value_finh, nb_value_
         plt.tick_params(labelsize=10.0)
         np.set_printoptions(precision=2)
         plt.legend()
-        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center', fontsize=20.0))
+        fig.add_artist(Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
+                            fontsize=20.0))
         plt.subplots_adjust(bottom=0.18)
         for j in range(nb_value_finh):
             for k in range(nb_value_fexc):
@@ -202,11 +206,71 @@ def print_result_1(result_n, function_fit, P, name_fig, nb_value_finh, nb_value_
 
 def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
     for curve, adaptation, real_data in [
-        # (False, False, False), (True, False, False), (False, False, True),(True, False, True),
-        (False, True, False), (True, True, False), (False, True, True),(True, True, True)]:
-        print(curve,adaptation,real_data)
+        (False, False, False), (True, False, False), (False, False, True),(True, False, True),
+        (False, True, False), (True, True, False), (False, True, True), (True, True, True)]:
+        print(curve, adaptation, real_data)
         # plot zerlaut fitting and the error
-        for i in range(result_n.shape[2]):
+        for i in [0, result_n.shape[2]-1]:
+            # print error without adaptation
+            for j in range(nb_value_finh):
+                fig = plt.figure(figsize=(20, 20))
+                # # real data
+                if real_data:
+                    plt.plot(result_n[:, j, i, 1] * 1e3, result_n[:, j, i, 0] * 1e3, '.g')
+                if curve:
+                    if adaptation:
+                        # fit with adaptation
+                        plt.plot(result_n[:, j, i, 1] * 1e3,
+                                 TF(result_n[:, j, i, 1], result_n[:, j, i, 2], p_with, w=result_n[:, j, i, 3]) * 1e3, 'c')
+                    else:
+                        # fit without adaptation
+                        plt.plot(result_n[:, j, i, 1] * 1e3,
+                                 TF(result_n[:, j, i, 1], result_n[:, j, i, 2], p_without, w=result_n[:, j, i, 3]) * 1e3,
+                                 '--b')
+                plt.title('adapt = ' + str(result_n[:, j, i, 3][0]), {"fontsize": 30.0})
+                plt.ylabel('output frequency of the neurons in Hz', {"fontsize": 30.0})
+                plt.xlabel('excitatory input frequency in Hz', {"fontsize": 30.0})
+                plt.tick_params(labelsize=10.0)
+                np.set_printoptions(precision=2)
+                fig.add_artist(
+                    Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, j, i, 2][0] * 1e3)), ha='center',
+                         fontsize=20.0))
+                plt.subplots_adjust(bottom=0.18)
+                for k in range(nb_value_fexc):
+                    if not np.isnan(result_n[k, j, i, 0]):
+                        if adaptation:
+                            plt.plot([result_n[k, j, i, 1] * 1e3, result_n[k, j, i, 1] * 1e3],
+                                     [result_n[k, j, i, 0] * 1e3, TF(result_n[k, j, i, 1], result_n[k, j, i, 2],
+                                                                     p_with, w=result_n[k, j, i, 3]) * 1e3],
+                                     color='r', alpha=0.5)
+                        else:
+                            # print error with adaptation
+                            plt.plot([result_n[k, j, i, 1] * 1e3, result_n[k, j, i, 1] * 1e3],
+                                     [result_n[k, j, i, 0] * 1e3, TF(result_n[k, j, i, 1], result_n[k, j, i, 2],
+                                                                     p_without, w=result_n[k, j, i, 3]) * 1e3], color='r',
+                                     alpha=0.5, linewidth=0.5)
+                name_fig_i = name_fig
+                if real_data:
+                    name_fig_i += '_data_'
+                if curve:
+                    name_fig_i += '_curve_'
+                if adaptation:
+                    name_fig_i += '_adaptation_'
+                name_fig_i += str(i) + '_' + str(j) + '.svg'
+                plt.ylim(ymax=200.0, ymin=0.0)
+                plt.xlim(xmin=0.0)
+                # plt.show()
+                plt.savefig(name_fig_i)
+                plt.close('all')
+
+def print_result_zerlaut_all(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
+    for curve, adaptation, real_data in [
+        (False, False, False), (True, False, False), (False, False, True),(True, False, True),
+        (False, True, False), (True, True, False), (False, True, True), (True, True, True)]:
+        print(curve, adaptation, real_data)
+        # plot zerlaut fitting and the error
+        for i in [0, result_n.shape[2]-1]:
+            # print error without adaptation
             fig = plt.figure(figsize=(20, 20))
             # # real data
             if real_data:
@@ -230,20 +294,19 @@ def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_fin
                 Text(0.5, 0.01, "frequency inhibitory " + str(repr(result_n[:, :, i, 2][0] * 1e3)), ha='center',
                      fontsize=20.0))
             plt.subplots_adjust(bottom=0.18)
-            # print error without adaptation
             for j in range(nb_value_finh):
                 for k in range(nb_value_fexc):
                     if not np.isnan(result_n[k, j, i, 0]):
                         if adaptation:
                             plt.plot([result_n[k, j, i, 1] * 1e3, result_n[k, j, i, 1] * 1e3],
                                      [result_n[k, j, i, 0] * 1e3, TF(result_n[k, j, i, 1], result_n[k, j, i, 2],
-                                                                     p_without, w=result_n[k, j, i, 3]) * 1e3],
+                                                                     p_with, w=result_n[k, j, i, 3]) * 1e3],
                                      color='r', alpha=0.5)
                         else:
                             # print error with adaptation
                             plt.plot([result_n[k, j, i, 1] * 1e3, result_n[k, j, i, 1] * 1e3],
                                      [result_n[k, j, i, 0] * 1e3, TF(result_n[k, j, i, 1], result_n[k, j, i, 2],
-                                                                     p_with, w=result_n[k, j, i, 3]) * 1e3], color='r',
+                                                                     p_without, w=result_n[k, j, i, 3]) * 1e3], color='r',
                                      alpha=0.5, linewidth=0.5)
             name_fig_i = name_fig
             if real_data:
@@ -252,8 +315,9 @@ def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_fin
                 name_fig_i += '_curve_'
             if adaptation:
                 name_fig_i += '_adaptation_'
-            name_fig_i += str(i) + '.svg'
-            plt.ylim(ymax=200.0)
+            name_fig_i += str(i) + '_all.svg'
+            plt.ylim(ymax=200.0, ymin=0.0)
             plt.xlim(xmin=0.0)
+            # plt.show()
             plt.savefig(name_fig_i)
             plt.close('all')

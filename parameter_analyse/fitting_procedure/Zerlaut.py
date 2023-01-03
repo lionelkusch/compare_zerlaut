@@ -5,7 +5,7 @@
 Mean field model based on Master equation about adaptative exponential leacky integrate and fire neurons population
 """
 
-from tvb.simulator.models.base import Model,numpy
+from tvb.simulator.models.base import Model, numpy
 import scipy.special as sp_spec
 from tvb.basic.neotraits.api import NArray, Range, Final, List
 from numba import jit
