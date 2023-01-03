@@ -1,0 +1,10 @@
+*.svg
+*.png
+*.npy
+*__pycache__*
+*.db
+.idea
+venv
+*.pdf
+*/*/simulation/simulation/
+*/*/*/simulation/simulation/
