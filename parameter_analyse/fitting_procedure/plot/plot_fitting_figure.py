@@ -321,7 +321,7 @@ def plot_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_finh
                 plt.savefig(name_fig_i)
                 plt.close('all')
 
-def print_result_zerlaut_all(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
+def plot_result_zerlaut_all(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
     """
     plot error between mean field and data for each adaptation
     :param result_n: data

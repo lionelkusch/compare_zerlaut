@@ -5,7 +5,7 @@ import numpy as np
 from .generate_data import generate_rates
 from .fitting_function_zerlaut import fitting_model_zerlaut, create_transfer_function
 from .plot.plot_result import plot_details_raw, plot_result
-from .plot.print_fitting_figure import plot_result_zerlaut
+from .plot.plot_fitting_figure import plot_result_zerlaut
 from .plot.helper_function import get_result
 
 

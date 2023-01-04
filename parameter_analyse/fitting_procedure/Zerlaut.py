@@ -270,22 +270,32 @@ class ZerlautAdaptationFirstOrder(Model):
                              0.0028472190352532454, -0.015357804594594548]),
         doc="""Polynome of inhibitory phenomenological threshold (order 9)""")
 
-    external_input_excitatory_to_excitatory = NArray(label="external input excitatory to excitatory",
-                                                     default=numpy.array([0.0]),
-                                                     domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
-                                                     doc="""external input with excitatory to excitatory""")
-    external_input_excitatory_to_inhibitory = NArray(label="external input excitatory to inhibitory",
-                                                     default=numpy.array([0.0]),
-                                                     domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
-                                                     doc="""external input with excitatory to inhibitory""")
-    external_input_inhibitory_to_excitatory = NArray(label="external input inhibitory to excitatory",
-                                                     default=numpy.array([0.0]),
-                                                     domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
-                                                     doc="""external input with inhibitory to excitatory""")
-    external_input_inhibitory_to_inhibitory = NArray(label="external input inhibitory to inhibitory",
-                                                     default=numpy.array([0.0]),
-                                                     domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
-                                                     doc="""external input with inhibitory to inhibitory""")
+    external_input_excitatory_to_excitatory = NArray(
+        label="external input excitatory to excitatory",
+        default=numpy.array([0.0]),
+        domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
+        doc="""external input with excitatory to excitatory""")
+    external_input_excitatory_to_inhibitory = NArray(
+        label="external input excitatory to inhibitory",
+        default=numpy.array([0.0]),
+        domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
+        doc="""external input with excitatory to inhibitory""")
+    external_input_inhibitory_to_excitatory = NArray(
+        label="external input inhibitory to excitatory",
+        default=numpy.array([0.0]),
+        domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
+        doc="""external input with inhibitory to excitatory""")
+    external_input_inhibitory_to_inhibitory = NArray(
+        label="external input inhibitory to inhibitory",
+        default=numpy.array([0.0]),
+        domain=Range(lo=0., hi=100.0e-3, step=0.1e-3),
+        doc="""external input with inhibitory to inhibitory""")
+    S_i = NArray(
+        label="",
+        default=numpy.array([1.]),
+        domain=Range(lo=0., hi=2., step=0.01),
+        doc="""Scaling of the remote input for the inhibitory population with
+        respect to the excitatory population.""")
 
 
     # Used for phase-plane axis ranges and to bound random initial() conditions.

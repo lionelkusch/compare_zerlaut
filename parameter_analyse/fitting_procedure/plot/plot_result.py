@@ -1,5 +1,5 @@
-from .print_fitting_figure import print_result_box_plot, print_result_std, print_result_curve_box_std, \
-    print_result_zerlaut, print_result_zerlaut_all
+from .plot_fitting_figure import plot_result_box_plot, plot_result_std, plot_result_curve_box_std, \
+    plot_result_zerlaut, plot_result_zerlaut_all
 from .helper_function import get_result_raw, get_result
 from ..fitting_function_zerlaut import fitting_model_zerlaut
 import numpy as np
@@ -25,9 +25,9 @@ def plot_details_raw(name_file, name_file_fig, MAXfout, MAXfexc, nb_value_fexc, 
     """
     result_n_brut = get_result_raw(name_file, MAXfout, MAXfexc, nb_value_fexc, nb_neurons,
                                    MINfinh, MAXfinh, nb_value_finh, MINadaptation, MAXadaptation, nb_value_adaptation)
-    print_result_box_plot(result_n_brut, name_file_fig + '_data_brute_', nb_value_finh, nb_value_fexc)
-    print_result_std(result_n_brut, name_file_fig + '_data_brute_')
-    print_result_curve_box_std(result_n_brut, name_file_fig + '_data_brute_', nb_value_finh, nb_value_fexc)
+    plot_result_box_plot(result_n_brut, name_file_fig + '_data_brute_', nb_value_finh, nb_value_fexc)
+    plot_result_std(result_n_brut, name_file_fig + '_data_brute_')
+    plot_result_curve_box_std(result_n_brut, name_file_fig + '_data_brute_', nb_value_finh, nb_value_fexc)
 
 
 def plot_result(name_file, name_file_fig, MAXfout, MAXfexc, nb_value_fexc, nb_neurons,
@@ -50,9 +50,9 @@ def plot_result(name_file, name_file_fig, MAXfout, MAXfexc, nb_value_fexc, nb_ne
     """
     result_n, data = get_result(name_file, MAXfout, MAXfexc, nb_value_fexc, nb_neurons,
                                 MINfinh, MAXfinh, nb_value_finh, MINadaptation, MAXadaptation, nb_value_adaptation)
-    print_result_box_plot(result_n, name_file_fig, nb_value_finh, nb_value_fexc)
-    print_result_std(result_n, name_file_fig)
-    print_result_curve_box_std(result_n, name_file_fig, nb_value_finh, nb_value_fexc)
+    plot_result_box_plot(result_n, name_file_fig, nb_value_finh, nb_value_fexc)
+    plot_result_std(result_n, name_file_fig)
+    plot_result_curve_box_std(result_n, name_file_fig, nb_value_finh, nb_value_fexc)
 
 
 def plot_error(parameters, parameters_all, excitatory, name_file_fig='./',
@@ -87,6 +87,6 @@ def plot_error(parameters, parameters_all, excitatory, name_file_fig='./',
     p_with, p_without, TF = fitting_model_zerlaut(data[:, 0], data[:, 1], data[:, 2], data[:, 3], parameters_all,
                                                   excitatory, print_result=False, save_result=name_file,
                                                   fitting=False)
-    print_result_zerlaut(result_n_brut, TF, p_with, p_without, name_file_fig + 'zerlaut_', nb_value_finh, nb_value_fexc)
-    print_result_zerlaut_all(result_n_brut, TF, p_with, p_without, name_file_fig + 'zerlaut_',
+    plot_result_zerlaut(result_n_brut, TF, p_with, p_without, name_file_fig + 'zerlaut_', nb_value_finh, nb_value_fexc)
+    plot_result_zerlaut_all(result_n_brut, TF, p_with, p_without, name_file_fig + 'zerlaut_',
                              nb_value_finh, nb_value_fexc)
