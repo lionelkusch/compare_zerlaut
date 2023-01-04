@@ -2,17 +2,7 @@
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import os
-
-def remove_outlier(datas, p=3):
-    Q1, Q3 = np.quantile(datas, q=[0.25, 0.75], axis=1)
-    IQR = Q3 - Q1
-    min_data, max_data = Q1 - p * IQR, Q3 + p * IQR
-    result = np.empty(datas.shape)
-    result[:] = np.NAN
-    for i, data in enumerate(datas):
-        data_pre = data[np.logical_and(min_data[i] <= data, data <= max_data[i])]
-        result[i, :data_pre.shape[0]] = data_pre
-    return result
+from .plot.helper_function import remove_outlier
 
 
 def compute_rate(data, begin, end, nb):
@@ -31,8 +21,7 @@ def compute_rate(data, begin, end, nb):
     # compute the rate
     rate_each_n_incomplet = count_of_n / (end - begin)
     # fill the table with the neurons which are not firing
-    rate_each_n = np.concatenate(
-        (rate_each_n_incomplet, np.zeros(-np.shape(rate_each_n_incomplet)[0] + nb + 1)))
+    rate_each_n = np.concatenate((rate_each_n_incomplet, np.zeros(-np.shape(rate_each_n_incomplet)[0] + nb + 1)))
     return rate_each_n[1:]
 
 
@@ -42,11 +31,33 @@ def generate_rates(parameters,
                    MAXadaptation, MINadaptation, nb_value_adaptation,
                    MAXJump, MINJump,
                    nb_neurons, name_file, dt, tstop):
+    """
+    generate rate output firing rate of the neurons dependant of excitatory and inhibitory input firing rate
+    :param parameters: parameters of neurons
+    :param MAXfexc: maximum excitatory input firing rate
+    :param MINfexc: minimum firing rate
+    :param nb_value_fexc: number of different value of excitatory input firing rate
+    :param MAXfinh: maximum inhibitory input firing rate
+    :param MINfinh: minimum inhibitory input firing rate
+    :param nb_value_finh: number of different value of inhibitory input firing rate
+    :param MAXadaptation: maximum of adaptation
+    :param MINadaptation: minimum of adaptation
+    :param nb_value_adaptation: number of different value of adaptation
+    :param MAXJump: maximum jump of output firing rate
+    :param MINJump: minimum jump of output firing rate
+    :param nb_neurons: number of trial ofr each condition
+    :param name_file: name of file of saving
+    :param dt: step of integration
+    :param tstop: time of simulation
+    :return:
+    """
     import nest
     nest.set_verbosity(100)
+
+    # create folder
     if not os.path.exists(name_file):
         os.makedirs(name_file)
-        # initialisation of the parameter
+    # initialisation of the parameter
     params = {'g_L': parameters['g_L'],
               'E_L': parameters['E_L'],
               'V_reset': parameters['V_reset'],
@@ -72,7 +83,7 @@ def generate_rates(parameters,
     master_seed = 0
     local_num_threads = 8
 
-    # intialisation of variable
+    # initialisation of variable
     fiSim = np.repeat(np.linspace(MINfinh, MAXfinh, nb_value_finh), nb_value_adaptation).reshape(
         nb_value_finh * nb_value_adaptation) * Number_connexion_in
     adaptation = np.repeat([np.linspace(MINadaptation, MAXadaptation, nb_value_adaptation)], nb_value_finh,
@@ -175,5 +186,5 @@ def generate_rates(parameters,
         dFex[update][np.where(dFex[update] < MAXdfex)] += dFex[update] * 0.1
         index = np.where(index_end >= 0)
 
-    np.save(name_file + '/fout.npy', feOut)
-    np.save(name_file + '/fin.npy', feSim)
+    np.save(name_file + '/fout.npy', feOut)  # save output firing rate
+    np.save(name_file + '/fin.npy', feSim)   # save input excitatory firing rate

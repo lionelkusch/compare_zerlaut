@@ -35,10 +35,10 @@ def create_transfer_function(parameter, excitatory):
     model_test.p_connect_i = np.array(parameter['p_connect_in'])
     model_test.g = np.array(parameter['g'])
     model_test.T = np.array(parameter['t_ref'])
-    model_test.external_input_in_in = np.array(0.0)
-    model_test.external_input_in_ex = np.array(0.0)
-    model_test.external_input_ex_in = np.array(0.0)
-    model_test.external_input_ex_ex = np.array(0.0)
+    model_test.external_input_excitatory_to_excitatory = np.array(0.0)
+    model_test.external_input_excitatory_to_inhibitory = np.array(0.0)
+    model_test.external_input_inhibitory_to_excitatory = np.array(0.0)
+    model_test.external_input_inhibitory_to_inhibitory = np.array(0.0)
     model_test.K_ext_e = np.array(0)
     model_test.K_ext_i = np.array(0)
     if excitatory:
@@ -65,12 +65,21 @@ def effective_Vthre(rate, muV, sV, Tv):
     return Vthre_eff
 
 
-def fitting_model_zerlaut(feOut, feSim, fiSim, adaptation, parameters, nb_value_fexc, nb_value_finh,
-                          nb_value_adaptation,
-                          MINadaptation, MAXadaptation, MINfinh, MAXfinh, MAXfexc, excitatory):
+def fit_data(feOut, feSim, fiSim, adaptation, TF, parameters, excitatory):
+    """
+    fit result for finding the polynomial
+    :param feOut: firing output result
+    :param feSim: input excitatory firing rate
+    :param fiSim: output inhibitory firing rate
+    :param adaptation: adaptation value
+    :param TF: transfer function
+    :param parameters: parameters of the models
+    :param excitatory: excitatory or inhibitory neurons
+    :return:
+    """
     # Compute mean of value for the model
-    E_L = parameters['E_L_e'] if excitatory else  parameters['E_L_e']
-    muV, sV, Tv = model.get_fluct_regime_vars(feSim, fiSim, 0.00, 0.0, adaptation, parameters['Q_e'],
+    E_L = parameters['E_L_e'] if excitatory else parameters['E_L_i']
+    muV, sV, Tv = model.get_fluct_regime_vars(feSim, fiSim, 0.0, 0.0, adaptation, parameters['Q_e'],
                                               parameters['tau_syn_ex'], parameters['E_ex'], parameters['Q_i'],
                                               parameters['tau_syn_in'], parameters['E_in'],
                                               parameters['g_L'], parameters['C_m'], E_L,
@@ -82,179 +91,119 @@ def fitting_model_zerlaut(feOut, feSim, fiSim, adaptation, parameters, nb_value_
     TvN = Tv[i_non_zeros] * parameters['g_L'] / parameters['C_m']
 
     # initialisation of the fitting
-    TF = create_transfer_function(parameters, excitatory=excitatory)
     P = np.zeros(10)
     P[:5] = Vthre_eff.mean(), 1e-3, 1e-3, 1e-3, 1e-3
 
     # fitting the voltage threshold
     def Res(p):
+        """
+        absolute error
+        :param p: polynomial
+        :return:
+        """
         pp = p
         vthre = model.threshold_func(muV[i_non_zeros], sV[i_non_zeros], TvN, *pp)
         return np.mean((Vthre_eff - vthre) ** 2)
-    plsq = minimize(Res, P, method='SLSQP', options={
-        'ftol': 1e-15,
-        'disp': True,
-        'maxiter': 50000})
+    plsq = minimize(Res, P, method='SLSQP', options={'ftol': 1e-15, 'disp': True, 'maxiter': 50000})
     P = plsq.x
     print("error ", np.mean(((feOut - TF(feSim, fiSim, P, w=adaptation)) ** 2) * 1e3))
 
     # fitting the mean firing rate
-    print("with adaptation absolute error")
     def Res_2(p):
-        '''
+        """
         absolute error
-        :param p: polynome
+        :param p: polynomial
         :return:
-        '''
+        """
         return np.mean(((feOut - TF(feSim, fiSim, p, w=adaptation)) * 1e3) ** 2)
-    plsq = minimize(Res_2, P, method='nelder-mead',
-                    tol=1e-11,
-                    # tol=1e-7,
-                    options={
-                        'xatol': 1e-15,
-                        'disp': True,
-                        'maxiter': 50000})
-    P = plsq.x
-    p_with = P
-    # print("with adaptation relative error")
-    # def Res_2_bis(p):
-    #     """
-    #     relative error
-    #     :param p: polynomial
-    #     :return:
-    #     """
-    #     return np.mean(((feOut - TF(feSim, fiSim, p, w=adaptation)) /feOut) ** 2)
-    # plsq_2 = minimize(Res_2_bis, P, method='nelder-mead',
-    #                   tol=1e-11,
-    #                   # tol=1e-7,
-    #                   options={
-    #                       'xatol': 1e-15,
-    #                       'disp': True,
-    #                       'maxiter': 50000})
-    # P_2 = plsq_2.x
+    plsq = minimize(Res_2, P, method='nelder-mead', tol=1e-11, options={'xatol': 1e-15, 'disp': True, 'maxiter': 50000})
+    return plsq.x
 
-    # without adaptation
+
+def fitting_model_zerlaut(feOut, feSim, fiSim, adaptation, parameters, excitatory, print_result, save_result=None,
+                          fitting=True):
+    """
+    fit the model with our without adaptation
+    :param feOut: firing output result
+    :param feSim: input excitatory firing rate
+    :param fiSim: output inhibitory firing rate
+    :param adaptation: adaptation value
+    :param parameters: parameters of the models
+    :param excitatory: excitatory or inhibitory neurons
+    :param print_result: print result of the fitting
+    :param save_result: save result
+    :return:
+    """
     mask = np.where(adaptation == 0.0)
     feOut_1 = feOut[mask]
     feSim_1 = feSim[mask]
     fiSim_1 = fiSim[mask]
     adaptation_1 = adaptation[mask]
-    # Compute mean of value for the model
-    muV, sV, Tv = model.get_fluct_regime_vars(feSim_1, fiSim_1, 0.00, 0.0, adaptation_1, parameters['Q_e'],
-                                              parameters['tau_syn_ex'], parameters['E_ex'], parameters['Q_i'],
-                                              parameters['tau_syn_in'], parameters['E_in'],
-                                              parameters['g_L'], parameters['C_m'], E_L,
-                                              parameters['N_tot'], parameters['p_connect_ex'],
-                                              parameters['p_connect_in'], parameters['g'], 0.0, 0.0)
-    Tv += parameters['g_L'] / parameters['C_m']
-    i_non_zeros = np.where(feOut_1 * Tv < 1.0)
-    Vthre_eff = effective_Vthre(feOut_1[i_non_zeros], muV[i_non_zeros], sV[i_non_zeros], Tv[i_non_zeros]) * 1e-3
-    TvN = Tv[i_non_zeros] * parameters['g_L'] / parameters['C_m']
 
-    # initialisation of the fitting
     TF = create_transfer_function(parameters, excitatory=excitatory)
-    P = np.zeros(10)
-    P[:5] = Vthre_eff.mean(), 1e-3, 1e-3, 1e-3, 1e-3
+    if fitting:
+        p_with = fit_data(feOut, feSim, fiSim, adaptation, TF, parameters, excitatory)
+        p_without = fit_data(feOut_1, feSim_1, fiSim_1, adaptation_1, TF, parameters, excitatory)
+    else:
+        p_with = np.load(save_result + '/P.npy')
+        p_without = np.load(save_result + '/P_no_adpt.npy')
 
-    # fitting the voltage threshold
-    def Res(p):
-        pp = p
-        vthre = model.threshold_func(muV[i_non_zeros], sV[i_non_zeros], TvN, *pp)
-        return np.mean((Vthre_eff - vthre) ** 2)
-    plsq = minimize(Res, P, method='SLSQP', options={
-        'ftol': 1e-15,
-        'disp': True,
-        'maxiter': 40000})
-    P = plsq.x
-    print("error ", np.mean(((feOut - TF(feSim, fiSim, P, w=adaptation)) * 1e3) ** 2))
-    # fitting function
-    print("no adaptation absolute error")
-    def Res_2(p):
-        """
-        absolute error
-        :param p: polynomial
-        :param p:
-        :return:
-        """
-        return np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p, w=adaptation_1)) * 1e3) ** 2)
-    plsq = minimize(Res_2, P, method='nelder-mead',
-                    tol=1e-11,
-                    # tol=1e-7,
-                    options={
-                        'xtol': 1e-15,
-                        'disp': True,
-                        'maxiter': 50000})
-    P = plsq.x
-    p_without = P
-    # print("no adaptation relative error")
-    # def Res_2_bis(p):
-    #     """
-    #     relative error
-    #     :param p: polynomial
-    #     :return:
-    #     """
-    #     return np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p, w=adaptation_1)) / feOut_1) ** 2)
-    # plsq_2 = minimize(Res_2_bis, P, method='nelder-mead',
-    #                   tol=1e-11,
-    #                   # tol=1e-7,
-    #                   options={
-    #                       'xtol': 1e-15,
-    #                       'disp': True,
-    #                       'maxiter': 50000})
-    # P_2 = plsq_2.x
+    if print_result:
+        np.set_printoptions(edgeitems=3, infstr='inf', linewidth=75, nanstr='nan', precision=8, suppress=False,
+                            threshold=1000, formatter=None)
 
-    np.set_printoptions(edgeitems=3, infstr='inf', linewidth=75, nanstr='nan', precision=8, suppress=False,
-                        threshold=1000, formatter=None)
-
-    print("######################## fitting without adaptation ######################")
-    print("                    #### data without adaptation    #####                 ")
-    index = np.argsort(np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3)))[-5:]
-    print("frequency ex", feSim_1[index] * 1e3)
-    print("frequency in", fiSim_1[index] * 1e3)
-    print("adaptation", adaptation_1[index])
-    print("expected : ", feOut_1[index] * 1e3)
-    print("got : ", TF(feSim_1, fiSim_1, p_without, w=adaptation_1)[index] * 1e3)
-    print("error : ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3))[index])
-    print("max error ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3))[index[-1]])
-    print("error ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3) ** 2))
-    print("error relative ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) / feOut_1) ** 2))
-    print("                    #### all data                   ####                  ")
-    index = np.argsort(np.abs(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3)))[-5:]
-    print("frequency ex", feSim[index] * 1e3)
-    print("frequency in", fiSim[index] * 1e3)
-    print("adaptation", adaptation[index])
-    print("expected : ", feOut[index] * 1e3)
-    print("got : ", TF(feSim, fiSim, p_without, w=adaptation)[index] * 1e3)
-    print("error : ", np.abs(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3))[index])
-    print("max error ", np.abs(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3))[index[-1]])
-    print("error ", np.mean(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3) ** 2))
-    print("error relative ", np.mean(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) / feOut) ** 2))
-    print("##########################################################################")
-    print(p_without)
-    print("######################## fitting with adaptation    ######################")
-    print("                    #### data without adaptation    #####                 ")
-    index = np.argsort(np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3)))[-5:]
-    print("frequency ex", feSim_1[index] * 1e3)
-    print("frequency in", fiSim_1[index] * 1e3)
-    print("adaptation", adaptation_1[index])
-    print("expected : ", feOut_1[index] * 1e3)
-    print("got : ", TF(feSim_1, fiSim_1, p_with, w=adaptation_1)[index] * 1e3)
-    print("error : ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3))[index])
-    print("max error ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3))[index[-1]])
-    print("error ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3) ** 2))
-    print("error relative ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) / feOut_1) ** 2))
-    print("                    #### all data                   ####                  ")
-    index = np.argsort(np.abs(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3)))[-5:]
-    print("frequency ex", feSim[index] * 1e3)
-    print("frequency in", fiSim[index] * 1e3)
-    print("adaptation", adaptation[index])
-    print("expected : ", feOut[index] * 1e3)
-    print("got : ", TF(feSim, fiSim, p_with, w=adaptation)[index] * 1e3)
-    print("error : ", np.abs(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3))[index])
-    print("max error ", np.abs(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3))[index[-1]])
-    print("error ", np.mean(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3) ** 2))
-    print("error relative ", np.mean(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) / feOut) ** 2))
-    print("##########################################################################")
-    print(p_with)
+        print("######################## fitting without adaptation ######################")
+        print("                    #### data without adaptation    #####                 ")
+        index = np.argsort(np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3)))[-5:]
+        print("frequency ex", feSim_1[index] * 1e3)
+        print("frequency in", fiSim_1[index] * 1e3)
+        print("adaptation", adaptation_1[index])
+        print("expected : ", feOut_1[index] * 1e3)
+        print("got : ", TF(feSim_1, fiSim_1, p_without, w=adaptation_1)[index] * 1e3)
+        print("error : ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3))[index])
+        print("max error ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3))[index[-1]])
+        print("error ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) * 1e3) ** 2))
+        print("error relative ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_without, w=adaptation_1)) / feOut_1) ** 2))
+        print("                    #### all data                   ####                  ")
+        index = np.argsort(np.abs(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3)))[-5:]
+        print("frequency ex", feSim[index] * 1e3)
+        print("frequency in", fiSim[index] * 1e3)
+        print("adaptation", adaptation[index])
+        print("expected : ", feOut[index] * 1e3)
+        print("got : ", TF(feSim, fiSim, p_without, w=adaptation)[index] * 1e3)
+        print("error : ", np.abs(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3))[index])
+        print("max error ", np.abs(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3))[index[-1]])
+        print("error ", np.mean(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) * 1e3) ** 2))
+        print("error relative ", np.mean(((feOut - TF(feSim, fiSim, p_without, w=adaptation)) / feOut) ** 2))
+        print("##########################################################################")
+        print(p_without)
+        print("######################## fitting with adaptation    ######################")
+        print("                    #### data without adaptation    #####                 ")
+        index = np.argsort(np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3)))[-5:]
+        print("frequency ex", feSim_1[index] * 1e3)
+        print("frequency in", fiSim_1[index] * 1e3)
+        print("adaptation", adaptation_1[index])
+        print("expected : ", feOut_1[index] * 1e3)
+        print("got : ", TF(feSim_1, fiSim_1, p_with, w=adaptation_1)[index] * 1e3)
+        print("error : ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3))[index])
+        print("max error ", np.abs(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3))[index[-1]])
+        print("error ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) * 1e3) ** 2))
+        print("error relative ", np.mean(((feOut_1 - TF(feSim_1, fiSim_1, p_with, w=adaptation_1)) / feOut_1) ** 2))
+        print("                    #### all data                   ####                  ")
+        index = np.argsort(np.abs(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3)))[-5:]
+        print("frequency ex", feSim[index] * 1e3)
+        print("frequency in", fiSim[index] * 1e3)
+        print("adaptation", adaptation[index])
+        print("expected : ", feOut[index] * 1e3)
+        print("got : ", TF(feSim, fiSim, p_with, w=adaptation)[index] * 1e3)
+        print("error : ", np.abs(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3))[index])
+        print("max error ", np.abs(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3))[index[-1]])
+        print("error ", np.mean(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) * 1e3) ** 2))
+        print("error relative ", np.mean(((feOut - TF(feSim, fiSim, p_with, w=adaptation)) / feOut) ** 2))
+        print("##########################################################################")
+        print(p_with)
+    if save_result is not None and fitting:
+        np.save(save_result + '/P.npy', p_with)
+        np.save(save_result + '/P_no_adpt.npy', p_without)
 
     return p_with, p_without, TF

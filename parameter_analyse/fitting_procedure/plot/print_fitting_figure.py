@@ -2,13 +2,17 @@
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import matplotlib.pyplot as plt
 from matplotlib.text import Text
-import matplotlib.lines as lines
 import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
 
 
-def print_matrix(result_n):
+def plot_matrix(result_n):
+    """
+    plot result in form of matrix
+    :param result_n: result of the fitting
+    :return:
+    """
     # plot degree  of firing rate ( not very interesting )
     for i in range(result_n.shape[2]):
         fig, axs = plt.subplots(2, 2, figsize=(20, 20))
@@ -31,7 +35,13 @@ def print_matrix(result_n):
         fig.suptitle('adaptation = ' + str(result_n[:, :, i, 3][0][0]), fontsize=16)
 
 
-def print_result_std(result_n, name_fig):
+def plot_result_std(result_n, name_fig):
+    """
+    plot data with standard deviation of the result
+    :param result_n: data
+    :param name_fig: name of figure for saving
+    :return:
+    """
     for i in range(result_n.shape[2]):
         fig = plt.figure(figsize=(20, 20))
         # print mean
@@ -59,7 +69,15 @@ def print_result_std(result_n, name_fig):
         plt.close('all')
 
 
-def print_result_box_plot(result_n, name_fig, nb_value_finh, nb_value_fexc):
+def plot_result_box_plot(result_n, name_fig, nb_value_finh, nb_value_fexc):
+    """
+    plot the result in format of box plot of the data
+    :param result_n: data
+    :param name_fig: name of the figure
+    :param nb_value_finh: number of inhibitory input frequency
+    :param nb_value_fexc: number of inhibitory input frequency
+    :return:
+    """
     norm = mpl.colors.Normalize(vmin=0, vmax=nb_value_fexc * nb_value_finh)
     cmap = cm.prism
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
@@ -93,7 +111,15 @@ def print_result_box_plot(result_n, name_fig, nb_value_finh, nb_value_fexc):
         plt.close('all')
 
 
-def print_result_curve_box_std(result_n, name_fig, nb_value_finh, nb_value_fexc):
+def plot_result_curve_box_std(result_n, name_fig, nb_value_finh, nb_value_fexc):
+    """
+    plot result with curve, box plot and standard deviation
+    :param result_n: data
+    :param name_fig: name of the figure
+    :param nb_value_finh: number of inhibitory input frequency
+    :param nb_value_fexc: number of excitatory input frequency
+    :return:
+    """
     norm = mpl.colors.Normalize(vmin=0, vmax=nb_value_fexc)
     cmap = cm.prism
     m = cm.ScalarMappable(norm=norm, cmap=cmap)
@@ -136,7 +162,18 @@ def print_result_curve_box_std(result_n, name_fig, nb_value_finh, nb_value_fexc)
             plt.close('all')
 
 
-def print_result(result_n, function_fit, P_relatif, P_absolute, name_fig, nb_value_finh, nb_value_fexc):
+def plot_result(result_n, function_fit, P_relatif, P_absolute, name_fig, nb_value_finh, nb_value_fexc):
+    """
+    plot result and compare with mean field
+    :param result_n: data
+    :param function_fit: fitting function
+    :param P_relatif: polynomial of first fitting
+    :param P_absolute: polynomial of second fitting
+    :param name_fig: name of figure
+    :param nb_value_finh: number of inhibitory input frequency
+    :param nb_value_fexc: number of excitatory input frequency
+    :return:
+    """
     for i in range(result_n.shape[2]):
         fig = plt.figure(figsize=(20, 20))
         # # real data
@@ -176,6 +213,16 @@ def print_result(result_n, function_fit, P_relatif, P_absolute, name_fig, nb_val
 
 
 def print_result_1(result_n, function_fit, P, name_fig, nb_value_finh, nb_value_fexc):
+    """
+    plot result and compare with mean field
+    :param result_n: data
+    :param function_fit: fitting function
+    :param P: polynomial
+    :param name_fig: name of figure
+    :param nb_value_finh: number of inhibitory input frequency
+    :param nb_value_fexc: number of excitatory input frequency
+    :return:
+    """
     for i in range(result_n.shape[2]):
         fig = plt.figure(figsize=(20, 20))
         # # real data
@@ -204,7 +251,18 @@ def print_result_1(result_n, function_fit, P, name_fig, nb_value_finh, nb_value_
         plt.close('all')
 
 
-def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
+def plot_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
+    """
+    plot error between mean field and data for each inhibitory input and adaptation
+    :param result_n: data
+    :param TF: transfer function
+    :param p_with: polynomial fitting with adaptation
+    :param p_without: polynomial fitting without adaptation
+    :param name_fig: name of figure for saving
+    :param nb_value_finh: number of inhibitory input frequency
+    :param nb_value_fexc: number of excitatory input frequency
+    :return:
+    """
     for curve, adaptation, real_data in [
         (False, False, False), (True, False, False), (False, False, True),(True, False, True),
         (False, True, False), (True, True, False), (False, True, True), (True, True, True)]:
@@ -242,7 +300,7 @@ def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_fin
                             plt.plot([result_n[k, j, i, 1] * 1e3, result_n[k, j, i, 1] * 1e3],
                                      [result_n[k, j, i, 0] * 1e3, TF(result_n[k, j, i, 1], result_n[k, j, i, 2],
                                                                      p_with, w=result_n[k, j, i, 3]) * 1e3],
-                                     color='r', alpha=0.5)
+                                     color='r', alpha=0.5, linewidth=0.5)
                         else:
                             # print error with adaptation
                             plt.plot([result_n[k, j, i, 1] * 1e3, result_n[k, j, i, 1] * 1e3],
@@ -264,6 +322,17 @@ def print_result_zerlaut(result_n, TF, p_with, p_without, name_fig, nb_value_fin
                 plt.close('all')
 
 def print_result_zerlaut_all(result_n, TF, p_with, p_without, name_fig, nb_value_finh, nb_value_fexc):
+    """
+    plot error between mean field and data for each adaptation
+    :param result_n: data
+    :param TF: transfer function
+    :param p_with: polynomial fitting with adaptation
+    :param p_without: polynomial fitting without adaptation
+    :param name_fig: name of figure for saving
+    :param nb_value_finh: number of inhibitory input frequency
+    :param nb_value_fexc: number of excitatory input frequency
+    :return:
+    """
     for curve, adaptation, real_data in [
         (False, False, False), (True, False, False), (False, False, True),(True, False, True),
         (False, True, False), (True, True, False), (False, True, True), (True, True, True)]:
