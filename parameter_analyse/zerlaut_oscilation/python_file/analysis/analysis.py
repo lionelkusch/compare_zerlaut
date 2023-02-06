@@ -62,7 +62,7 @@ def analysis(path_simulation, begin=0.0, end=20000.0, fs=1e4, sampling_ms=0.1,
     results = []
     for index, amplitude in enumerate(parameters['parameter_stimulation']["amp"]):
         # Input signal
-        I_signal = np.sin(2 * np.pi * frequency * 1e3 * np.arange(begin, end, sampling_ms) * 1e-3)
+        I_signal = np.sin(2 * np.pi * frequency * 1e3 * np.arange(begin, end+sampling_ms, sampling_ms) * 1e-3)
 
         ex_frequency_dominant = frequency_analysis(rateE[:, index] * 1e3, fs=fs)
         in_frequency_dominant = frequency_analysis(rateI[:, index] * 1e3, fs=fs)
