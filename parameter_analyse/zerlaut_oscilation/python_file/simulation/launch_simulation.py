@@ -37,8 +37,6 @@ def run_rate_deterministe(rate_frequency):
                                                             )) * 1e-3).tolist()
     parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
     parameters.parameter_monitor['Raw'] = True
-    # parameters.parameter_monitor['TemporalAverage'] = True
-    # parameters.parameter_monitor['parameter_TemporalAverage']['period'] = 0.1
     parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
                                                      + "/frequency_" + str(frequency) + "/"
     print(parameters.parameter_simulation['path_result'])
@@ -56,7 +54,7 @@ def run_rate_deterministe(rate_frequency):
                              parameters.parameter_monitor)
     if not check_already_analyse_database(database, table_name,
                                           parameters.parameter_simulation['path_result'], 'excitatory'):
-        results = analysis(parameters.parameter_simulation['path_result'], end=duration)
+        results = analysis(parameters.parameter_simulation['path_result'], begin=2500.0, end=duration, init_remove=0)
         insert_database(database, table_name, results)
 
 
@@ -97,8 +95,6 @@ def run_rate_stochastic(rate_frequency):
                                                             )) * 1e-3).tolist()
     parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
     parameters.parameter_monitor['Raw'] = True
-    # parameters.parameter_monitor['TemporalAverage'] = True
-    # parameters.parameter_monitor['parameter_TemporalAverage']['period'] = 0.1
     parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
                                                      + "/frequency_" + str(frequency) + "/"
     print(parameters.parameter_simulation['path_result'])
@@ -116,20 +112,22 @@ def run_rate_stochastic(rate_frequency):
                              parameters.parameter_monitor)
     if not check_already_analyse_database(database, table_name,
                                           parameters.parameter_simulation['path_result'], 'excitatory'):
-        results = analysis(parameters.parameter_simulation['path_result'], end=duration)
+        results = analysis(parameters.parameter_simulation['path_result'], begin=2500.0, end=duration, init_remove=0)
         insert_database(database, table_name, results)
 
 
 if __name__ == "__main__":
     # # test 1
-    # run_rate_deterministe({'rate': 7.0, 'frequency': 30.0, 'path':'/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/' ,
-    #                        'duration': 2001.0, 'database': '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/database.db',
-    #                        'table_name': "exploration"
-    #                                 })
+    # run_rate_deterministe({
+    #     'rate': 7.0, 'frequency': 30.0, 'duration': 20001.0,
+    #     'path': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/',
+    #     'database': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/database.db',
+    #     'table_name': "exploration"
+    #     })
 
 
     p = mp.ProcessingPool(ncpus=8)
-    path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/'
+    path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/'
     database = path_simulation + "/database.db"
     table_name = "exploration"
     duration = 20001.0
@@ -140,14 +138,14 @@ if __name__ == "__main__":
             os.mkdir(path_simulation + "/rate_" + str(rate))
         for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
             list_parameters.append({'rate': rate, 'frequency': frequency, 'path': path_simulation,
-                                     'duration': duration, 'database': database, 'table_name': table_name
-                                    })
+                                     'duration': duration, 'database': database, 'table_name': table_name })
         p.map(dill.copy(run_rate_deterministe), list_parameters)
 
+    for rate in [7.0, 0.0, 2.5]:
         list_parameters = []
         for noise in [1e-9, 1e-8]:
-            path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/stochastic_' + str(
-                noise) + '/'
+            path_simulation = os.path.dirname(os.path.realpath(__file__)) +\
+                              '/../../simulation/stochastic_' + str(noise) + '/'
             database = path_simulation + "/database.db"
             if not os.path.exists(path_simulation + "/rate_" + str(rate)):
                 os.mkdir(path_simulation + "/rate_" + str(rate))
@@ -155,6 +153,6 @@ if __name__ == "__main__":
             for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
                 list_parameters.append(
                     {'noise': noise, 'rate': rate, 'frequency': frequency, 'path': path_simulation,
-                     'duration': duration, 'database': database, 'table_name': table_name
-                     })
+                     'duration': duration, 'database': database, 'table_name': table_name})
         p.map(dill.copy(run_rate_stochastic), list_parameters)
+

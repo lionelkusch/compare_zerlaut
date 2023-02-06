@@ -20,19 +20,23 @@ def run_rate_deterministe(rate_frequency, end=200.0):
     parameters = Parameter()
     parameters.parameter_simulation['path_result'] = path_simulation
     parameters.parameter_integrator['stochastic'] = False
-    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate* 1e-3,
+    parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
     parameters.parameter_model['initial_condition']["external_input_excitatory_to_inhibitory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
+    parameters.parameter_model['initial_condition']["W_e"] = [0.0, 0.0]
     parameters.parameter_stimulus['frequency'] = frequency * 1e-3
-    parameters.parameter_stimulus['amp'] = (np.arange(0.0, rate+0.1, 0.1) * 1e-6).tolist()
+    # parameters.parameter_stimulus['amp'] = (np.arange(0.0, rate+0.1, 0.1) * 1e-3).tolist()
+    # parameters.parameter_stimulus['amp'] = (np.arange(0.0, 5.0, 0.1) * 1e-3).tolist()
+    parameters.parameter_stimulus['amp'] = [0.0]
     parameters.parameter_connection_between_region['number_of_regions'] = len(parameters.parameter_stimulus['amp'])
     parameters.parameter_simulation['path_result'] = path_simulation + "/rate_" + str(rate) \
                                                      + "/frequency_" + str(frequency)
     counter = 0
     while os.path.exists(parameters.parameter_simulation['path_result']):
         counter += 1
-        parameters.parameter_simulation['path_result'] = path_simulation + '_' + str(counter)
+        parameters.parameter_simulation['path_result'] = "/rate_" + str(rate) \
+                                                         + "/frequency_" + str(frequency) + '_' + str(counter)
     parameters.parameter_simulation['path_result'] += '/'
     print(parameters.parameter_simulation['path_result'])
     simulator = tools.init(parameters.parameter_simulation,
@@ -52,12 +56,20 @@ def run_rate_deterministe(rate_frequency, end=200.0):
 if __name__ == "__main__":
     from parameter_analyse.zerlaut_oscilation.python_file.print.print_one import print_result
 
-    path_simulation = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/test/'
+    path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/instability/'
     list_parameters = []
-    end = 5001.0
-    for rate in [7.0]:
+    end = 2001.0
+    range_rate = [0.0, 0.2, 0.3, 0.4, 0.6, 1.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0]
+    range_frequency = [0.0]
+    for rate in range_rate:
         if not os.path.exists(path_simulation + "/rate_" + str(rate)):
             os.mkdir(path_simulation + "/rate_" + str(rate))
-        for frequency in [1]:
-            parameters = run_rate_deterministe({'rate': rate, 'frequency': frequency, 'path': path_simulation}, end=end)
-            print_result(parameters.parameter_simulation['path_result'], begin=0.0, end=end)
+        for frequency in range_frequency:
+            if not os.path.exists(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency)):
+                parameters = run_rate_deterministe({'rate': rate, 'frequency': frequency, 'path': path_simulation},
+                                                   end=end)
+
+    for rate in range_rate:
+        for frequency in range_frequency:
+            print(rate, frequency)
+            print_result(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency), begin=0.0, end=end)
