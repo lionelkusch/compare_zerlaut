@@ -1006,24 +1006,27 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
 
 
 if __name__ == "__main__":
+    import os
     # folder = 'simulation_3'
     # folder = 'simulation_rate_2.5'
     # folder = 'simulation_rate_7.0'
-    folder = 'simulation_rate_amplitude'
+    folder = 'simulation_rate_7.0_b_60'
+    # folder = 'simulation_3_b_60'
+    # folder = 'simulation_rate_amplitude'
+    # folder = 'simulation_rate_amplitude_b_60'
     for name_population in ['excitatory', 'inhibitory']:
         print_exploration_analysis_pdf(
-            '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/figure/figure_test_' + str(
-                name_population) + '.pdf',
-            '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/amplitude_frequency.db',
+            os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/'+folder+'/figure/figure_test_' + str(name_population) + '_zoom_.pdf',
+            os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/'+folder+'/amplitude_frequency.db',
             'first_exploration',
             [
-                {'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 500000.0},
+                {'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 5000000.0},
                 {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
             ], population=name_population)
         # print_exploration_analysis_pdf(
-        #     '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/figure/figure_test_2' + str(
+        #     os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/'+folder+'/figure/figure_test_2' + str(
         #         name_population) + '.pdf',
-        #     '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder+'/amplitude_frequency.db',
+        #     os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/'+folder+'/amplitude_frequency.db',
         #     'first_exploration',
         #     [
         #         {'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 1.5},
