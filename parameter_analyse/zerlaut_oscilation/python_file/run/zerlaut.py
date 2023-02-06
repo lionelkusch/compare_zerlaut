@@ -1,33 +1,8 @@
-# -*- coding: utf-8 -*-
-#
-#
-# TheVirtualBrain-Scientific Package. This package holds all simulators, and
-# analysers necessary to run brain-simulations. You can use it stand alone or
-# in conjunction with TheVirtualBrain-Framework Package. See content of the
-# documentation-folder for more details. See also http://www.thevirtualbrain.org
-#
-# (c) 2012-2022, Baycrest Centre for Geriatric Care ("Baycrest") and others
-#
-# This program is free software: you can redistribute it and/or modify it under the
-# terms of the GNU General Public License as published by the Free Software Foundation,
-# either version 3 of the License, or (at your option) any later version.
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-# You should have received a copy of the GNU General Public License along with this
-# program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#
-#   CITATION:
-# When using The Virtual Brain for scientific publications, please cite it as follows:
-#
-#   Paula Sanz Leon, Stuart A. Knock, M. Marmaduke Woodman, Lia Domide,
-#   Jochen Mersmann, Anthony R. McIntosh, Viktor Jirsa (2013)
-#       The Virtual Brain: a simulator of primate brain network dynamics.
-#   Frontiers in Neuroinformatics (7:10. doi: 10.3389/fninf.2013.00010)
+#  Copyright 2021 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 
 """
-Mean field model based on Master equation about adaptative exponential leacky integrate and fire neurons population
+Mean field model based on Master equation about adaptive exponential leaky integrate and fire neurons population
 """
 
 import numpy
@@ -319,9 +294,9 @@ class ZerlautAdaptationFirstOrder(Model):
     # Used for phase-plane axis ranges and to bound random initial() conditions.
     state_variable_range = Final(
         label="State Variable ranges [lo, hi]",
-        default={"E": numpy.array([1e-3, 250.e-3]),  # actually the 100Hz should be replaced by 1/T_refrac
-                 "I": numpy.array([1e-3, 250.e-3]),
-                 "W_e": numpy.array([0.0, 200.0]),
+        default={"E": numpy.array([0.0, 0.0]),  # actually the 100Hz should be replaced by 1/T_refrac
+                 "I": numpy.array([0.0, 0.0]),
+                 "W_e": numpy.array([0.0, 0.0]),
                  "W_i": numpy.array([0.0, 0.0]),
                  "ou_drift": numpy.array([0.0, 0.0]),
                  "external_input_excitatory_to_excitatory": numpy.array([0.0, 0.0]),
@@ -621,12 +596,12 @@ class ZerlautAdaptationSecondOrder(ZerlautAdaptationFirstOrder):
     #  Used for phase-plane axis ranges and to bound random initial() conditions.
     state_variable_range = Final(
         label="State Variable ranges [lo, hi]",
-        default={"E": numpy.array([1e-3, 250.e-3]),  # actually the 100Hz should be replaced by 1/T_refrac
-                 "I": numpy.array([1e-3, 250.e-3]),
-                 "C_ee": numpy.array([0.0e-3, 0.5e-3]),  # variance is positive or null
-                 "C_ei": numpy.array([-0.5e-3, 0.5e-3]),  # the co-variance is in [-c_ee*c_ii,c_ee*c_ii]
-                 "C_ii": numpy.array([0.0e-3, 0.5e-3]),  # variance is positive or null
-                 "W_e": numpy.array([0.0, 200.0]),
+        default={"E": numpy.array([0.0, 0.0]),  # actually the 100Hz should be replaced by 1/T_refrac
+                 "I": numpy.array([0.0, 0.0]),
+                 "C_ee": numpy.array([0.0, 0.0]),  # variance is positive or null
+                 "C_ei": numpy.array([0.0, 0.0]),  # the co-variance is in [-c_ee*c_ii,c_ee*c_ii]
+                 "C_ii": numpy.array([0.0, 0.0]),  # variance is positive or null
+                 "W_e": numpy.array([0.0, 0.0]),
                  "W_i": numpy.array([0.0, 0.0]),
                  "ou_drift": numpy.array([0.0, 0.0]),
                  "external_input_excitatory_to_excitatory": numpy.array([0.0, 0.0]),

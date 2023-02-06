@@ -1,7 +1,14 @@
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
 import matplotlib.pyplot as plt
 
-def print_result(path_simulation, begin, end):
+def plot_result(path_simulation, begin, end):
+    """
+    plot result
+    :param path_simulation: path of the simulation
+    :param begin: begin of the result
+    :param end: end of the result
+    :return:
+    """
     result = tools.get_result(path_simulation, begin, end)
     times = result[0][0]
     rateE = result[0][1][:, 0, :]
@@ -20,6 +27,11 @@ def print_result(path_simulation, begin, end):
     plt.figure()
     plt.plot(times, rateE, label='excitatory')
     plt.plot(times, rateI, label='inhibitatory')
+    plt.legend()
+
+    plt.figure()
+    plt.plot(times, adaptationE, label='excitatory')
+    plt.plot(times, adaptationI, label='inhibitatory')
     plt.legend()
 
     plt.figure()
@@ -53,9 +65,11 @@ def print_result(path_simulation, begin, end):
     plt.plot(times, external_input_inhibitory_to_excitatory[:, region], label='external_input_inhibitory_to_excitatory', alpha=0.2)
     plt.plot(times, external_input_inhibitory_to_inhibitory[:, region], label='external_input_inhibitory_to_inhibitory', alpha=0.2)
     plt.legend()
-    plt.show()
 
 if __name__ == "__main__":
-    path = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/rate_7.0/'
-    path += "/frequency_30.0/"
-    print_result(path, 0.0, 1100.0)
+    import os
+
+    path = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/rate_7.0/'
+    plot_result(path+"/frequency_10.0/", 5000.0, 20000.0)
+    plot_result(path+"/frequency_15.0/", 5000.0, 20000.0)
+    plt.show()

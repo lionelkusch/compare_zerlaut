@@ -14,6 +14,7 @@ def getData(data_base, table_name, list_variable, name_analysis='global', cond="
     :param table_name: name of the table
     :param list_variable: variable to get
     :param name_analysis: name of analysis
+    :param cond: extra condition
     :return:
     """
     con = sqlite3.connect(data_base, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
@@ -23,7 +24,8 @@ def getData(data_base, table_name, list_variable, name_analysis='global', cond="
         ' SELECT *'
         ' FROM ' + table_name + ' '
                                 " WHERE names_population = '" + name_analysis + "'"
-        " AND " + list_variable[0]['name'] + ' >= ' + str(list_variable[0]['min']) +
+                                                                                " AND " + list_variable[0][
+            'name'] + ' >= ' + str(list_variable[0]['min']) +
         " AND " + list_variable[0]['name'] + ' <= ' + str(list_variable[0]['max']) +
         " AND " + list_variable[1]['name'] + ' >= ' + str(list_variable[1]['min']) +
         " AND " + list_variable[1]['name'] + ' <= ' + str(list_variable[1]['max']) +
@@ -32,11 +34,6 @@ def getData(data_base, table_name, list_variable, name_analysis='global', cond="
                                                   " ORDER BY " + list_variable[1]['name']
     )
     data_all = cursor.fetchall()
-    # datas_select = []
-    # for i in data_all:
-    #     if i[3] == 0.1 or i[3]%10 ==0:
-    #         datas_select.append(i)
-    # data_all = datas_select
     name_column = [description[0] for description in cursor.description]
     datas = {}
     for id, name in enumerate(name_column):
@@ -104,7 +101,7 @@ def draw_contour(fig, ax, X, Y, Z, resolution, title, xlabel, ylabel, zlabel, la
 
 
 def draw_contour_limit(fig, ax, X, Y, Z, resolution, title, xlabel, ylabel, zlabel, zmin, zmax, label_size,
-                        number_size, nbins=10, remove_label_y=False):
+                       number_size, nbins=10, remove_label_y=False):
     """
     create graph with contour with limit
     :param fig: figure where to plot
@@ -122,6 +119,7 @@ def draw_contour_limit(fig, ax, X, Y, Z, resolution, title, xlabel, ylabel, zlab
     :param label_size: size of the label
     :param number_size: size of the number
     :param nbins: number of bins for the scale
+    :param remove_label_y: remove the labels along the axis y
     :return:
     """
     if len(Z) > 3:
@@ -138,12 +136,12 @@ def draw_contour_limit(fig, ax, X, Y, Z, resolution, title, xlabel, ylabel, zlab
         ax.set_title(title, {"fontsize": label_size})
         if remove_label_y:
             plt.tick_params(
-                axis='y',       # changes apply to the x-axis
-                which='both',      # both major and minor ticks are affected
-                right=False,       # ticks along the right edge are off
-                left=False,        # ticks along the left edge are off
-                labelleft=False,   # labels along the left ticks are off
-                )
+                axis='y',  # changes apply to the x-axis
+                which='both',  # both major and minor ticks are affected
+                right=False,  # ticks along the right edge are off
+                left=False,  # ticks along the left edge are off
+                labelleft=False,  # labels along the left ticks are off
+            )
     else:
         Warning('not enough values')
 
@@ -263,6 +261,7 @@ def set_lim(ax, ymax, ymin, xmax, xmin, number_size):
     ax.set_xlim(xmax=xmax, xmin=xmin)
     ax.tick_params(axis='both', labelsize=number_size)
 
+
 def min_max(data):
     """
     fix the minimum and maximum of data
@@ -276,7 +275,7 @@ def min_max(data):
 
 
 def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_variable, resX=None, resY=None,
-                                   label_size=30.0, number_size=20.0, level_percentage=0.95, population= 'excitatory', cond=''):
+                                   label_size=30.0, number_size=20.0, population='excitatory', cond=''):
     """
     create pdf with all the analysis
     :param path_figure: path to save the figure
@@ -287,7 +286,6 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     :param resY: resolution y
     :param label_size: size of the label
     :param number_size: size of the number
-    :param level_percentage: level of the percentage
     """
     name_var1 = list_variable[0]['name']
     name_var2 = list_variable[1]['name']
@@ -337,13 +335,14 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['PLV_angle'], res=resolution,
                    resX=resX, resY=resY)
     draw_contour(fig_rate, ax, X, Y, Z, resolution, 'PLV angle', title_var1,
-                       title_var2, 'rad', label_size, number_size)
+                 title_var2, 'rad', label_size, number_size)
     draw_point(ax, X, Y)
     set_lim(ax, ymax, ymin, xmax, xmin, number_size)
 
     #### ISI
     ax = axs_rate.ravel()[2]
-    X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['frequency_dom'], res=resolution, resX=resX,
+    X, Y, Z = grid(data_global[name_var1], data_global[name_var2], data_global['frequency_dom'], res=resolution,
+                   resX=resX,
                    resY=resY)
     draw_contour(fig_rate, ax, X, Y, Z, resolution, ' frequency dominant ', title_var1, title_var2,
                  'Hz', label_size, number_size)
@@ -352,7 +351,9 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
 
     #### ISI
     ax = axs_rate.ravel()[3]
-    X, Y, Z = grid(data_global[name_var1], data_global[name_var2], np.array(data_global['frequency_dom'])-np.array(data_global['frequency']), res=resolution, resX=resX,
+    X, Y, Z = grid(data_global[name_var1], data_global[name_var2],
+                   np.array(data_global['frequency_dom']) - np.array(data_global['frequency']), res=resolution,
+                   resX=resX,
                    resY=resY)
     draw_contour(fig_rate, ax, X, Y, Z, resolution, ' frequency dominant - input ', title_var1, title_var2,
                  'Hz', label_size, number_size)
@@ -360,10 +361,8 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     draw_point(ax, X, Y)
     set_lim(ax, ymax, ymin, xmax, xmin, number_size)
 
-
     plt.savefig(file, format='pdf')
     plt.close('all')
-
 
     ## GLOBAL
     ### Analysis
@@ -401,32 +400,34 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     plt.close('all')
     file.close()
 
+
 if __name__ == "__main__":
-    # path_root = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/'
+    import os
+
+    # path_root = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/'
     # database = path_root + "/database_2.db"
     # # for noise in np.arange(1e-9, 1e-8, 1e-9):
     # # for noise in np.arange(1e-8, 1e-7, 1e-8):
     # for noise in np.arange(0.0, 1e-5, 5e-7):
     #     for name_population in ['excitatory', 'inhibitory']:
-    #         print_exploration_analysis_pdf(path_root+'/figure/figure_test_'+str(name_population)+'_'+str(noise)+'.pdf',
-    #                                        database,
-    #                                        'exploration',
-    #                                        [
+    #         print_exploration_analysis_pdf(
+    #             path_root + '/figure/figure_test_' + str(name_population) + '_' + str(noise) + '.pdf', database,
+    #             'exploration',
+    #             [
     #                 {'name': 'amplitude', 'title': 'amplitude ', 'min': 0., 'max': 500000.0},
-    #                {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
-    #                                        ], population=name_population, cond=" AND noise = " + str(noise))
-    paths = ['/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/deterministe/',
-             '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/stochastic_1e-08/',
-             '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/stochastic_1e-09/',
-             ]
-    for path_root  in paths:
+    #                 {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
+    #             ], population=name_population, cond=" AND noise = " + str(noise))
+    paths = [
+        os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/',
+        os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/stochastic_1e-08/',
+        os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/stochastic_1e-09/'
+    ]
+    for path_root in paths:
         database = path_root + "/database.db"
-        for rate in [0.0, 2.5, 7.0]:
+        for rate in [7.0, 0.0]:
             for name_population in ['excitatory', 'inhibitory']:
                 print_exploration_analysis_pdf(
-                    path_root + '/figure/figure_determinitic_'+str(rate)+'.pdf',
-                    database,
-                    'exploration',
+                    path_root + '/figure/figure_' + str(rate) + '_' + name_population + '.pdf', database, 'exploration',
                     [
                         {'name': 'amplitude', 'title': 'amplitude ', 'min': 0., 'max': 5000000.0},
                         {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0},
