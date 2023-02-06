@@ -12,6 +12,7 @@ Cnt=0
 #Lb=[i*2 for i in range(60)]
 #Lei=[i*0.1 for i in range(20)]
 Lb= [i*2 for i in range(60)]
+# Lb = [0, 30, 60]
 Lei=[i for i in range(100)]
 
 hmResExc=[]
