@@ -26,22 +26,22 @@ print("'P_e':", np.array2string(engin(
     MAXfexc=50., MINfexc=0., nb_value_fexc=500, MAXfout=20.0,
     name_file_fig='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/',
     nb_value_adaptation=20,
-    print_error=True, print_details=False, print_details_raw=False),  precision=10, separator=', '), ",", sep='')
+    print_error=False, print_details=False, print_details_raw=False),  precision=10, separator=', '), ",", sep='')
 print("'P_i':", np.array2string(engin(
     parameters=inhibitory_param, parameters_all=params_all, excitatory=False,
     MAXfexc=50., MINfexc=0., nb_value_fexc=500, MAXfout=50.0,
     name_file_fig='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/',
     nb_value_adaptation=20,
-    print_error=True), precision=10, separator=', '), ",", sep='')
+    print_error=False), precision=10, separator=', '), ",", sep='')
 
 # # test_error
 # print("'P_e':", np.array2string(engin(
 #     parameters=excitatory_param, parameters_all=params_all, excitatory=True,
 #     MAXfexc=200., MINfexc=0., nb_value_fexc=500, MAXfout=200.0,
 #     name_file_fig='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/',
-#     nb_value_adaptation=20, fitting=False, print_error=True),  precision=10, separator=', '), ",", sep='')
+#     nb_value_adaptation=20, fitting=False, print_error=False),  precision=10, separator=', '), ",", sep='')
 # print("'P_i':", np.array2string(engin(
 #     parameters=inhibitory_param, parameters_all=params_all, excitatory=False,
 #     MAXfexc=200., MINfexc=0., nb_value_fexc=500, MAXfout=200.0,
 #     name_file_fig='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/',
-#     nb_value_adaptation=20, fitting=False, print_error=True), precision=10, separator=', '), ",", sep='')
+#     nb_value_adaptation=20, fitting=False, print_error=False), precision=10, separator=', '), ",", sep='')
