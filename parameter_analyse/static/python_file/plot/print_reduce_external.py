@@ -5,7 +5,7 @@ from parameter_analyse.static.python_file.plot.helper_function import get_gids_a
     detection_burst
 
 
-def get_firing_rate(path_init, firing_rate_ext_init=52.0, firing_rate_min=0.0,
+def get_firing_rate(path_init, firing_rate_ext_init=52.0, firing_rate_min=-0.1,
                     increment_firing_rate=-1.0, interval_time=10000.0):
     """
     save in a file the firing rate of each step
@@ -89,13 +89,13 @@ def plot_spiketrains(path_init, firing_rate_ext, font_size=10.0, tickfont_size=7
 
 if __name__ == '__main__':
     path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/time_reduce/"
-    firing_rate_ext_init = 52.0;
-    firing_rate_min = 0.0
-    plot_spiketrains(path_init + '/b_60.0/', firing_rate_ext=52.0, burst=True)
-    # get_firing_rate(path_init+'/b_0.0/', firing_rate_min=2.0)
-    # plot_firing_rate(path_init+'/b_0.0/' )
-    # get_firing_rate(path_init+'/b_30.0/')
-    # plot_firing_rate(path_init+'/b_30.0/' )
-    # get_firing_rate(path_init+'/b_60.0/')
-    # plot_firing_rate(path_init+'/b_60.0/' )
+    firing_rate_ext_init = 52.0
+    firing_rate_min = -0.1
+    # plot_spiketrains(path_init + '/b_0.0/', firing_rate_ext=0.0, burst=False)
+    get_firing_rate(path_init+'/b_0.0/')
+    # plot_firing_rate(path_init+'/b_0.0/')
+    get_firing_rate(path_init+'/b_30.0/')
+    # plot_firing_rate(path_init+'/b_30.0/')
+    get_firing_rate(path_init+'/b_60.0/')
+    # plot_firing_rate(path_init+'/b_60.0/')
     # plot_firing_rate_all([path_init + '/b_0.0/', path_init + '/b_30.0/', path_init + '/b_60.0/'])

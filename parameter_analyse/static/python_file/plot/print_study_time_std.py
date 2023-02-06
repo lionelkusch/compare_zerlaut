@@ -32,7 +32,7 @@ def gen_log_space(limit, n):
     return np.array(list(map(lambda x: round(x) - 1, result)), dtype=int)
 
 
-def get_mean_variance(path, begin, end, dt=0.1, window=5.0, nb_test=50, nb_cpu=16, print_result=False):
+def get_mean_variance(path, begin, end, dt=0.1, window=5.0, nb_test=50, nb_cpu=16, nb_sample=50000, print_result=False):
     """
     generate value of the mean and variance
     :param path: path of the mean and the variance
@@ -42,6 +42,7 @@ def get_mean_variance(path, begin, end, dt=0.1, window=5.0, nb_test=50, nb_cpu=1
     :param window: size of the windows for smoothing the histogram
     :param nb_test: number of element for the window of the measure
     :param nb_cpu: number of cpu for parallel
+    :param nb_sample: number of sample to get
     :param print_result: print the result
     :return: array of mean and covariance
     """
@@ -77,9 +78,8 @@ def get_mean_variance(path, begin, end, dt=0.1, window=5.0, nb_test=50, nb_cpu=1
         return mean, covariance
 
     p = mp.ProcessingPool(ncpus=nb_cpu)
-    res = p.map(dill.copy(analyse_function), np.concatenate([
-        gen_log_space(int(window / dt), 10)[2:],  # take value under the size of the smoothing
-        gen_log_space(hist_slide_ex.shape[0] - int(window / dt), nb_test) + int(window / dt)]))
+    res = p.map(dill.copy(analyse_function), gen_log_space(hist_slide_ex.shape[0] - int(window / dt) - nb_sample * dt,
+                                                           nb_test))
     # concatenate all the result
     covariance = []
     mean = []
@@ -104,8 +104,8 @@ def get_mean_variance(path, begin, end, dt=0.1, window=5.0, nb_test=50, nb_cpu=1
     return mean, covariance
 
 
-def generate_variance_mean_std(path_init,b=60.0, begin=1000.0, end=5000.0, rate_range=range(1, 100),
-                               dt=0.1, window=5.0, nb_test=50):
+def generate_variance_mean_std(path_init, b=60.0, begin=1000.0, end=5000.0, rate_range=range(1, 100),
+                               dt=0.1, window=5.0, nb_test=50, nb_sample=50000):
     """
     save mean, variance and covariance for an exploration of external input
     :param path_init: path of the folders
@@ -116,33 +116,34 @@ def generate_variance_mean_std(path_init,b=60.0, begin=1000.0, end=5000.0, rate_
     :param dt: step of integration
     :param window: size of the windows for smoothing the histogram
     :param nb_test: number of element for the window of the measure
+    :param nb_sample: number of sample to get
     :return:
     """
     if not os.path.exists(path_init + '/' + str(b) + '_size_variance.npy'):
         for rate in rate_range:
             print(path_init + '/_b_' + str(b) + '_rate_' + str(float(rate)) + '/')
             result = get_mean_variance(path_init + '/_b_' + str(b) + '_rate_' + str(float(rate)) + '/', begin, end,
-                                       dt=dt, window=window, nb_test=nb_test)
+                                       dt=dt, window=window, nb_test=nb_test, nb_sample=nb_sample)
             np.save(path_init + '/' + str(b) + '_size_variance_rate_' + str(rate) + '.npi', result)
 
 
 def plot_variance_mean_std_rate(path_init, range_rate=range(1, 100), b=60.0, begin=1000.0, end=5000.0,
-                                  dt=0.1, window=5.0, nb_test=50):
+                                dt=0.1, window=5.0, nb_test=50, nb_sample=5000):
     """
     plot mean and std distribution in time
     :param path_init: path of folder
+    :param range_rate: rate of range to analyse
     :param b: value of b
     :param begin: start analysis
     :param end: end analysis
     :param dt: step integration
     :param window: window of smoothing
     :param nb_test: number of test
+    :param nb_sample: number of sample to get
     :return:
     """
     # values of range of data
-    values = np.concatenate([gen_log_space(int(window / dt), 10)[2:],
-                             gen_log_space(int((end - begin) / dt - window / dt)
-                                           - int(window / dt), nb_test) + int(window / dt)])
+    values = gen_log_space(int((end - begin) / dt - window / dt) - int(window / dt) - nb_sample * dt, nb_test)
     for rate in range_rate:
         # get data
         print(rate)
@@ -255,8 +256,7 @@ def get_mean_variance_long(path, begin, end, dt=0.1, window=5.0, nb_test=50, nb_
         return mean, covariance
 
     p = mp.ProcessingPool(ncpus=nb_cpu)
-    values = np.concatenate([gen_log_space(int(window / dt), 10)[2:],
-                             gen_log_space(hist_slide_ex.shape[0] - int(window / dt), nb_test) + int(window / dt)])
+    values = gen_log_space(hist_slide_ex.shape[0] - int(window / dt) - nb_sample * dt, nb_test)
     res = p.map(dill.copy(analyse_function), values)
     # concatenate the result
     covariance = []
@@ -313,10 +313,8 @@ def plot_violin(ax, data, range_values):
     ax.tick_params(axis='x', labelrotation=90)
 
 
-
-
 def plot_variance_mean_std_unique_long(path_init, b=60.0, rate=10, begin=1000.0, end=5000.0,
-                                       dt=0.1, window=5.0, nb_test=50, plt_save_data=False):
+                                       dt=0.1, window=5.0, nb_test=50, nb_sample=50000, plt_save_data=False):
     """
     plot violin mean and std long
     :param path_init: path of folder
@@ -327,11 +325,11 @@ def plot_variance_mean_std_unique_long(path_init, b=60.0, rate=10, begin=1000.0,
     :param dt: step integration
     :param window: window for smoothing
     :param nb_test: number of test
+    :param nb_sample: number of sample
+    :param plt_save_data: boolean for saving or not the figure
     :return:
     """
-    values = np.concatenate([gen_log_space(int(window / dt), 10)[2:],
-                             gen_log_space(int((end - begin) / dt - window / dt) - int(window / dt), nb_test) + int(
-                                 window / dt)])
+    values = gen_log_space(int((end - begin) / dt - window / dt) - int(window / dt) - nb_sample * dt, nb_test)
     print(rate)
     # get data
     result = np.load(path_init + '/' + str(b) + '_size_variance_rate_' + str(rate) + '.npy', allow_pickle=True)
@@ -422,27 +420,26 @@ if __name__ == "__main__":
     ## long simulation
     path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/"
     path = path_init + '/long/'
-    # generate_variance_mean_std_long(path, ax, b=0.0, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=1.0,
-    #                            rate_range=[10.0, 50.0, 60.0],begin=10000.0, end=40000.0, nb_test=200, nb_sample=50000)
-    plot_variance_mean_std_unique_long(path, ax, b=0.0, rate=10.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    plot_variance_mean_std_unique_long(path, ax, b=0.0, rate=50.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    plot_variance_mean_std_unique_long(path, ax, b=0.0, rate=60.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    # generate_variance_mean_std_long(path, ax, b=30.0, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=1.0,
-    #                            rate_range=[10.0, 50.0, 60.0],begin=10000.0, end=40000.0, nb_test=200, nb_sample=50000)
-    plot_variance_mean_std_unique_long(path, ax, b=30.0, rate=10.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    plot_variance_mean_std_unique_long(path, ax, b=30.0, rate=50.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    plot_variance_mean_std_unique_long(path, ax, b=30.0, rate=60.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    # generate_variance_mean_std_long(path, ax, b=60.0, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=1.0,
-    #                            rate_range=[10.0, 50.0, 60.0],begin=10000.0, end=40000.0, nb_test=200, nb_sample=50000)
-    plot_variance_mean_std_unique_long(path, ax, b=60.0, rate=10.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    plot_variance_mean_std_unique_long(path, ax, b=60.0, rate=50.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
-    plot_variance_mean_std_unique_long(path, ax, b=60.0, rate=60.0, font_size=30.0, tickfont_size=20.0, burst=False,
-                                       size_mark=1.0, nb_test=200)
+    generate_variance_mean_std_long(path, b=0.0, rate_range=[10.0, 50.0, 60.0], begin=10000.0, end=40000.0,
+                                    nb_test=50, nb_sample=50000)
+    # plot_variance_mean_std_unique_long(path, b=0.0, rate=10.0, nb_test=200)
+    # plot_variance_mean_std_unique_long(path, b=0.0, rate=50.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    # plot_variance_mean_std_unique_long(path, b=0.0, rate=60.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    generate_variance_mean_std_long(path, b=30.0, rate_range=[10.0, 50.0, 60.0], begin=10000.0, end=40000.0,
+                                    nb_test=50, nb_sample=50000)
+    # plot_variance_mean_std_unique_long(path, ax, b=30.0, rate=10.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    # plot_variance_mean_std_unique_long(path, ax, b=30.0, rate=50.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    # plot_variance_mean_std_unique_long(path, ax, b=30.0, rate=60.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    generate_variance_mean_std_long(path, b=60.0, rate_range=[10.0, 50.0, 60.0], begin=10000.0, end=40000.0,
+                                    nb_test=50, nb_sample=50000)
+    # plot_variance_mean_std_unique_long(path, ax, b=60.0, rate=10.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    # plot_variance_mean_std_unique_long(path, ax, b=60.0, rate=50.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
+    # plot_variance_mean_std_unique_long(path, ax, b=60.0, rate=60.0, font_size=30.0, tickfont_size=20.0, burst=False,
+    #                                    size_mark=1.0, nb_test=200)
