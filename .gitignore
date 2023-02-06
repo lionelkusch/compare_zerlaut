@@ -6,5 +6,5 @@
 .idea
 venv
 *.pdf
-*/*/simulation/simulation/
 */*/*/simulation/simulation/
+*/*/simulation/*/
