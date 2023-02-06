@@ -86,50 +86,48 @@ def derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, zeros_
 
     for i_adp, adaptation_values in enumerate(ranges_adaptation):
         for i_ex, ex_values in enumerate(ranges_excitatory):
-            if os.path.exists(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_transfer_function.npy"):
-                TF = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_transfer_function.npy")
-                diff2_fe_fe = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_second_order_derivation_fe.npy")
-                diff2_fi_fi = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_second_order_derivation_fi.npy")
-                diff2_fe_fi = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_second_order_derivation_fe_and_fi.npy")
-                print("TF sum ex : ", i_adp, i_ex, np.sum(TF < 0.0))
-                print("diff: ", np.sum(np.logical_and(np.logical_and(diff2_fe_fe <= 0, diff2_fe_fi <= 0),
-                                                      diff2_fi_fi <= 0)))
-                index = np.unravel_index(np.argmin(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi), TF.shape)
-                print("max: ", np.min(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi)*1e3, TF[index]*1e3)
-                plot_derivation_check(save_name, i_ex, ex_values, i_adp, adaptation_values,
+            TF = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_transfer_function.npy")
+            diff2_fe_fe = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_second_order_derivation_fe.npy")
+            diff2_fi_fi = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_second_order_derivation_fi.npy")
+            diff2_fe_fi = np.load(save_name + "inh_" + str(i_ex) + "_" + str(i_adp) + "_second_order_derivation_fe_and_fi.npy")
+            print("TF sum ex : ", i_adp, i_ex, np.sum(TF < 0.0))
+            print("diff: ", np.sum(np.logical_and(np.logical_and(diff2_fe_fe <= 0, diff2_fe_fi <= 0),
+                                                  diff2_fi_fi <= 0)))
+            index = np.unravel_index(np.argmin(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi), TF.shape)
+            print("max: ", np.min(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi)*1e3, TF[index]*1e3)
+            plot_derivation_check(save_name, i_ex, ex_values, i_adp, adaptation_values,
+                                  TF, diff2_fe_fe, diff2_fi_fi, diff2_fe_fi,
+                                  max_cut, min_scale, subtitle="inhibitory derivation function components",
+                                  ylabel="excitatory firing rate in Hz", type='inhibitory')
+            plot_derivation_check_neg(save_name, i_ex, ex_values, i_adp, adaptation_values,
                                       TF, diff2_fe_fe, diff2_fi_fi, diff2_fe_fi,
                                       max_cut, min_scale, subtitle="inhibitory derivation function components",
                                       ylabel="excitatory firing rate in Hz", type='inhibitory')
-                plot_derivation_check_neg(save_name, i_ex, ex_values, i_adp, adaptation_values,
-                                          TF, diff2_fe_fe, diff2_fi_fi, diff2_fe_fi,
-                                          max_cut, min_scale, subtitle="inhibitory derivation function components",
-                                          ylabel="excitatory firing rate in Hz", type='inhibitory')
 
         for i_inh, inh_values in enumerate(ranges_inhibitory):
-            if os.path.exists(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_transfer_function.npy"):
-                TF = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_transfer_function.npy")
-                diff2_fe_fe = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_second_order_derivation_fe.npy")
-                diff2_fi_fi = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_second_order_derivation_fi.npy")
-                diff2_fe_fi = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_second_order_derivation_fe_and_fi.npy")
-                print("TF sum in : ", i_adp, i_inh, np.sum(TF < 0.0))
-                print("diff: ", np.sum(np.logical_and(np.logical_and(diff2_fe_fe <= 0, diff2_fe_fi <= 0),
-                                                      diff2_fi_fi <= 0)))
-                index = np.unravel_index(np.argmin(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi), TF.shape)
-                print("max: ", np.min(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi)*1e3, TF[index]*1e3)
-                plot_derivation_check(save_name, i_inh, inh_values, i_adp, adaptation_values,
+            TF = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_transfer_function.npy")
+            diff2_fe_fe = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_second_order_derivation_fe.npy")
+            diff2_fi_fi = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_second_order_derivation_fi.npy")
+            diff2_fe_fi = np.load(save_name + "exc_" + str(i_inh) + "_" + str(i_adp) + "_second_order_derivation_fe_and_fi.npy")
+            print("TF sum in : ", i_adp, i_inh, np.sum(TF < 0.0))
+            print("diff: ", np.sum(np.logical_and(np.logical_and(diff2_fe_fe <= 0, diff2_fe_fi <= 0),
+                                                  diff2_fi_fi <= 0)))
+            index = np.unravel_index(np.argmin(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi), TF.shape)
+            print("max: ", np.min(TF + 0.5 * diff2_fe_fe + diff2_fe_fi + 0.5 * diff2_fi_fi)*1e3, TF[index]*1e3)
+            plot_derivation_check(save_name, i_inh, inh_values, i_adp, adaptation_values,
+                                  TF, diff2_fe_fe, diff2_fi_fi, diff2_fe_fi,
+                                  max_cut, min_scale, subtitle="excitatory derivation function components",
+                                  ylabel="inhibitory firing rate in Hz", type='excitatory')
+            plot_derivation_check_neg(save_name, i_inh, inh_values, i_adp, adaptation_values,
                                       TF, diff2_fe_fe, diff2_fi_fi, diff2_fe_fi,
                                       max_cut, min_scale, subtitle="excitatory derivation function components",
                                       ylabel="inhibitory firing rate in Hz", type='excitatory')
-                plot_derivation_check_neg(save_name, i_inh, inh_values, i_adp, adaptation_values,
-                                          TF, diff2_fe_fe, diff2_fi_fi, diff2_fe_fi,
-                                          max_cut, min_scale, subtitle="excitatory derivation function components",
-                                          ylabel="inhibitory firing rate in Hz", type='excitatory')
 
 
 if __name__ == "__main__":
     from parameter_analyse.fitting_procedure.parameters import params_all
-    path_P_excitatory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P.npy'
-    path_P_inhibitory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P.npy'
+    path_P_excitatory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P.npy'
+    path_P_inhibitory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P.npy'
     derivation_negative(params_all, path_P_excitatory, path_P_inhibitory)
     derivation_negative(params_all, path_P_excitatory, path_P_inhibitory,
                         ranges_excitatory=[np.linspace(0.0, 70.0, 1000) * 1e-3],
@@ -137,17 +135,12 @@ if __name__ == "__main__":
                         ranges_adaptation=[np.linspace(0.0, 100.0, 1000), np.linspace(0.0, 10000.0, 1000)],
                         save_name='zoom'
                         )
-    path_P_excitatory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
-    path_P_inhibitory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
-    derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='no_adpt_')
-    derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='zoom_no_adpt_',
-                        ranges_excitatory=[np.linspace(0.0, 1.0, 1000) * 1e-3],
-                        ranges_inhibitory=[np.linspace(0.0, 33.0, 1000) * 1e-3, np.linspace(0.0, 1.0, 1000) * 1e-3],
-                        ranges_adaptation=[np.linspace(0.0, 3500.0, 1000), np.linspace(0.0, 10000.0, 1000)],
-                        )
-    # path_P_excitatory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P.npy'
-    # path_P_inhibitory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P.npy'
-    # derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='200')
-    # path_P_excitatory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
-    # path_P_inhibitory = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/fitting_procedure/fitting/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
-    # derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='200_no_adpt_')
+    # path_P_excitatory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
+    # path_P_inhibitory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
+    # derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='no_adpt_')
+    # derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='zoom_no_adpt_',
+    #                     ranges_excitatory=[np.linspace(0.0, 1.0, 1000) * 1e-3],
+    #                     ranges_inhibitory=[np.linspace(0.0, 33.0, 1000) * 1e-3, np.linspace(0.0, 1.0, 1000) * 1e-3],
+    #                     ranges_adaptation=[np.linspace(0.0, 3500.0, 1000), np.linspace(0.0, 10000.0, 1000)],
+    #                     )
+
