@@ -1,7 +1,6 @@
 import numpy as np
 import os
 import json
-import sys
 from elephant.statistics import isi, cv, lv
 from elephant.spectral import welch_psd
 from elephant.spike_train_correlation import spike_train_timescale, cross_correlation_histogram
@@ -62,7 +61,7 @@ def compute_synchronize_R(spikes, id_max, resolution):
     :return:
     """
     max_nb_spike = np.max(np.array(id_max)[:, 1])
-    spikes_time = np.array(spikes)[np.array(id_max)[:, 0]]
+    spikes_time = np.array(spikes, dtype=object)[np.array(id_max)[:, 0]]
     time_spike = np.zeros((len(spikes_time), max_nb_spike + 1))
     for i, spikes in enumerate(spikes_time):
         time_spike[i, 0:len(np.unique(spikes))] = np.unique(spikes)
@@ -263,7 +262,7 @@ def PLV(theta1, theta2):
     return plv, angle
 
 
-def compute_PLV_mean_shift(hist, end, frequency, remove_init=500, remove_start_hilbert=3000,
+def compute_PLV_mean_shift(hist, begin, end, frequency, remove_init=500, remove_start_hilbert=3000,
                            remove_end=2500, sampling_rate=1e3, sampling_ms=1.0):
     """
     compute the mean phase shift and the PLV between the input signal and the output
@@ -279,7 +278,7 @@ def compute_PLV_mean_shift(hist, end, frequency, remove_init=500, remove_start_h
     """
     low_frequency = frequency - 0.1
     high_frequency = frequency + 0.1
-    I_signal = np.sin(2*np.pi*frequency*np.arange(0.0, end, sampling_ms)*1e-3)
+    I_signal = np.sin(2*np.pi*frequency*np.arange(begin, end, sampling_ms)*1e-3)
     I_theta = np.angle(hilbert(I_signal))[remove_start_hilbert+remove_init:-remove_end]
     b, a = butter(1, [low_frequency, high_frequency], fs=sampling_rate, btype='band')
     hist_filter = lfilter(b, a, hist[remove_init:])
@@ -340,8 +339,8 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
         hist_5_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_5[0], 0), t_start=begin * pq.ms, t_stop=end * pq.ms, bin_size=5* pq.ms)
         hist_5_cc_hist, hist_5_lags = cross_correlation_histogram(hist_5_bin_hist, hist_5_bin_hist, window=[-lag, lag], cross_correlation_coefficient=True)
         hist_5_timescale = spike_train_timescale(hist_5_bin_hist, max_tau=int(round(lag / 5))*5 * pq.ms)
-        if frequency != 0.0 and begin == 0.0 and end > 6000.0:
-            PLV_value_5, PLV_angle_5, mean_phase_shift_5 = compute_PLV_mean_shift(hist_5[0], end, frequency, sampling_rate=200,
+        if frequency != 0.0 and end - begin > 6000.0:
+            PLV_value_5, PLV_angle_5, mean_phase_shift_5 = compute_PLV_mean_shift(hist_5[0], begin, end, frequency, sampling_rate=200,
                                                                                   remove_init=100, remove_start_hilbert=600,
                                                                                   remove_end=500, sampling_ms=5)
         else:
@@ -362,8 +361,8 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
         hist_1_cc_hist, hist_1_lags = cross_correlation_histogram(hist_1_bin_hist, hist_1_bin_hist, window=[-lag, lag],
                                                                   cross_correlation_coefficient=True)
         hist_1_timescale = spike_train_timescale(hist_1_bin_hist, max_tau=lag * pq.ms)
-        if frequency != 0.0 and begin == 0.0 and end > 6000.0:
-            PLV_value_1, PLV_angle_1, mean_phase_shift_1 = compute_PLV_mean_shift(hist_1[0], end, frequency, sampling_rate=1e3)
+        if frequency != 0.0 and end - begin > 6000.0:
+            PLV_value_1, PLV_angle_1, mean_phase_shift_1 = compute_PLV_mean_shift(hist_1[0], begin, end, frequency, sampling_rate=1e3)
         else:
             PLV_value_1, PLV_angle_1, mean_phase_shift_1 = None, None, None
 
@@ -386,8 +385,8 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
         hist_0_1_cc_hist, hist_1_lags = cross_correlation_histogram(hist_0_1_bin_hist, hist_0_1_bin_hist, window=[-lag, lag],
                                                                   cross_correlation_coefficient=True)
         hist_0_1_timescale = spike_train_timescale(hist_0_1_bin_hist, max_tau=lag * pq.ms)
-        if frequency != 0.0 and begin == 0.0 and end > 6000.0:
-            PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1 = compute_PLV_mean_shift(hist_0_1[0], end, frequency, sampling_rate=1e4, sampling_ms=0.1)
+        if frequency != 0.0 and end - begin > 6000.0:
+            PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1 = compute_PLV_mean_shift(hist_0_1[0], begin, end, frequency, sampling_rate=1e4, sampling_ms=0.1)
         else:
             PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1 = None, None, None
         hist_window_5 = slidding_window(hist_0_1[0], 50)
@@ -398,8 +397,8 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
         hist_window_5_cc_hist, hist_1_lags = cross_correlation_histogram(hist_window_5_bin_hist, hist_window_5_bin_hist, window=[-lag, lag],
                                                                   cross_correlation_coefficient=True)
         hist_window_5_timescale = spike_train_timescale(hist_window_5_bin_hist, max_tau=lag * pq.ms)
-        if frequency != 0.0 and begin == 0.0 and end > 6000.0:
-            PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5 = compute_PLV_mean_shift(hist_window_5, end-5, frequency, sampling_rate=1e4, sampling_ms=0.1)
+        if frequency != 0.0 and end - begin > 6000.0:
+            PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5 = compute_PLV_mean_shift(hist_window_5, begin, end-5, frequency, sampling_rate=1e4, sampling_ms=0.1)
         else:
             PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5 = None, None, None
 
