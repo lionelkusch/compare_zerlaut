@@ -7,7 +7,7 @@ from scipy.interpolate import griddata
 import numpy as np
 
 
-def getData(data_base, table_name, list_variable, name_analysis='global'):
+def getData(data_base, table_name, list_variable, name_analysis='global', cond=''):
     """
     get data from database
     :param data_base: path of the database
@@ -23,13 +23,13 @@ def getData(data_base, table_name, list_variable, name_analysis='global'):
         ' SELECT *'
         ' FROM ' + table_name + ' '
                                 " WHERE names_population = '" + name_analysis + "'"
-                                                                                " AND " + list_variable[0][
-            'name'] + ' >= ' + str(list_variable[0]['min']) +
+        " AND " + list_variable[0]['name'] + ' >= ' + str(list_variable[0]['min']) +
         " AND " + list_variable[0]['name'] + ' <= ' + str(list_variable[0]['max']) +
         " AND " + list_variable[1]['name'] + ' >= ' + str(list_variable[1]['min']) +
         " AND " + list_variable[1]['name'] + ' <= ' + str(list_variable[1]['max']) +
-        " ORDER BY " + list_variable[0]['name'] + ')'
-                                                  " ORDER BY " + list_variable[1]['name']
+        cond +
+        " ORDER BY " + list_variable[0]['name'] + ')' +
+        " ORDER BY " + list_variable[1]['name']
     )
     data_all = cursor.fetchall()
     # datas_select = []

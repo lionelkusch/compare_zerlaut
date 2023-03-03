@@ -1,12 +1,13 @@
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
 import matplotlib.pyplot as plt
 
-def plot_result(path_simulation, begin, end):
+def plot_result(path_simulation, begin, end, region = 19):
     """
     plot result
     :param path_simulation: path of the simulation
     :param begin: begin of the result
     :param end: end of the result
+    :param region: node specific to plot
     :return:
     """
     result = tools.get_result(path_simulation, begin, end)
@@ -56,7 +57,6 @@ def plot_result(path_simulation, begin, end):
     plt.plot(times, external_input_inhibitory_to_inhibitory[:, -1], '.', label='external_input_inhibitory_to_inhibitory', alpha=0.2)
     plt.legend()
 
-    region = 19
     plt.figure()
     plt.plot(times, rateE[:, region], label='excitatory')
     plt.plot(times, rateI[:, region], label='inhibitory')

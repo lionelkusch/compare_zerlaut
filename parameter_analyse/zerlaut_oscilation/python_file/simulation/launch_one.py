@@ -4,11 +4,13 @@ import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as 
 from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
 
 
-def run_rate_deterministe(rate_frequency, end=200.0):
+def run_rate_deterministe(rate_frequency, end=200.0, init_E=[0.0, 0.0], init_I=[0.0, 0.0]):
     """
     run one example
     :param rate_frequency: list of parameters
     :param end: duration of simulation
+    :param init_E: initial condition of Excitatory population
+    :param init_I: initial condition of Inhibitory population
     :return:
     """
     # gte parameters
@@ -20,6 +22,8 @@ def run_rate_deterministe(rate_frequency, end=200.0):
     parameters = Parameter()
     parameters.parameter_simulation['path_result'] = path_simulation
     parameters.parameter_integrator['stochastic'] = False
+    parameters.parameter_model['initial_condition']['E'] = init_E
+    parameters.parameter_model['initial_condition']['I'] = init_I
     parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
     parameters.parameter_model['initial_condition']["external_input_excitatory_to_inhibitory"] = [rate * 1e-3,
@@ -54,22 +58,40 @@ def run_rate_deterministe(rate_frequency, end=200.0):
 
 
 if __name__ == "__main__":
-    from parameter_analyse.zerlaut_oscilation.python_file.print.print_one import print_result
+    from parameter_analyse.zerlaut_oscilation.python_file.print.print_one import plot_result
+    import matplotlib.pyplot as plt
 
     path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/instability/'
     list_parameters = []
     end = 2001.0
     range_rate = [0.0, 0.2, 0.3, 0.4, 0.6, 1.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0]
     range_frequency = [0.0]
-    for rate in range_rate:
+    # for rate in range_rate:
+    #     if not os.path.exists(path_simulation + "/rate_" + str(rate)):
+    #         os.mkdir(path_simulation + "/rate_" + str(rate))
+    #     for frequency in range_frequency:
+    #         if not os.path.exists(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency)):
+    #             parameters = run_rate_deterministe({'rate': rate, 'frequency': frequency, 'path': path_simulation},
+    #                                                end=end)
+    #
+    # for rate in range_rate:
+    #     for frequency in range_frequency:
+    #         print(rate, frequency)
+    #         plot_result(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency), begin=0.0, end=end)
+    # plt.show()
+
+    path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/short/'
+    for rate, init_E, init_I in [(10.0, [0.000125, 0.000125], [0.05, 0.05]),
+                                 # (60.0, [0.00362, 0.00362], [0.17959, 0.17959]),
+                                 (80.0, [0.0041, 0.0041], [0.2001, 0.20001]),
+                                 ]:
         if not os.path.exists(path_simulation + "/rate_" + str(rate)):
             os.mkdir(path_simulation + "/rate_" + str(rate))
-        for frequency in range_frequency:
+        for frequency in [0.0]:
+            print(rate, frequency)
             if not os.path.exists(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency)):
                 parameters = run_rate_deterministe({'rate': rate, 'frequency': frequency, 'path': path_simulation},
-                                                   end=end)
-
-    for rate in range_rate:
-        for frequency in range_frequency:
-            print(rate, frequency)
-            print_result(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency), begin=0.0, end=end)
+                                                   end=end, init_E=init_E, init_I=init_I)
+            plot_result(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency),
+                         begin=0.0, end=2000.0, region=0)
+        plt.show()

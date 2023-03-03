@@ -43,3 +43,13 @@ if __name__ == '__main__':
     plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
     # plt.subplots_adjust(top=0.99, bottom=0.11, left=0.05, right=0.98, hspace=0.2, wspace=0.2)
     plt.show()
+
+    plt.figure(figsize=(20, 10))
+    ax = plt.gca()
+    path = path_init + '/short/_b_0.0_rate_10.0/'; begin = 0.0; end = 2000.0
+    plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
+    plt.figure(figsize=(20, 10))
+    ax = plt.gca()
+    path = path_init + '/short/_b_0.0_rate_60.0/'; begin = 0.0; end = 2000.0
+    plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
+    plt.show()
