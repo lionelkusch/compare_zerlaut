@@ -77,6 +77,7 @@ for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_fig
     ax.set_ylabel('Network\nfrequency of input (Hz)', fontdict={'fontsize': labelticks_size})
     ax.set_title('Phase Locking Value', fontdict={'fontsize': labelticks_size})
     ax.tick_params(labelsize=ticks_size)
+    ax.annotate('A', xy=(-0.15, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     #### mean field
     ax = plt.subplot(2, 3, 4)
@@ -88,6 +89,7 @@ for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_fig
     ax.set_ylabel('Mean field\nfrequency of input (Hz)', fontdict={'fontsize': labelticks_size})
     ax.set_xlabel('amplitude of input(Hz)', {"fontsize": labelticks_size}, labelpad=0.)
     ax.tick_params(labelsize=ticks_size)
+    ax.annotate('D', xy=(-0.15, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     #### network
     ax = plt.subplot(2, 3, 2)
@@ -100,6 +102,7 @@ for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_fig
     ax.set_title('Phase shift (rad)', fontdict={'fontsize': labelticks_size})
     ax.tick_params(labelsize=ticks_size)
     ax.set_yticks([])
+    ax.annotate('B', xy=(-0.15, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     #### mean field
     ax = plt.subplot(2, 3, 5)
@@ -112,6 +115,7 @@ for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_fig
     ax.set_xlabel('amplitude of input(Hz)', {"fontsize": labelticks_size}, labelpad=0.)
     ax.tick_params(labelsize=ticks_size)
     ax.set_yticks([])
+    ax.annotate('E', xy=(-0.15, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     #### network
     ax = plt.subplot(2, 3, 3)
@@ -123,6 +127,7 @@ for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_fig
     ax.set_title('Maximum firing rate (Hz)', fontdict={'fontsize': labelticks_size})
     ax.tick_params(labelsize=ticks_size)
     ax.set_yticks([])
+    ax.annotate('C', xy=(-0.15, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     #### mean field
     ax = plt.subplot(2, 3, 6)
@@ -134,6 +139,7 @@ for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_fig
     ax.set_xlabel('amplitude of input(Hz)', {"fontsize": labelticks_size}, labelpad=0.)
     ax.tick_params(labelsize=ticks_size)
     ax.set_yticks([])
+    ax.annotate('F', xy=(-0.15, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     plt.subplots_adjust(top=0.95, bottom=0.085, left=0.115, right=0.975, hspace=0.12, wspace=0.32)
     # plt.show()

@@ -98,6 +98,7 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_ex_ticks)
     plt.ylabel("EXCITATORY\nfiring rate\npopulation (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('A', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # excitatory zoom
     plt.sca(axs[0, 1])
@@ -110,6 +111,7 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_ex_z_ticks)
     # plt.ylabel("firing rate of excitatory population (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('B', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # variance excitatory
     plt.sca(axs[0, 2])
@@ -123,6 +125,7 @@ for network, b, xmin, xmax, xticks, \
     # plt.ylabel("firing rate of excitatory\npopulation (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
     plt.title("VARIANCE", {"fontsize": labelticks_size})
+    plt.annotate('C', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # inhibitory
     plt.sca(axs[1, 0])
@@ -135,6 +138,7 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_in_ticks)
     plt.ylabel("INHIBITORY\nfiring rate\npopulation (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('D', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # inhibitory zoom
     plt.sca(axs[1, 1])
@@ -147,6 +151,7 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_in_z_ticks)
     # plt.ylabel("firing rate of excitatory population (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('E', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # variance inhibitory
     plt.sca(axs[1, 2])
@@ -159,6 +164,7 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_in_c_ticks)
     # plt.ylabel("firing rate of excitatory\npopulation Hz", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('F', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # adaptation
     plt.sca(axs[2, 0])
@@ -171,6 +177,7 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_ad_ticks)
     plt.ylabel("ADAPTATION", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('G', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     # no zoom adaptation
     fig.delaxes(axs[2, 1])
@@ -186,7 +193,8 @@ for network, b, xmin, xmax, xticks, \
     plt.yticks(y_ei_c_ticks)
     # plt.ylabel("firing rate of excitatory\npopulation Hz", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate('H', xy=(-0.15, 0.83), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     plt.subplots_adjust(top=0.960, bottom=0.095, left=0.16, right=0.965, wspace=0.26, hspace=0.215)
     plt.savefig('./figure/SP_figure_'+str(index)+'.png', dpi=300)
-# plt.show()
+    # plt.show()

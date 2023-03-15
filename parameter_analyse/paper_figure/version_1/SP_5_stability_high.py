@@ -47,6 +47,8 @@ firing_rate_30 = np.concatenate((np.array([np.arange(52.0, -0.1, -1.0)]).swapaxe
 firing_rate_60 = np.load(path + '/b_60.0/firing_rate.npy')
 firing_rate_60 = np.concatenate((np.array([np.arange(52.0, -0.1, -1.0)]).swapaxes(0, 1), firing_rate_60), axis=1)
 
+letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
 ## make figure
 fig, axs = plt.subplots(2, 3, figsize=(6.8, 5.5))
 
@@ -70,6 +72,7 @@ for index, (network, firing_rate, b, color, title) in enumerate([(network_0,  fi
         plt.ylabel("firing rate of excitatory\npopulation (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
     plt.title(title)
+    plt.annotate(letters[index], xy=(-0.1, 0.9), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
     plt.sca(axs[1, index])
     ## mean field
@@ -87,6 +90,7 @@ for index, (network, firing_rate, b, color, title) in enumerate([(network_0,  fi
     if index == 0:
         plt.ylabel("firing rate of inhibitory\npopulation (Hz)", {"fontsize": labelticks_size})
     plt.tick_params(labelsize=ticks_size)
+    plt.annotate(letters[index+3], xy=(-0.1, 0.9), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 plt.subplots_adjust(top=0.95, bottom=0.1, left=0.14, right=0.99, hspace=0.12, wspace=0.29)
 plt.savefig('./figure/SP_figure_5.png', dpi=300)

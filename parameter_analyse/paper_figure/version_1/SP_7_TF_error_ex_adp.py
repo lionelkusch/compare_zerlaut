@@ -56,11 +56,12 @@ for j in range(excitatory_result[0].shape[1]):
                                   excitatory_result[3],
                                   w=excitatory_result[0][:, j, 0, 3]) * 1e3, '--c', alpha=1.0, linewidth=linewidth)
 plt.ylabel("mean field (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.yticks([0.0, 50.0, 100.0])
-plt.ylim(ymax=100.0, ymin=0.0)
-plt.xticks([0.0, 15.0, 30.0])
-plt.xlim(xmax=30.0, xmin=0.0)
+plt.yticks([0.0, 80.0, 160.0])
+plt.ylim(ymax=160.0, ymin=0.0)
+plt.xticks([0.0, 20.0, 40.0])
+plt.xlim(xmax=40.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('A', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## error with adaptation
 plt.sca(axs[1, 0])
@@ -74,12 +75,13 @@ for k in range(excitatory_result[0].shape[0]):
                                   w=excitatory_result[0][k, j, 0, 3]) * 1e3
                   ], color='r', alpha=alpha, linewidth=linewidth_error)
 plt.ylabel("error (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.yticks([0.0, 50.0, 100.0])
-plt.ylim(ymax=100.0, ymin=0.0)
+plt.yticks([0.0, 80.0, 160.0])
+plt.ylim(ymax=160.0, ymin=0.0)
 plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.xticks([0.0, 15.0, 30.0])
-plt.xlim(xmax=30.0, xmin=0.0)
+plt.xticks([0.0, 20.0, 40.0])
+plt.xlim(xmax=40.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('C', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## error without adaptation
 plt.sca(axs[2, 0])
@@ -93,12 +95,13 @@ for k in range(excitatory_result[0].shape[0]):
                                   w=excitatory_result[0][k, j, 0, 3]) * 1e3
                   ], color='r', alpha=alpha, linewidth=linewidth_error)
 plt.ylabel("error (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.yticks([0.0, 50.0, 100.0])
-plt.ylim(ymax=100.0, ymin=0.0)
+plt.yticks([0.0, 80.0, 160.0])
+plt.ylim(ymax=160.0, ymin=0.0)
 plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.xticks([0.0, 15.0, 30.0])
-plt.xlim(xmax=30.0, xmin=0.0)
+plt.xticks([0.0, 20.0, 40.0])
+plt.xlim(xmax=40.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('E', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## current maximal
 plt.sca(axs[0, 1])
@@ -115,11 +118,12 @@ for j in range(excitatory_result[0].shape[1]):
                                   excitatory_result[0][:, j, -1, 2],
                                   excitatory_result[3],
                                   w=excitatory_result[0][:, j, -1, 3]) * 1e3, '--c', alpha=1.0, linewidth=linewidth)
-plt.yticks([0.0, 50.0, 100.0])
-plt.ylim(ymax=100.0, ymin=0.0)
-plt.xticks([0.0, 15.0, 30.0])
-plt.xlim(xmax=30.0, xmin=0.0)
+plt.yticks([0.0, 80.0, 160.0])
+plt.ylim(ymax=160.0, ymin=0.0)
+plt.xticks([0.0, 20.0, 40.0])
+plt.xlim(xmax=40.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('B', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## error with adaptation
 plt.sca(axs[1, 1])
@@ -132,12 +136,13 @@ for k in range(excitatory_result[0].shape[0]):
                                        excitatory_result[2],
                                        w=excitatory_result[0][k, j, -1, 3]) * 1e3
                   ], color='r', alpha=alpha, linewidth=linewidth_error)
-plt.yticks([0.0, 50.0, 100.0])
-plt.ylim(ymax=100.0, ymin=0.0)
+plt.yticks([0.0, 80.0, 160.0])
+plt.ylim(ymax=160.0, ymin=0.0)
 plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.xticks([0.0, 15.0, 30.0])
-plt.xlim(xmax=30.0, xmin=0.0)
+plt.xticks([0.0, 20.0, 40.0])
+plt.xlim(xmax=40.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('D', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## error without adaptation
 plt.sca(axs[2, 1])
@@ -150,12 +155,13 @@ for k in range(excitatory_result[0].shape[0]):
                                        excitatory_result[3],
                                        w=excitatory_result[0][k, j, -1, 3]) * 1e3
                   ], color='r', alpha=alpha, linewidth=linewidth_error)
-plt.yticks([0.0, 50.0, 100.0])
-plt.ylim(ymax=100.0, ymin=0.0)
+plt.yticks([0.0, 80.0, 160.0])
+plt.ylim(ymax=160.0, ymin=0.0)
 plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}, labelpad=2.)
-plt.xticks([0.0, 15.0, 30.0])
-plt.xlim(xmax=30.0, xmin=0.0)
+plt.xticks([0.0, 20.0, 40.0])
+plt.xlim(xmax=40.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('F', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 plt.subplots_adjust(top=0.975, bottom=0.06, left=0.100, right=0.985, wspace=0.17, hspace=0.12)
 plt.savefig('./figure/SP_figure_7.png', dpi=300)

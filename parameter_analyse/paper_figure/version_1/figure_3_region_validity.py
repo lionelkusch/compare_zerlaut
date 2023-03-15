@@ -30,7 +30,7 @@ def draw_contour(fig, ax, X, Y, Z, levels, title, xlabel, ylabel, zlabel, zmin, 
         cbar = fig.colorbar(CS, ax=ax)
         cbar.ax.set_ylabel(zlabel, {"fontsize": label_size})
         cbar.ax.tick_params(labelsize=number_size)
-        cbar.ax.set_ylabel('Hz', {"fontsize": label_legend_size}, labelpad=0.)
+        cbar.ax.set_ylabel('ms', {"fontsize": label_legend_size}, labelpad=0.)
     ax.set_xlabel(xlabel, {"fontsize": label_size})
     ax.set_ylabel(ylabel, {"fontsize": label_size})
     ax.set_title(title, {"fontsize": label_size})
@@ -53,6 +53,7 @@ table_name_network = 'first_exploration'
 population = 'excitatory'
 list_variable = [{'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 5000000.0},
                  {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0}]
+letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 ## make figure
 fig, axs = plt.subplots(2, 3, gridspec_kw={'width_ratios': [0.9, 0.9, 1.2]}, figsize=(6.8, 5.5))
@@ -96,6 +97,7 @@ for index, data_base in enumerate([data_base_network_amplitude, data_base_networ
         ## timescale with adaptation 7.0
         ax.set_xlabel('amplitude of input(Hz)', {"fontsize": labelticks_size}, labelpad=0.)
         ax.tick_params(labelsize=ticks_size)
+    ax.annotate(letters[index], xy=(-0.15, 0.9), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 
 plt.subplots_adjust(top=0.96, bottom=0.085, left=0.08, right=0.965, wspace=0.19, hspace=0.105)

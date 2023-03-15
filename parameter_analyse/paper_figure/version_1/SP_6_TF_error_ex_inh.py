@@ -55,6 +55,7 @@ plt.ylim(ymax=200.0, ymin=0.0)
 plt.xticks([0.0, 30.0, 60.0])
 plt.xlim(xmax=60.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('A', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## data of network
 plt.sca(axs[1, 0])
@@ -66,6 +67,7 @@ plt.ylim(ymax=200.0, ymin=0.0)
 plt.xticks([0.0, 30.0, 60.0])
 plt.xlim(xmax=60.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('C', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## error
 plt.sca(axs[2, 0])
@@ -85,6 +87,7 @@ plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}
 plt.xticks([0.0, 30.0, 60.0])
 plt.xlim(xmax=60.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('D', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## inhibitory population
 plt.sca(axs[0, 1])
@@ -100,6 +103,7 @@ plt.ylim(ymax=200.0, ymin=0.0)
 plt.xticks([0.0, 30.0, 60.0])
 plt.xlim(xmax=60.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('B', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## data of network
 plt.sca(axs[1, 1])
@@ -110,6 +114,7 @@ plt.ylim(ymax=200.0, ymin=0.0)
 plt.xticks([0.0, 30.0, 60.0])
 plt.xlim(xmax=60.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('D', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ## error
 plt.sca(axs[2, 1])
@@ -128,6 +133,7 @@ plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}
 plt.xticks([0.0, 30.0, 60.0])
 plt.xlim(xmax=60.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('F', xy=(-0.1, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 plt.subplots_adjust(top=0.975, bottom=0.06, left=0.130, right=0.985, wspace=0.17, hspace=0.12)
 plt.savefig('./figure/SP_figure_6.png', dpi=300)

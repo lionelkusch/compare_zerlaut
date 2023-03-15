@@ -57,6 +57,8 @@ plt.ylim(ymax=50.0, ymin=0.0)
 plt.xticks([0.0, 10.0, 20.0])
 plt.xlim(xmax=25.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('A', xy=(-0.08, 0.85), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+
 ## data from 50 neurons
 plt.sca(axs[1, 0])
 plt.scatter(excitatory_result[0][:, :, 0, 1] * 1e3,
@@ -67,6 +69,8 @@ plt.ylim(ymax=50.0, ymin=0.0)
 plt.xticks([0.0, 10.0, 20.0])
 plt.xlim(xmax=25.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('C', xy=(-0.08, 0.85), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+
 ## add errors
 plt.sca(axs[2, 0])
 for k in range(excitatory_result[0].shape[0]):
@@ -85,6 +89,7 @@ plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}
 plt.xticks([0.0, 10.0, 20.0])
 plt.xlim(xmax=25.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('E', xy=(-0.08, 0.85), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 
 ## inhibitory neuron
@@ -102,6 +107,8 @@ plt.ylim(ymax=50.0, ymin=0.0)
 plt.xticks([0.0, 10.0, 20.0])
 plt.xlim(xmax=25.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('B', xy=(-0.08, 0.85), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+
 ## data from 50 neurons
 plt.sca(axs[1, 1])
 plt.scatter(inhibitory_result[0][:, :, 0, 1] * 1e3,
@@ -111,6 +118,8 @@ plt.ylim(ymax=50.0, ymin=0.0)
 plt.xticks([0.0, 10.0, 20.0])
 plt.xlim(xmax=25.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('D', xy=(-0.08, 0.85), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+
 ## add errors
 plt.sca(axs[2, 1])
 for k in range(inhibitory_result[0].shape[0]):
@@ -128,6 +137,7 @@ plt.xlabel("firing rate of excitatory input (Hz)", {"fontsize": labelticks_size}
 plt.xticks([0.0, 10.0, 20.0])
 plt.xlim(xmax=25.0, xmin=0.0)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('F', xy=(-0.08, 0.85), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 plt.subplots_adjust(top=0.95, bottom=0.08, left=0.105, right=0.99, wspace=0.11, hspace=0.15)
 

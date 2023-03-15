@@ -63,6 +63,7 @@ plt.yticks([0.0, 100.0, 200.0])
 plt.ylabel("firing rate population (Hz)", {"fontsize": labelticks_size}, labelpad=0.0)
 plt.tick_params(labelsize=ticks_size)
 plt.title('excitatory population', {"fontsize": labelticks_size})
+plt.annotate('A', xy=(-0.1, 1.05), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 
 ## inhibitory population
@@ -87,6 +88,7 @@ plt.yticks([0.0, 100.0, 200.0])
 # plt.ylabel("firing rate of excitatory population Hz", {"fontsize": labelticks_size})
 plt.tick_params(labelsize=ticks_size)
 plt.title('inhibitory population', {"fontsize": labelticks_size})
+plt.annotate('B', xy=(-0.1, 1.05), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 
 ## excitatory population zoom
@@ -110,6 +112,7 @@ plt.ylim(ymax=20.0, ymin=-0.1)
 plt.yticks([0.0, 10.0, 20.0])
 plt.ylabel("firing rate population (Hz)", {"fontsize": labelticks_size}, labelpad=6.)
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('C', xy=(-0.1, 1.05), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 
 ## inhibitory population zoom
@@ -133,6 +136,7 @@ plt.ylim(ymax=120.0, ymin=-0.1)
 plt.yticks([0.0, 60.0, 120.0])
 # plt.ylabel("firing rate of excitatory population Hz", {"fontsize": labelticks_size})
 plt.tick_params(labelsize=ticks_size)
+plt.annotate('D', xy=(-0.1, 1.05), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 plt.subplots_adjust(top=0.95, bottom=0.10, left=0.09, right=0.975, wspace=0.16, hspace=0.15)
 

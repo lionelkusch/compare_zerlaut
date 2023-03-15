@@ -91,22 +91,26 @@ ex_diff_value[np.where(ex_diff_value <= 0.)] = np.NAN
 plot_values(fig, axs[0, 0], ex_diff_value, ranges_inhibitory[i_inh], ranges_adaptation[i_inh_adp], max_cut, cmap, min_cut, ticks_size)
 axs[0, 0].set_ylabel("firing rate of inhibitory\npopulation (Hz)", fontdict={'fontsize': labelticks_size})
 axs[0, 0].tick_params(labelsize=ticks_size)
+axs[0, 0].annotate('A', xy=(-0.2, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 in_diff_value = - in_TF * 2 / in_diff2_fe_fe * 1e6
 in_diff_value[np.where(in_diff_value <= 0.)] = np.NAN
 plot_values(fig, axs[1, 0], in_diff_value, ranges_excitatory[i_ex], ranges_adaptation[i_ex_adp], max_cut, cmap, min_cut, ticks_size)
 axs[1, 0].set_ylabel("firing rate of excitatory\npopulation (Hz)", fontdict={'fontsize': labelticks_size})
 axs[1, 0].set_xlabel("adaptation", fontdict={'fontsize': labelticks_size})
 axs[1, 0].tick_params(labelsize=ticks_size)
+axs[1, 0].annotate('B', xy=(-0.2, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 # zoom
 ex_zoom_diff_value = - ex_zoom_TF * 2 / ex_zoom_diff2_fi_fi * 1e6
 ex_zoom_diff_value[np.where(ex_zoom_diff_value <= 0.)] = np.NAN
 plot_values(fig, axs[0, 1], ex_zoom_diff_value, ranges_inhibitory[i_zoom_inh], ranges_adaptation[i_zoom_inh_adp], max_cut, cmap, min_cut, ticks_size, colorbar_add=True)
 axs[0, 1].tick_params(labelsize=ticks_size)
+axs[0, 1].annotate('C', xy=(-0.2, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 in_zoom_diff_value = - in_zoom_TF * 2 / in_zoom_diff2_fe_fe * 1e6
 in_zoom_diff_value[np.where(in_zoom_diff_value <= 0.)] = np.NAN
 plot_values(fig, axs[1, 1], in_zoom_diff_value, ranges_excitatory[i_zoom_ex], ranges_adaptation[i_zoom_ex_adp], max_cut, cmap, min_cut, ticks_size, colorbar_add=True)
 axs[1, 1].set_xlabel("adaptation", fontdict={'fontsize': labelticks_size})
 axs[1, 1].tick_params(labelsize=ticks_size)
+axs[1, 1].annotate('D', xy=(-0.2, 0.90), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 # plt.suptitle('Minimum of variance for negative derivation', fontsize=labelticks_size)
 plt.subplots_adjust(top=0.97, bottom=0.090, left=0.16, right=0.94, hspace=0.15, wspace=0.20)
