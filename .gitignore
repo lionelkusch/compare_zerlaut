@@ -8,3 +8,4 @@ venv
 *.pdf
 */*/*/simulation/simulation/
 */*/simulation/*/
+*/*/data/
