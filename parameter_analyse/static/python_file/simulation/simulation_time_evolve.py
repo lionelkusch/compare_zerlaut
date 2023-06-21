@@ -174,7 +174,7 @@ def network_device(pop_ex, pop_inh, param_background, param_topology, param_conn
 
 
 def simulate(results_path, duration, max_step,
-             param_nest, param_topology, param_connexion, param_background, extra=0):
+             param_nest, param_topology, param_connexion, param_background, extra=0, shift=-1.0):
     """
     Run one simulation of simple network
     :param results_path: the name of file for recording
@@ -211,7 +211,7 @@ def simulate(results_path, duration, max_step,
                  str(id_spike_recorder_in.tolist()[0]), str(np.around(firing_rate))]) == 1:
             sys.stderr.write('ERROR bad concatenation of spikes file\n')
             exit(1)
-        firing_rate -= 1.0
+        firing_rate += shift
         time_interval += duration
 
     if firing_rate < 0.0:
