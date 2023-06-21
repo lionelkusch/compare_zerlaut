@@ -5,13 +5,13 @@ from parameter_analyse.static.python_file.plot.helper_function import get_gids_a
     detection_burst
 
 
-def get_firing_rate(path_init, firing_rate_ext_init=52.0, firing_rate_min=-0.1,
+def get_firing_rate(path_init, firing_rate_ext_init=52.0, firing_rate_end=-0.1,
                     increment_firing_rate=-1.0, interval_time=10000.0):
     """
     save in a file the firing rate of each step
     :param path_init: path of the files
     :param firing_rate_ext_init: initial firing rate
-    :param firing_rate_min: minimal firing rate
+    :param firing_rate_end: minimal firing rate
     :param increment_firing_rate: negative increment of the firing rate
     :param interval_time: interval of time for each step
     :return:
@@ -19,9 +19,9 @@ def get_firing_rate(path_init, firing_rate_ext_init=52.0, firing_rate_min=-0.1,
     gids_all = get_gids_all(path_init)
     nb_ex = gids_all['excitatory'][0][1] - gids_all['excitatory'][0][0] + 1
     nb_in = gids_all['inhibitory'][0][1] - gids_all['inhibitory'][0][0] + 1
-    data_pop_all = load_spike_all_long(path_init, firing_rate_ext_init, firing_rate_min, increment_firing_rate)
+    data_pop_all = load_spike_all_long(path_init, firing_rate_ext_init, firing_rate_end, increment_firing_rate)
     firing_rates = []
-    for firing_rate in np.arange(firing_rate_ext_init, firing_rate_min, increment_firing_rate):
+    for firing_rate in np.arange(firing_rate_ext_init, firing_rate_end, increment_firing_rate):
         name_firing_rate = str(np.around(firing_rate))
         firing_rates.append([data_pop_all[name_firing_rate]['excitatory'].shape[0] / nb_ex / (interval_time * 1e-3),
                              data_pop_all[name_firing_rate]['inhibitory'].shape[0] / nb_in / (interval_time * 1e-3)])
@@ -88,6 +88,7 @@ def plot_spiketrains(path_init, firing_rate_ext, font_size=10.0, tickfont_size=7
 
 
 if __name__ == '__main__':
+    # high fixed point continue estimation
     path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/time_reduce/"
     firing_rate_ext_init = 52.0
     firing_rate_min = -0.1
@@ -99,3 +100,14 @@ if __name__ == '__main__':
     get_firing_rate(path_init+'/b_60.0/')
     # plot_firing_rate(path_init+'/b_60.0/')
     # plot_firing_rate_all([path_init + '/b_0.0/', path_init + '/b_30.0/', path_init + '/b_60.0/'])
+
+    # low fixed point continue estimation
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/time_reduce_low/"
+    firing_rate_ext_init = 48.0
+    firing_rate_min = -0.1
+    # get_firing_rate(path_init+'/b_0.0/', firing_rate_ext_init=48.0, firing_rate_end=99.0, increment_firing_rate=1.0)
+    plot_firing_rate(path_init+'/b_0.0/')
+    # get_firing_rate(path_init+'/b_30.0/', firing_rate_ext_init=48.0, firing_rate_end=99.0, increment_firing_rate=1.0)
+    plot_firing_rate(path_init+'/b_30.0/')
+    # get_firing_rate(path_init+'/b_60.0/', firing_rate_ext_init=48.0, firing_rate_end=99.0, increment_firing_rate=1.0)
+    plot_firing_rate(path_init+'/b_60.0/')
