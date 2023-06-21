@@ -54,13 +54,17 @@ population = 'excitatory'
 list_variable = [{'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 5000000.0},
                  {'name': 'frequency', 'title': 'frequency input', 'min': 0.0, 'max': 5000000.0}]
 # choose the rate
-for rate, name_figure in [(7.0, './figure/figure_4.png'), (0.0, './figure/SP_figure_9.png')]:
+for rate, name_figure, adp in [
+                               (7.0, './figure/figure_4.png', False), (0.0, './figure/SP_figure_9.png', False),
+                               (7.0, './figure/SP_figure_9_7_adpt.png', True), (0.0, './figure/SP_figure_9_0_adpt.png', True),
+                               # (-1.0, './figure/SP_figure_9_amp.png', False), (-1.0, './figure/SP_figure_9_amp_1.png', True),
+                               ]:
     if rate == 0.0:
-        data_base_network = data_base_network_0
+        data_base_network = data_base_network_0 if not adp else data_base_network_adp_0
     elif rate == 7.0:
-        data_base_network = data_base_network_7
+        data_base_network = data_base_network_7 if not adp else data_base_network_adp_7
     elif rate == -1.0:
-        data_base_network = data_base_network_amplitude
+        data_base_network = data_base_network_amplitude if not adp else data_base_network_adp_amplitude
     else:
         raise Exception('bad rate')
 
