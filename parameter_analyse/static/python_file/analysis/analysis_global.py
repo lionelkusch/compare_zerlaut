@@ -355,3 +355,8 @@ if __name__ == "__main__":
     analysis_global(
         "/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/static/simulation/simulation/_frequency_" + str(
             frequency) + "_amplitude_400.0", 0, 0.0, 20000.0, 0.1, 10)
+    result_1 = analysis_global(
+        "/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/static/simulation/short/_b_0.0_rate_10.0/", 0, 0.0, 2000.0, 0.1, 10)
+    result_2 = analysis_global(
+        "/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/static/simulation/short/_b_0.0_rate_80.0/", 0, 0.0, 2000.0, 0.1, 10)
+    print(result_1, result_2)

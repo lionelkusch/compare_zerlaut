@@ -105,6 +105,7 @@ def load_spike_all_long(path, firing_rate_init, firing_rate_min, increment_firin
     """
     data = {}
     for firing_rate in np.arange(firing_rate_init, firing_rate_min, increment_firing_rate):
+        print(firing_rate)
         name_firing_rate = str(np.around(firing_rate))
         data[name_firing_rate] = {'excitatory': [], 'inhibitory': []}
         for name, short_name in [('excitatory', 'ex'), ('inhibitory', 'in')]:
