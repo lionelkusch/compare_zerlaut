@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -89,7 +91,7 @@ def plot_spiketrains(path_init, firing_rate_ext, font_size=10.0, tickfont_size=7
 
 if __name__ == '__main__':
     # high fixed point continue estimation
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/time_reduce/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/data/time_reduce/"
     firing_rate_ext_init = 52.0
     firing_rate_min = -0.1
     # plot_spiketrains(path_init + '/b_0.0/', firing_rate_ext=0.0, burst=False)
@@ -102,7 +104,7 @@ if __name__ == '__main__':
     # plot_firing_rate_all([path_init + '/b_0.0/', path_init + '/b_30.0/', path_init + '/b_60.0/'])
 
     # low fixed point continue estimation
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/time_reduce_low/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/data/time_reduce_low/"
     firing_rate_ext_init = 48.0
     firing_rate_min = -0.1
     # get_firing_rate(path_init+'/b_0.0/', firing_rate_ext_init=48.0, firing_rate_end=99.0, increment_firing_rate=1.0)

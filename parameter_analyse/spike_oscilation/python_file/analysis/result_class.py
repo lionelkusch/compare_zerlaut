@@ -1,8 +1,10 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 
 
 class Result_analyse:
-    def __init__(self,max_lag_autocorrelation=50):
+    def __init__(self, max_lag_autocorrelation=50):
         self.max_lag_autocorrelation = max_lag_autocorrelation
         self.data = {}
         list_single = ['names_population',

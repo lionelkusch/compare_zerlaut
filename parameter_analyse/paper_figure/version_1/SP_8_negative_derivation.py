@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import numpy as np
 from matplotlib import cm
@@ -45,7 +47,7 @@ def plot_values(fig, ax, data, ranges_x, ranges_y, max_cut, cmap, min_cut, ticks
     ax.invert_yaxis()
 
 # parameters of for getting data and plotting
-path = os.path.dirname(os.path.realpath(__file__)) + '/../../chek_derivation/'
+path = os.path.dirname(os.path.realpath(__file__)) + '/../../check_derivation/data/'
 min_cut = 1e-8
 max_cut = 1e50
 labelticks_size = 12

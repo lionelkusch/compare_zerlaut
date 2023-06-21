@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import datetime
 from parameter_analyse.static.python_file.parameters import parameter_default
@@ -42,9 +44,10 @@ def run_sim(results_path, parameter_default, dict_variable, duration, max_step, 
 
     print('time: ' + str(datetime.datetime.now()) + ' END SIMULATION \n')
 
+
 if __name__ == '__main__':
     for b in [30., 60., 0.0]:
-        path = os.path.dirname(os.path.realpath(__file__)) + '/time_reduce_low/b_'+str(b)+'/'
+        path = os.path.dirname(os.path.realpath(__file__)) + '/data/time_reduce_low/b_'+str(b)+'/'
         parameter_default.param_nest['local_num_threads'] = 8
         parameter_default.param_topology['mean_w_0'] = 200.0 if b != 0.0 else 0.0
         run_sim(path, parameter_default, {'b': b, 'rate': 48.0}, 10000.0, 52, extra=0)

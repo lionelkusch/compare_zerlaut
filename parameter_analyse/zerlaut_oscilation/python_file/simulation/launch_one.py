@@ -1,5 +1,7 @@
-import numpy as np
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
+import numpy as np
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
 from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
 
@@ -66,19 +68,19 @@ if __name__ == "__main__":
     end = 2001.0
     range_rate = [0.0, 0.2, 0.3, 0.4, 0.6, 1.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0]
     range_frequency = [0.0]
-    # for rate in range_rate:
-    #     if not os.path.exists(path_simulation + "/rate_" + str(rate)):
-    #         os.mkdir(path_simulation + "/rate_" + str(rate))
-    #     for frequency in range_frequency:
-    #         if not os.path.exists(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency)):
-    #             parameters = run_rate_deterministe({'rate': rate, 'frequency': frequency, 'path': path_simulation},
-    #                                                end=end)
-    #
-    # for rate in range_rate:
-    #     for frequency in range_frequency:
-    #         print(rate, frequency)
-    #         plot_result(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency), begin=0.0, end=end)
-    # plt.show()
+    for rate in range_rate:
+        if not os.path.exists(path_simulation + "/rate_" + str(rate)):
+            os.mkdir(path_simulation + "/rate_" + str(rate))
+        for frequency in range_frequency:
+            if not os.path.exists(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency)):
+                parameters = run_rate_deterministe({'rate': rate, 'frequency': frequency, 'path': path_simulation},
+                                                   end=end)
+
+    for rate in range_rate:
+        for frequency in range_frequency:
+            print(rate, frequency)
+            plot_result(path_simulation + "/rate_" + str(rate) + "/frequency_" + str(frequency), begin=0.0, end=end)
+    plt.show()
 
     path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/short/'
     for rate, init_E, init_I in [(10.0, [0.000125, 0.000125], [0.05, 0.05]),

@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import os
 import json
@@ -225,6 +227,7 @@ def transfom_spike_global(gid, data, begin, end, resolution, limit_burst):
 def compute_rate(result_global, gids, data, begin, end):
     """
     Compute the firing rate
+    :param result_global: object with final result
     :param gids: an array with the range of id for the different population
     :param data: the spike of all neurons between end and begin
     :param begin: the time of the first spike
@@ -490,6 +493,5 @@ def analysis_global(path, number, begin, end, resolution, limit_burst):
 
 if __name__ == "__main__":
     frequency = 40.0
-
     analysis_global(os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/simulation/_frequency_" + str(
         frequency) + "_amplitude_400.0", 0, 0.0, 20000.0, 0.1, 10)

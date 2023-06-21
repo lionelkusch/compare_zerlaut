@@ -1,4 +1,4 @@
-#  Copyright 2021 Aix-Marseille Université
+#  Copyright 2023 Aix-Marseille Université
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import scipy.special as sp_spec
@@ -132,6 +132,7 @@ def fitting_model_zerlaut(feOut, feSim, fiSim, adaptation, parameters, excitator
     :param excitatory: excitatory or inhibitory neurons
     :param print_result: print result of the fitting
     :param save_result: save result
+    :param fitting: boolean for update the saving file
     :return:
     """
     mask = np.where(adaptation == 0.0)

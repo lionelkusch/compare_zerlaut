@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import matplotlib.pyplot as plt
 import os
 from parameter_analyse.static.python_file.plot.helper_function import get_gids_all, load_spike_all, detection_burst
@@ -11,7 +13,7 @@ def plot_spiketrains(path_init, ax, font_size=10.0, tickfont_size=7.0, burst=Fal
     :param ax: axis of the figure for plotting
     :param font_size: size of label font
     :param tickfont_size: size of the ticks size
-    :param burst: add line when ther are a burst
+    :param burst: add line when their are a burst
     :param size_mark: size of the mark
     :param begin: start of the plot
     :param end: end of the plot
@@ -35,7 +37,7 @@ def plot_spiketrains(path_init, ax, font_size=10.0, tickfont_size=7.0, burst=Fal
 
 
 if __name__ == '__main__':
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/data/"
     path = path_init + '/master_seed_0/_b_60.0_rate_52.0/'; begin = 1000.0; end = 5000.0
     # path = path_init+'/time_reduce/b_60.0/'; begin=8000.0; end=23000.0
     plt.figure(figsize=(20, 10))

@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -56,7 +58,7 @@ ticks_size = 10
 for b, rate in [(0.0, 10.0), (0.0, 50.0), (0.0, 60.0),
                 (30.0, 10.0), (30.0, 50.0), (30.0, 60.0),
                 (60.0, 10.0), (60.0, 50.0), (60.0, 60.0)]:
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/long/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/data/long/"
     values = gen_log_space(int((end - begin) / dt - window / dt) - int(window / dt) - nb_sample * dt, nb_test)[2:]
     # get data
     result = np.load(path_init + '/' + str(b) + '_size_variance_rate_' + str(rate) + '.npy', allow_pickle=True)

@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import sqlite3
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -153,6 +155,7 @@ def draw_point(ax, X, Y, param='w.', size=6.0):
     :param X: x values
     :param Y: y values
     :param param: parameters for plotting
+    :param size: size of the marker
     :return:
     """
     ax.plot(X, Y, param, markersize=size)
@@ -189,7 +192,7 @@ def draw_zone_levels(ax, X, Y, Z, resolution, levels, color):
     :param Y: y values
     :param Z: z values
     :param resolution: boolean if resolution
-    :param level: level of plotting
+    :param levels: level of plotting
     :param color: color of the zone
     :return:
     """
@@ -233,7 +236,7 @@ def draw_line_levels(ax, X, Y, Z, resolution, levels, color):
     :param Y: y values
     :param Z: z values
     :param resolution: boolean if resolution
-    :param level: level of plotting
+    :param levels: level of plotting
     :param color: color of the line
     :return:
     """
@@ -286,6 +289,8 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     :param resY: resolution y
     :param label_size: size of the label
     :param number_size: size of the number
+    :param population: population of the result
+    :param cond: extra condition for selecting the database
     """
     name_var1 = list_variable[0]['name']
     name_var2 = list_variable[1]['name']

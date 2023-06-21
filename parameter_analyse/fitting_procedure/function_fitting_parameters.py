@@ -1,9 +1,8 @@
-#  Copyright 2021 Aix-Marseille Université
+#  Copyright 2023 Aix-Marseille Université
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
-import numpy as np
 from .generate_data import generate_rates
-from .fitting_function_zerlaut import fitting_model_zerlaut, create_transfer_function
+from .fitting_function_zerlaut import fitting_model_zerlaut
 from .plot.plot_result import plot_details_raw, plot_result
 from .plot.plot_fitting_figure import plot_result_zerlaut
 from .plot.helper_function import get_result
@@ -43,6 +42,7 @@ def engin(parameters, parameters_all, excitatory,
     :param print_error: boolean for plotting error
     :param print_fitting: print result fitting
     :param print_details_raw: boolean for plotting details
+    :param fitting: boolean for update the saving file
     :return:
     """
     # file name

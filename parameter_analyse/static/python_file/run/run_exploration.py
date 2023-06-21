@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import sqlite3
 import datetime
 import os
@@ -130,6 +132,7 @@ def check_already_analise_database(data_base, table_name, result_path, name_popu
     :param data_base: path of the database
     :param table_name: name of the table
     :param result_path: folder to analyse
+    :param name_population: name of the population to analise
     """
     con = sqlite3.connect(data_base, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
     cursor = con.cursor()

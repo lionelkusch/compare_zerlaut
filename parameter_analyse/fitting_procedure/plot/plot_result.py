@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 from .plot_fitting_figure import plot_result_box_plot, plot_result_std, plot_result_curve_box_std, \
     plot_result_zerlaut, plot_result_zerlaut_all
 from .helper_function import get_result_raw, get_result

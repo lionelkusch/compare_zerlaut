@@ -1,5 +1,8 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
 import matplotlib.pyplot as plt
+
 
 def plot_result(path_simulation, begin, end, region = 19):
     """
@@ -65,6 +68,7 @@ def plot_result(path_simulation, begin, end, region = 19):
     plt.plot(times, external_input_inhibitory_to_excitatory[:, region], label='external_input_inhibitory_to_excitatory', alpha=0.2)
     plt.plot(times, external_input_inhibitory_to_inhibitory[:, region], label='external_input_inhibitory_to_inhibitory', alpha=0.2)
     plt.legend()
+
 
 if __name__ == "__main__":
     import os

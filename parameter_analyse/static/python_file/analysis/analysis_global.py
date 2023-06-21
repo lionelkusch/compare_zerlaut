@@ -1,6 +1,7 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import os
-import json
 from elephant.statistics import isi, cv, lv
 from elephant.spectral import welch_psd
 from scipy.stats import variation
@@ -351,12 +352,11 @@ def analysis_global(path, number, begin, end, resolution, limit_burst):
 
 
 if __name__ == "__main__":
+    import os
+    path = os.path.dirname(os.path.realpath(__file__)) + "/../../"
     frequency = 40.0
-    analysis_global(
-        "/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/static/simulation/simulation/_frequency_" + str(
-            frequency) + "_amplitude_400.0", 0, 0.0, 20000.0, 0.1, 10)
-    result_1 = analysis_global(
-        "/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/static/simulation/short/_b_0.0_rate_10.0/", 0, 0.0, 2000.0, 0.1, 10)
-    result_2 = analysis_global(
-        "/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/static/simulation/short/_b_0.0_rate_80.0/", 0, 0.0, 2000.0, 0.1, 10)
+    analysis_global(path + "/data/simulation/simulation/_frequency_" + str(frequency) + "_amplitude_400.0",
+                    0, 0.0, 20000.0, 0.1, 10)
+    result_1 = analysis_global(path + "/data/simulation/short/_b_0.0_rate_10.0/", 0, 0.0, 2000.0, 0.1, 10)
+    result_2 = analysis_global(path + "/data/simulation/short/_b_0.0_rate_80.0/", 0, 0.0, 2000.0, 0.1, 10)
     print(result_1, result_2)

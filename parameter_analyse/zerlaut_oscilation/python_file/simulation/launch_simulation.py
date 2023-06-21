@@ -1,5 +1,7 @@
-import numpy as np
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
+import numpy as np
 from parameter_analyse.zerlaut_oscilation.python_file.analysis.insert_database import init_database
 import pathos.multiprocessing as mp
 import dill

@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +18,7 @@ letters = [['A', 'B'], ['C', 'D']]
 
 # get data
 # parameter of the data
-path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/"
+path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/data/"
 path = os.path.dirname(__file__) + '/../../analyse_dynamic/matlab/'
 max_seed = 30
 box_plot = False

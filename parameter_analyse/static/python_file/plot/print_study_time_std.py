@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import matplotlib.pyplot as plt
 import os
 import pathos.multiprocessing as mp
@@ -397,7 +399,7 @@ def plot_variance_mean_std_unique_long(path_init, b=60.0, rate=10, begin=1000.0,
 
 
 if __name__ == "__main__":
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/data/"
     path = path_init + '/master_seed_0/'
     plt.figure(figsize=(20, 20))
     ax = plt.gca()
@@ -418,7 +420,7 @@ if __name__ == "__main__":
     # plt.savefig(path_figure+'/SP_figure_29.pdf', dpi=300)
 
     ## long simulation
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/data/"
     path = path_init + '/long/'
     generate_variance_mean_std_long(path, b=0.0, rate_range=[10.0, 50.0, 60.0], begin=10000.0, end=40000.0,
                                     nb_test=50, nb_sample=50000)

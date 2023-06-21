@@ -1,8 +1,11 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 from matplotlib import cm
 import matplotlib.pyplot as plt
 from parameter_analyse.fitting_procedure.Zerlaut import ZerlautAdaptationSecondOrder
 from matplotlib.colors import SymLogNorm, Normalize
+
 
 def model(parameter, path_TF_e, path_TF_i):
     """
