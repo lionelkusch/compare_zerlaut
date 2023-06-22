@@ -1,7 +1,7 @@
 #  Copyright 2023 Aix-Marseille Université
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
-from parameter_analyse.plot.plot_figure.plot import plot_noise_frequency, plot_compare, plot_compare_frequence, \
-                                                    plot_compare_all, plot_compare_frequence_noise
+from parameter_analyse.plot.plot_figure.helper_function import plot_noise_frequency, plot_compare,\
+    plot_compare_frequence, plot_compare_all, plot_compare_frequence_noise
 import matplotlib.pyplot as plt
 import os
 
