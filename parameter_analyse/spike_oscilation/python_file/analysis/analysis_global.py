@@ -389,7 +389,7 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
         hist_0_1_max = np.max(hist_0_1[0])
         hist_0_1_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_0_1[0], 0), t_start=begin * pq.ms,
                                              t_stop=end * pq.ms, bin_size=0.1 * pq.ms)
-        hist_0_1_cc_hist, hist_1_lags = cross_correlation_histogram(hist_0_1_bin_hist, hist_0_1_bin_hist,
+        hist_0_1_cc_hist, hist_0_1_lags = cross_correlation_histogram(hist_0_1_bin_hist, hist_0_1_bin_hist,
                                                                     window=[-lag, lag],
                                                                     cross_correlation_coefficient=True)
         hist_0_1_timescale = spike_train_timescale(hist_0_1_bin_hist, max_tau=lag * pq.ms)
