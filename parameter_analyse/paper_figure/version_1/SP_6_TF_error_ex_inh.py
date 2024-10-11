@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import matplotlib.pyplot as plt
 from parameter_analyse.fitting_procedure.parameters import excitatory_param, inhibitory_param, params_all
@@ -13,6 +15,21 @@ def get_result_fitting(path, parameters, parameters_all, excitatory,
                        nb_neurons=50):
     """
     get data generated
+    :param parameters_all: parameter excitatory and inhibitory used for the model
+    :param excitatory: boolean for parameter for inhibitory or excitatory
+    :param MAXfexc: maximum excitatory input firing rate
+    :param MINfexc: minimum firing rate
+    :param nb_value_fexc: number of different value of excitatory input firing rate
+    :param MAXfinh: maximum inhibitory input firing rate
+    :param MINfinh: minimum inhibitory input firing rate
+    :param nb_value_finh: number of different value of inhibitory input firing rate
+    :param MAXadaptation: maximum of adaptation
+    :param MINadaptation: minimum of adaptation
+    :param nb_value_adaptation: number of different value of adaptation
+    :param MAXfout: maximum of output firing rate
+    :param MAXJump: maximum jump of output firing rate
+    :param MINJump: minimum jump of output firing rate
+    :param nb_neurons: number of trial ofr each condition
     :return:
     """
     name_file = path
@@ -27,7 +44,7 @@ def get_result_fitting(path, parameters, parameters_all, excitatory,
     return result_n_brut, data, p_with, p_without, TF
 
 ## path of the data
-path = os.path.dirname(__file__) + '/../..//fitting_procedure/fitting_50hz/'
+path = os.path.dirname(__file__) + '/../../fitting_procedure/data/fitting_50hz/'
 excitatory_result = get_result_fitting(path, excitatory_param, params_all, True)
 inhibitory_result = get_result_fitting(path, inhibitory_param, params_all, False)
 ## parameter of the figures

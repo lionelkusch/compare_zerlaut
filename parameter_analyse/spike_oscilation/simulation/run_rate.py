@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import numpy as np
 from parameter_analyse.spike_oscilation.python_file.run.run_exploration import run_exploration_2D

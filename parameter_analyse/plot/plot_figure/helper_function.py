@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import json
 import numpy as np
 from scipy import signal
@@ -124,8 +126,8 @@ def get_min_max(max_E, min_E, data_ex, M_rateE, variance_ex=None, M_rateE_var=No
 
 def plot_noise_frequency(amplitude, frequency, rate, begin, end, nb_neurons=10 ** 4, ratio_inhibitory=0.2, dt=0.1,
                          zoom_frequency=250, linewidth=0.5,
-                         path_result_mean_field='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/',
-                         path_result_network='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/simulation/',
+                         path_result_mean_field=None,
+                         path_result_network=None,
                          spike_trains=[(0.2, 0.2), (5.0, 0.2)],
                          mean_field=[(0.0, '/deterministe/'), (1e-9, '/stochastic_1e-09/'),
                                      (1e-8, '/stochastic_1e-08/')],
@@ -255,8 +257,8 @@ def plot_noise_frequency(amplitude, frequency, rate, begin, end, nb_neurons=10 *
 
 def plot_compare_frequence(amplitude, frequency, rate, begin, end, nb_neurons=10 ** 4, ratio_inhibitory=0.2, dt=0.1,
                            zoom_frequency=250, linewidth=[0.5, 0.5],
-                           path_result_mean_field='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/',
-                           path_result_network='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/simulation/',
+                           path_result_mean_field=None,
+                           path_result_network=None,
                            resolution=0.2, window_size=0.2, path_mean_field='/deterministe/', plot_excitatory=True,
                            plot_inhibitory=False, variance_plot=False,
                            figsize=(20, 20), labelsize=30, ticks_size=20,
@@ -393,8 +395,8 @@ def plot_compare_frequence(amplitude, frequency, rate, begin, end, nb_neurons=10
 
 def plot_compare_frequence_noise(amplitude, frequency, rate, begin, end, nb_neurons=10 ** 4, ratio_inhibitory=0.2,
                                  dt=0.1, zoom_frequency=250, linewidth=[0.5, 0.5],
-                                 path_result_mean_field='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/',
-                                 path_result_network='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/simulation/',
+                                 path_result_mean_field=None,
+                                 path_result_network=None,
                                  resolution=0.2, window_size=0.2, path_mean_fields=['/deterministe/', ],
                                  plot_excitatory=True, plot_inhibitory=False,
                                  color_curve_meanfield=['orange', 'green', 'red'],
@@ -567,8 +569,8 @@ def plot_compare_frequence_noise(amplitude, frequency, rate, begin, end, nb_neur
 
 
 def plot_compare(amplitude, frequency, rate, begin, end, nb_neurons=10 ** 4, ratio_inhibitory=0.2, linewidth=[0.5, 1.0],
-                 path_result_mean_field='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/',
-                 path_result_network='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/simulation/',
+                 path_result_mean_field=None,
+                 path_result_network=None,
                  resolution=0.2, window_size=0.2, path_mean_field='/deterministe/', plot_excitatory=True,
                  plot_inhibitory=False, variance_plot=False,
                  figsize=(20, 20), labelsize=30, ticks_size=20,
@@ -681,8 +683,8 @@ def plot_compare(amplitude, frequency, rate, begin, end, nb_neurons=10 ** 4, rat
 
 def plot_compare_all(amplitude, frequency, rate, begin, end, nb_neurons=10 ** 4, ratio_inhibitory=0.2, dt=0.1,
                      linewidth=[0.5, 1.0],
-                     path_result_mean_field='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/',
-                     path_result_network='/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/simulation/',
+                     path_result_mean_field=None,
+                     path_result_network=None,
                      resolution=0.2, window_size=0.2, path_mean_fields=['/deterministe/'], plot_excitatory=True,
                      plot_inhibitory=False, variance_plot=False, max_E=None, min_E=None, max_I=None, min_I=None,
                      color_curve_meanfield=['orange', 'green', 'red'],

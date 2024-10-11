@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +9,7 @@ from parameter_analyse.static.python_file.plot.helper_function import get_gids_a
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
 
 ## path of the data
-path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/master_seed_0/"
+path_init = os.path.dirname(os.path.realpath(__file__))
 path = os.path.dirname(__file__) + '/../../analyse_dynamic/matlab/'
 
 ## parameter of the figures
@@ -34,10 +36,10 @@ b_0['x'][-1] *= 1e3
 b_0['x'][2:5] *= 1e6
 
 ## get network result biffurcation
-network_0 = np.concatenate([np.expand_dims(range(100), axis=1), np.load(path_init + '/0.0_mean_var.npy')], axis=1)
+network_0 = np.concatenate([np.expand_dims(range(100), axis=1), np.load(path_init + '/../../static/simulation/data/master_seed_0//0.0_mean_var.npy')], axis=1)
 
 ## get result_run_80hz
-result_10 = tools.get_result(path_init + '/../../../zerlaut_oscilation/simulation/deterministe/short/rate_10.0/frequency_0.0', begin, end)
+result_10 = tools.get_result(path_init + '/../../zerlaut_oscilation/simulation/deterministe/short/rate_10.0/frequency_0.0', begin, end)
 times_10 = result_10[0][0]
 rateE_10 = result_10[0][1][:, 0, :] * 1e3
 stdE_10 = result_10[0][1][:, 2, :]
@@ -47,17 +49,17 @@ corrEI_10 = result_10[0][1][:, 3, :]
 adaptationE_10 = result_10[0][1][:, 5, :]
 adaptationI_10 = result_10[0][1][:, 6, :]
 noise_10 = result_10[0][1][:, 7, :]
-gids_all_10 = get_gids_all(path_init + '/../short/_b_0.0_rate_10.0/')
+gids_all_10 = get_gids_all(path_init + '/../../static/simulation/data/short/_b_0.0_rate_10.0/')
 nb_ex_10 = gids_all_10['excitatory'][0][1] - gids_all_10['excitatory'][0][0]
 nb_in_10 = gids_all_10['inhibitory'][0][1] - gids_all_10['inhibitory'][0][0]
-data_pop_all_10 = load_spike_all(gids_all_10, path_init + '/../short/_b_0.0_rate_10.0/', begin, end)
+data_pop_all_10 = load_spike_all(gids_all_10, path_init + '/../../static/simulation/data/short/_b_0.0_rate_10.0/', begin, end)
 hist_ex_10 = np.histogram(data_pop_all_10['excitatory'][1], bins=int((end - begin) / dt))
 hist_slide_ex_10 = slidding_window(hist_ex_10[0], int(window / dt)) / nb_ex_10 / (dt * 1e-3)
 hist_in_10 = np.histogram(data_pop_all_10['inhibitory'][1], bins=int((end - begin) / dt))
 hist_slide_in_10 = slidding_window(hist_in_10[0], int(window / dt)) / nb_in_10 / (dt * 1e-3)
 
 ## get result_run_80hz
-result_80 = tools.get_result(path_init + '/../../../zerlaut_oscilation/simulation/deterministe/short/rate_80.0/frequency_0.0', begin, end)
+result_80 = tools.get_result(path_init + '/../../zerlaut_oscilation/simulation/deterministe/short/rate_80.0/frequency_0.0', begin, end)
 times_80 = result_80[0][0]
 rateE_80 = result_80[0][1][:, 0, :] * 1e3
 stdE_80 = result_80[0][1][:, 2, :]
@@ -67,10 +69,10 @@ corrEI_80 = result_80[0][1][:, 3, :]
 adaptationE_80 = result_80[0][1][:, 5, :]
 adaptationI_80 = result_80[0][1][:, 6, :]
 noise_80 = result_80[0][1][:, 7, :]
-gids_all_80 = get_gids_all(path_init + '/../short/_b_0.0_rate_80.0/')
+gids_all_80 = get_gids_all(path_init + '/../../static/simulation/data/short/_b_0.0_rate_80.0/')
 nb_ex_80 = gids_all_80['excitatory'][0][1] - gids_all_80['excitatory'][0][0]
 nb_in_80 = gids_all_80['inhibitory'][0][1] - gids_all_80['inhibitory'][0][0]
-data_pop_all_80 = load_spike_all(gids_all_80, path_init + '/../short/_b_0.0_rate_80.0/', begin, end)
+data_pop_all_80 = load_spike_all(gids_all_80, path_init + '/../../static/simulation/data/short/_b_0.0_rate_80.0/', begin, end)
 hist_ex_80 = np.histogram(data_pop_all_80['excitatory'][1], bins=int((end - begin) / dt))
 hist_slide_ex_80 = slidding_window(hist_ex_80[0], int(window / dt)) / nb_ex_80 / (dt * 1e-3)
 hist_in_80 = np.histogram(data_pop_all_80['inhibitory'][1], bins=int((end - begin) / dt))

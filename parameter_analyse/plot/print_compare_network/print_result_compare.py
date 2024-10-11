@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import sqlite3
 import matplotlib.pyplot as plt
 from numpy import linspace, meshgrid
@@ -13,6 +15,7 @@ def getData(data_base, table_name, list_variable, name_analysis='global', cond="
     :param table_name: name of the table
     :param list_variable: variable to get
     :param name_analysis: name of analysis
+    :param cond: additional condition
     :return:
     """
     con = sqlite3.connect(data_base, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
@@ -50,6 +53,7 @@ def grid(x, y, z, res, resX, resY, id=None):
     :param res: boolean if resolution
     :param resX: resolution X
     :param resY: resolution Y
+    :param id: selection of result
     :return:
     """
     if res:
@@ -117,6 +121,7 @@ def draw_contour_limit(fig, ax, X, Y, Z, resolution, title, xlabel, ylabel, zlab
     :param label_size: size of the label
     :param number_size: size of the number
     :param nbins: number of bins for the scale
+    :param remove_label_y: remove label of y axis
     :return:
     """
     if len(Z) > 3:
@@ -150,6 +155,7 @@ def draw_point(ax, X, Y, param='w.', size=6.0):
     :param X: x values
     :param Y: y values
     :param param: parameters for plotting
+    :param size: size of the marker
     :return:
     """
     ax.plot(X, Y, param, markersize=size)
@@ -226,6 +232,7 @@ def min_max(data):
     zmax = np.nanmax(data)
     return [zmin, zmax]
 
+
 def plot_analysis(data_base_network, data_base_mean_field, table_name_network, table_name_meanfield, list_variable, resX=None, resY=None,
                   label_size=30.0, number_size=20.0, level_percentage=0.95, population='excitatory',
                   measure_network='PLV_w5ms', measure_mean_field='PLV_value',
@@ -234,15 +241,25 @@ def plot_analysis(data_base_network, data_base_mean_field, table_name_network, t
                   ):
     """
     create pdf with all the analysis
-    :param path_figure: path to save the figure
-    :param data_base: path of the database
-    :param table_name: name of the table
+    :param data_base_network: database of neural network simulation
+    :param data_base_mean_field: database of the mean field
+    :param table_name_network: table in the database for the neural network
+    :param table_name_meanfield: table in the database for the mean field
     :param list_variable: list of variable to plot
     :param resX: resolution x
     :param resY: resolution y
     :param label_size: size of the label
     :param number_size: size of the number
     :param level_percentage: level of the percentage
+    :param population: population of neurons
+    :param measure_network: name of the measure for the neural network
+    :param measure_mean_field: name of the measure for the mean field
+    :param title_measure: title of the measure
+    :param unit: unit of the measure
+    :param min_value: minimum value
+    :param max_value: maximum value
+    :param rate: selection of average input
+    :param figsize: size of the figure
     """
     name_var1 = list_variable[0]['name']
     name_var2 = list_variable[1]['name']
@@ -299,6 +316,8 @@ def plot_analysis(data_base_network, data_base_mean_field, table_name_network, t
 
 
 if __name__ == "__main__":
+    import os
+    path_init = os.path.dirname(os.path.realpath(__file__)) + '/../../'
     folder_network = '/simulation/'
     folder_meanfield = '/deterministe/'
     for measure_network, measure_mean_field, title_measure, unit, min_value, max_value in [
@@ -309,8 +328,8 @@ if __name__ == "__main__":
         for rate in [0.0, 7.0]:
             for name_population in ['excitatory', 'inhibitory']:
                 plot_analysis(
-                    '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/spike_oscilation/simulation/'+folder_network+'/rate_'+str(rate)+'/amplitude_frequency.db',
-                    '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/'+folder_meanfield+'/database.db',
+                    path_init+'/spike_oscilation/simulation/'+folder_network+'/rate_'+str(rate)+'/amplitude_frequency.db',
+                    path_init+'/zerlaut_oscilation/simulation/'+folder_meanfield+'/database.db',
                     'first_exploration', 'exploration',
                     [
                         {'name': 'amplitude', 'title': 'amplitude ', 'min': 0.0, 'max': 5000000.0},

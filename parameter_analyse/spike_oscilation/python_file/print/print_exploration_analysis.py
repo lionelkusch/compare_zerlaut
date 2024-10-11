@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import sqlite3
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -14,6 +16,7 @@ def getData(data_base, table_name, list_variable, name_analysis='global', cond='
     :param table_name: name of the table
     :param list_variable: variable to get
     :param name_analysis: name of analysis
+    :param cond: additional condition
     :return:
     """
     con = sqlite3.connect(data_base, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
@@ -56,6 +59,7 @@ def grid(x, y, z, res, resX, resY, id=None):
     :param res: boolean if resolution
     :param resX: resolution X
     :param resY: resolution Y
+    :param id: selection of result
     :return:
     """
     if res:
@@ -123,6 +127,7 @@ def draw_contour_limit(fig, ax, X, Y, Z, resolution, title, xlabel, ylabel, zlab
     :param label_size: size of the label
     :param number_size: size of the number
     :param nbins: number of bins for the scale
+    :param remove_label_y: remove label of y axis
     :return:
     """
     if len(Z) > 3:
@@ -156,6 +161,7 @@ def draw_point(ax, X, Y, param='w.', size=6.0):
     :param X: x values
     :param Y: y values
     :param param: parameters for plotting
+    :param size: size of the marker
     :return:
     """
     ax.plot(X, Y, param, markersize=size)
@@ -246,6 +252,7 @@ def print_exploration_analysis_pdf(path_figure, data_base, table_name, list_vari
     :param label_size: size of the label
     :param number_size: size of the number
     :param level_percentage: level of the percentage
+    :param population: population of neurons
     """
     name_var1 = list_variable[0]['name']
     name_var2 = list_variable[1]['name']

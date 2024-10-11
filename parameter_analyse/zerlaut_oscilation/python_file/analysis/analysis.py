@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import datetime
 from scipy.signal import butter, lfilter, hilbert
@@ -32,18 +34,39 @@ def frequency_analysis(recorded_signal, fs):
     return frequency_dominant
 
 
-def PVL_analysis(recorded_signal, I_signal, frequency, fs, remove_start_hilbert=50000, remove_end=50000):
+def PLV_analysis(recorded_signal, I_signal, frequency, fs, remove_start_hilbert=50000, remove_end=50000):
+    """
+    Phase locking value and phase shift of the difference between oscillatory input and the rate
+    :param recorded_signal: data from simulation
+    :param I_signal: oscillatory input
+    :param frequency: frequency of the oscillation
+    :param fs: frequency of sampling
+    :param remove_start_hilbert: remove the start of the hilbert
+    :param remove_end: remove the end
+    :return:
+    """
     # filtering
     b, a = signal.butter(1, [frequency - 0.1, frequency + 0.1], fs=fs, btype='band')
     hist_filter = signal.lfilter(b, a, recorded_signal)
     theta_filter = np.angle(signal.hilbert(hist_filter))
 
-    PLV_value, PLV_angle = PLV(np.angle(signal.hilbert(I_signal))[remove_start_hilbert:-remove_end], theta_filter[remove_start_hilbert:-remove_end])
+    PLV_value, PLV_angle = PLV(np.angle(signal.hilbert(I_signal))[remove_start_hilbert:-remove_end],
+                               theta_filter[remove_start_hilbert:-remove_end])
     return PLV_value, PLV_angle
 
 
 def analysis(path_simulation, begin=0.0, end=20000.0, fs=1e4, sampling_ms=0.1,
              init_remove=50000):
+    """
+    analysis of the simulation
+    :param path_simulation: path of the simulation
+    :param begin: start analysis
+    :param end: end of the analysis
+    :param fs:  frequency sampling
+    :param sampling_ms: sampling of step
+    :param init_remove: initial part to remove
+    :return:
+    """
     # take the data
     with open(path_simulation+'/parameter.json') as f:
             parameters = json.load(f)
@@ -75,8 +98,8 @@ def analysis(path_simulation, begin=0.0, end=20000.0, fs=1e4, sampling_ms=0.1,
             # raise Exception('bad frequency')
 
         if frequency > 0.0:
-            ex_PLV_value, ex_PLV_angle = PVL_analysis(rateE[:, index] * 1e3, I_signal, frequency=frequency*1e3, fs=fs)
-            in_PLV_value, in_PLV_angle = PVL_analysis(rateI[:, index] * 1e3, I_signal, frequency=frequency*1e3, fs=fs)
+            ex_PLV_value, ex_PLV_angle = PLV_analysis(rateE[:, index] * 1e3, I_signal, frequency=frequency*1e3, fs=fs)
+            in_PLV_value, in_PLV_angle = PLV_analysis(rateI[:, index] * 1e3, I_signal, frequency=frequency*1e3, fs=fs)
         else:
             ex_PLV_value, ex_PLV_angle = None, None
             in_PLV_value, in_PLV_angle = None, None

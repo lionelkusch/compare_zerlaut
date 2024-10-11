@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import os
 
@@ -6,7 +8,7 @@ class Parameter:
     def __init__(self):
         path = os.path.dirname(os.path.abspath(__file__))
         self.parameter_simulation = {
-            'path_result': '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/',
+            'path_result': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/',
             'seed': 10,  # the seed for the random generator
             'save_time': 1000.0,  # the time of simulation in each file
         }

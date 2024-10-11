@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import nest
 import numpy as np
 import os
@@ -123,11 +125,14 @@ def network_connection(pop_ex, pop_inh, param_connexion):
     nest.Connect(pop_inh, pop_inh, conn_dict_inh, syn_spec="inhibitory")
 
 
-def network_device(pop_ex, pop_inh, param_background, param_topology, param_connexion, duration):
+def network_device(pop_ex, pop_inh, param_background, param_topology, param_connexion):
     """
     Create and Connect different record or input device
     :param pop_ex: excitatory neurons
     :param pop_inh: inhibitory neurons
+    :param param_background: Parameter for stimulation
+    :param param_topology: Dictionary with the parameter for the topology
+    :param param_connexion: Parameter for the connexions
     :return: the list of multimeter and spike detector
     """
     rate = param_background['rate']
@@ -180,8 +185,12 @@ def simulate(results_path, duration, max_step,
     :param results_path: the name of file for recording
     :param duration: duration of each step
     :param max_step: number of step
-    :param param_...: parameters of the simulation
+    :param param_nest: parameter for NEST kernel
+    :param param_background: Parameter for stimulation
+    :param param_topology: Dictionary with the parameter for the topology
+    :param param_connexion: Parameter for the connexions
     :param extra: extra steps after value frequency at the minimum
+    :param shift: shift of the firing rate at every time step
     """
     # Initialisation of the network
     tic = time.time()
@@ -194,7 +203,7 @@ def simulate(results_path, duration, max_step,
     tic = time.time()
     network_connection(excitatory_neurons, inhibitory_neurons, param_connexion)
     id_spike_recorder_ex, id_spike_recorder_in, multimeter_ex, multimeter_in, Poisson = network_device(
-        excitatory_neurons, inhibitory_neurons, param_background, param_topology, param_connexion, duration)
+        excitatory_neurons, inhibitory_neurons, param_background, param_topology, param_connexion)
     toc = time.time() - tic
     print("Time to create the connections and devices: %.2f s" % toc)
 

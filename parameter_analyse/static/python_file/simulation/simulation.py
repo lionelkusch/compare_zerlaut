@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import nest
 import numpy as np
 import os
@@ -130,6 +132,9 @@ def network_device(pop_ex, pop_inh,  min_time, time_simulation, param_background
     :param pop_inh: inhibitory neurons
     :param min_time: Beginning time of recording
     :param time_simulation: End of simulation
+    :param param_background: Parameter for stimulation
+    :param param_topology: Dictionary with the parameter for the topology
+    :param param_connexion: Parameter for the connexions
     :return: the list of multimeter and spike detector
     """
     rate = param_background['rate']
@@ -173,6 +178,10 @@ def simulate(results_path, begin, end,
     :param results_path: the name of file for recording
     :param begin : time of beginning to record
     :param end : time of end simulation
+    :param param_nest: parameter for NEST kernel
+    :param param_background: Parameter for stimulation
+    :param param_topology: Dictionary with the parameter for the topology
+    :param param_connexion: Parameter for the connexions
     """
     # Initialisation of the network
     tic = time.time()

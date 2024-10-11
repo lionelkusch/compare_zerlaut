@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import matplotlib.pyplot as plt
 import os
 import numpy as np
@@ -97,7 +99,7 @@ def plot_mean_variance(path_init, rate_range, ax, b=60.0, font_size=10.0, tickfo
 
 if __name__ == "__main__":
     rate_range = range(100)
-    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/"
+    path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/data/"
     path = path_init + '/master_seed_0/'
     plt.figure(figsize=(20, 10))
     ax = plt.gca()

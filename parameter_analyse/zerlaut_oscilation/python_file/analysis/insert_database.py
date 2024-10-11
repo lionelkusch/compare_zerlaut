@@ -1,9 +1,16 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import sqlite3
 import numpy as np
 import sys
 
 
 def type_database(variable):
+    """
+    type of the variable for saving in database
+    :param variable:
+    :return:
+    """
     if hasattr(variable, 'dtype'):
         if np.issubdtype(variable, int):
             return 'INTEGER'
@@ -22,6 +29,7 @@ def type_database(variable):
         else:
             sys.stderr.write('ERROR bad type of save variable\n')
             exit(1)
+
 
 def init_database(data_base, table_name):
     """
@@ -55,6 +63,7 @@ def init_database(data_base, table_name):
     cur.close()
     con.close()
 
+
 def check_already_analyse_database(data_base, table_name, result_path, name_population):
     """
     Check if the analysis was already perform
@@ -76,6 +85,7 @@ def insert_database(data_base, table_name, results):
     Insert some result in the database
     :param data_base: name of database
     :param table_name: the table where insert the value
+    :param results: result of the analysis
     :return: nothing
     """
     con = sqlite3.connect(data_base, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES, timeout=1000)
@@ -93,7 +103,8 @@ def insert_database(data_base, table_name, results):
 
 if __name__ == '__main__':
     from parameter_analyse.zerlaut_oscilation.python_file.analysis.analysis import analysis
-    path_root = '/home/kusch/Documents/project/Zerlaut/compare_zerlaut/parameter_analyse/zerlaut_oscilation/simulation/'
+    import os
+    path_root = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/'
     database = path_root + "/database_2.db"
     table_name = "exploration"
     init_database(database, table_name)

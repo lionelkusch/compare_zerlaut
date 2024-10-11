@@ -1,10 +1,10 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import tvb.simulator.lab as lab
 import numpy.random as rgn
 import numpy as np
 import json
 import os
-import subprocess
-import sys
 from scipy.optimize import fsolve
 import parameter_analyse.zerlaut_oscilation.python_file.run.zerlaut as zerlaut
 
@@ -22,6 +22,8 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
     :param parameter_integrator: parameters for the intergator of the equation
     :param parameter_monitor: parameters for the monitors
     :param initial_condition: the possibility to add an initial condition
+    :param parameter_stimulation: parameter of the stimulation
+    :param my_seed: seed of the random generator
     :return: the simulator initialize
     '''
     ## initialise the random generator
@@ -259,13 +261,13 @@ def init(parameter_simulation, parameter_model, parameter_connection_between_reg
 
 
 def run_simulation(simulator, time, parameter_simulation, parameter_monitor):
-    '''
+    """
     run a simulation
     :param simulator: the simulator already initialize
     :param time: the time of simulation
     :param parameter_simulation: the parameter for the simulation
     :param parameter_monitor: the parameter for the monitor
-    '''
+    """
     # check how many monitor it's used
     nb_monitor = parameter_monitor['Raw'] + parameter_monitor['TemporalAverage'] + parameter_monitor['Bold']
     if 'Afferent_coupling' in parameter_monitor.keys() and parameter_monitor['Afferent_coupling']:
@@ -294,13 +296,13 @@ def run_simulation(simulator, time, parameter_simulation, parameter_monitor):
 
 
 def get_result(path, time_begin, time_end):
-    '''
+    """
     return the result of the simulation between the wanted time
     :param path: the folder of the simulation
     :param time_begin: the start time for the result
     :param time_end:  the ending time for the result
     :return: result of all monitor
-    '''
+    """
     with open(path + '/parameter.json') as f:
         parameters = json.load(f)
     parameter_simulation = parameters['parameter_simulation']
@@ -331,14 +333,14 @@ def get_result(path, time_begin, time_end):
 
 
 def get_region(path, time_begin, time_end, region_nb):
-    '''
+    """
     return the result of the simulation between the wanted time
     :param path: the folder of the simulation
     :param time_begin: the start time for the result
     :param time_end: the ending time for the result
     :param region_nb: interger of array of interger for the select the region of different regions
     :return: result of all monitor
-    '''
+    """
     with open(path + '/parameter.json') as f:
         parameters = json.load(f)
     parameter_simulation = parameters['parameter_simulation']
@@ -368,7 +370,7 @@ def get_region(path, time_begin, time_end, region_nb):
 
 
 def print_all_activity(path, time_begin, time_end, position_monitor, position_variable):
-    '''
+    """
     print one value of on monitor for some times
     :param path: the folder of the simulation
     :param time_begin: the start time for the result
@@ -376,7 +378,7 @@ def print_all_activity(path, time_begin, time_end, position_monitor, position_va
     :param position_monitor: select the monitor
     :param position_variable: select the variable of monitor
     :return: nothing
-    '''
+    """
     output = get_result(path, time_begin, time_end)
     import matplotlib.pyplot as plt
     plt.plot(output[position_monitor][0] * 1e-3,  # time in second
@@ -386,15 +388,15 @@ def print_all_activity(path, time_begin, time_end, position_monitor, position_va
 
 
 def print_EI_one(path, time_begin, time_end, position_monitor, position_node):
-    '''
-
+    """
+    plot on region with excitatory and inhibitory
     :param path: the folder of the simulation
     :param time_begin: the start time for the result
     :param time_end: the ending time for the result
     :param position_monitor: select the monitor
     :param position_node:
     :return: nothing
-    '''
+    """
     output = get_result(path, time_begin, time_end)
     import matplotlib.pyplot as plt
     plt.plot(output[position_monitor][0] * 1e-3,  # time in second
@@ -411,7 +413,7 @@ def print_EI_one(path, time_begin, time_end, position_monitor, position_node):
 
 
 def print_region(path, time_begin, time_end, position_monitor, position_variable, nb_region):
-    '''
+    """
     print one value of on monitor for some times
     :param path: the folder of the simulation
     :param time_begin: the start time for the result
@@ -420,7 +422,7 @@ def print_region(path, time_begin, time_end, position_monitor, position_variable
     :param position_variable: select the variable of monitor
     :param nb_region: interger of array of interger for the select the region of different regions
     :return: nothing
-    '''
+    """
     output = get_region(path, time_begin, time_end, nb_region)
     import matplotlib.pyplot as plt
     plt.plot(output[position_monitor][0] * 1e-3,  # time in second
@@ -430,12 +432,12 @@ def print_region(path, time_begin, time_end, position_monitor, position_variable
 
 
 def print_bistability(parameter_model, show=True):
-    '''
+    """
     print if the model is bistable or not
     :param parameter_model: parameters for the model
         (the parameter external_input_in_in and external_input_in_ex is taking in count)
     :return: nothing
-    '''
+    """
     if parameter_model['matteo']:
         import tvb_model_reference.src.Zerlaut_matteo as model
     else:
@@ -518,6 +520,15 @@ def print_bistability(parameter_model, show=True):
 
 
 def print_space_variable(path, time_begin, time_end, position_monitor, limit=True):
+    """
+    plot the space variable of a result
+    :param path: path
+    :param time_begin: start of the plot
+    :param time_end: end of the plot
+    :param position_monitor: monitor selected
+    :param limit: use define limit
+    :return:
+    """
     output = get_result(path, time_begin, time_end)
     with open(path + '/parameter.json') as f:
         parameters = json.load(f)
@@ -628,15 +639,19 @@ def print_space_variable(path, time_begin, time_end, position_monitor, limit=Tru
 
 def print_all(path, time_begin, time_end, position_monitor, con, size=0.031, shift=0.0, E_I=True, title=None,
               drop_mean=False):
-    '''
+    """
     print one value of on monitor for some times
     :param path: the folder of the simulation
     :param time_begin: the start time for the result
     :param time_end: the ending time for the result
     :param position_monitor: select the monitor
-    :param position_variable: select the variable of monitor
+    :param con: connectivity
+    :param size: size of plotting
+    :param shift: size of the shift
+    :param E_I: E and I plot or not
+    :param title: title of the figure
     :return: nothing
-    '''
+    """
     output = get_result(path, time_begin, time_end)
     import matplotlib.pyplot as plt
     plt.figure(figsize=(20, 20))
@@ -672,158 +687,3 @@ def print_all(path, time_begin, time_end, position_monitor, con, size=0.031, shi
         plt.title(title)
     plt.show()
 
-
-# def compute_fc(con, bold_data, parameter_monitor):
-#     import tvb.analyzers.correlation_coefficient as corr_coeff
-#     from tvb.datatypes.time_series import TimeSeriesRegion
-#
-#     bold_period = parameter_monitor['parameter_Bold']['period']
-#     # Remove transient
-#     bold_data = bold_data[10:, :, :]
-#
-#     tsr = TimeSeriesRegion(connectivity=con,
-#                             data=bold_data,
-#                             sample_period=bold_period)
-#     tsr.configure()
-#     # Compute FC
-#     corrcoeff_analyser = corr_coeff.CorrelationCoefficient(time_series=tsr)
-#     corrcoeff_data = corrcoeff_analyser.evaluate()
-#     corrcoeff_data.configure()
-#     FC = corrcoeff_data.array_data[..., 0, 0]
-#     return FC
-
-def plot_fc_matrix(FC, plot_name=None, plot_region_names=False, con=None):
-    import matplotlib.pyplot as plt
-    fig = plt.figure(figsize=(8, 8))
-    cs = plt.imshow(FC, interpolation='nearest', aspect='equal', cmap='jet')
-    if plot_region_names == True:
-        con.number_of_regions = len(con.region_labels)  # number of regions
-        plt.xticks(range(0, con.number_of_regions), con.region_labels, fontsize=7, rotation=90)
-        plt.yticks(range(0, con.number_of_regions), con.region_labels, fontsize=7)
-    else:
-        pass
-    cb = plt.colorbar(shrink=0.23)
-    #     cb.set_ticklabels([-0.1, 0, 0.5, 1])
-    cb.set_label('PCC', fontsize=15)
-    cs.set_clim(0, 1.0)
-    if plot_name == None:
-        title = 'FC_matrix_'
-    else:
-        title = 'FC_matrix_%s' % (plot_name)
-    plt.title(title, fontsize=20)
-    plt.show()
-
-
-def plot_fcd_matrix(fcd, plot_name=None):
-    import matplotlib.pyplot as plt
-    FCD = fcd
-    # plt.subplot(121)
-    cs = plt.imshow(FCD, cmap='jet', aspect='equal')
-    axcb = plt.colorbar(ticks=[0, 0.5, 1])
-    axcb.set_label(r'CC [FC($t_i$), FC($t_j$)]', fontsize=20)
-    cs.set_clim(0, 1.0)
-    for t in axcb.ax.get_yticklabels():
-        t.set_fontsize(18)
-    plt.xticks([0, len(FCD) / 2 - 1, len(FCD) - 1], ['0', '10', '20'], fontsize=18)
-    plt.yticks([0, len(FCD) / 2 - 1, len(FCD) - 1], ['0', '10', '20'], fontsize=18)
-    plt.xlabel(r'Time $t_j$ (min)', fontsize=20)
-    plt.ylabel(r'Time $t_i$ (min)', fontsize=20)
-
-    if plot_name == None:
-        title = 'FCD'
-    else:
-        title = 'FCD_%s' % (plot_name)
-
-    plt.title(title, fontsize=20)
-    plt.show()
-
-
-def plot_fc_fcd_matrix(FC, FCD, plot_name=None, plot_region_names=None, con=None):
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(20, 20))
-    plt.subplot(121)
-    cb = plt.imshow(FC, interpolation='nearest', aspect='equal', cmap='jet')
-    if plot_region_names == True:
-        con.number_of_regions = len(con.region_labels)  # number of regions
-        plt.xticks(range(0, con.number_of_regions), con.region_labels, fontsize=18, rotation=90)
-        plt.yticks(range(0, con.number_of_regions), con.region_labels, fontsize=18)
-    else:
-        pass
-    axecb = plt.colorbar(ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
-    axecb.ax.tick_params(labelsize=18)
-    axecb.set_label('PCC', fontsize=15)
-    cb.set_clim(-1.0, 1.0)
-    if plot_name == None:
-        title = 'FC_matrix_'
-    else:
-        title = 'FC_matrix_%s' % (plot_name)
-    plt.title(title, fontsize=20)
-
-    plt.subplot(122)
-    cs = plt.imshow(FCD, cmap='jet', aspect='equal')
-    axcb = plt.colorbar(ticks=[-1.0, -0.5, 0.0, 0.5, 1.0])
-    axcb.set_label(r'CC [FC($t_i$), FC($t_j$)]', fontsize=20)
-    cs.set_clim(-1.0, 1.0)
-    for t in axcb.ax.get_yticklabels():
-        t.set_fontsize(18)
-    plt.xticks([0, len(FCD) / 2 - 1, len(FCD) - 1], ['0', '10', '20'], fontsize=18)
-    plt.yticks([0, len(FCD) / 2 - 1, len(FCD) - 1], ['0', '10', '20'], fontsize=18)
-    plt.xlabel(r'Time $t_j$ (min)', fontsize=20)
-    plt.ylabel(r'Time $t_i$ (min)', fontsize=20)
-
-    if plot_name == None:
-        title = 'FCD'
-    else:
-        title = 'FCD_%s' % (plot_name)
-
-    plt.title(title, fontsize=20)
-    plt.show()
-
-
-###PCI analysis
-def binarise_signals(signal_m, t_stim, nshuffles=10,
-                     percentile=100):
-    # %%
-    ntrials, nsources, nbins = signal_m.shape
-
-    # %% centralise and normalise sources to baseline level
-
-    means_prestim = np.mean(signal_m[:, :, :t_stim], axis=2)
-
-    # prestim mean to 0
-    signal_centre = \
-        signal_m / means_prestim[:, :, np.newaxis] - 1
-    # t_stim should be in time bins!
-
-    std_prestim = np.std(signal_centre[:, :, :t_stim], axis=2)
-
-    # prestim std to 1
-    signal_centre_norm = signal_centre / std_prestim[:, :, np.newaxis]
-
-    # %% bootstrapping: shuffle prestim signal in time, intra-trial
-    signalcn_tuple = tuple(signal_centre_norm)  # not affected by shuffling
-    signal_prestim_shuffle = signal_centre_norm[:, :, :t_stim]
-
-    max_absval_surrogates = np.zeros(nshuffles)
-
-    for i_shuffle in range(nshuffles):
-        for i_source in range(nsources):
-            for i_trial in range(ntrials):
-                signal_curr = signal_prestim_shuffle[i_trial, i_source]
-                np.random.shuffle(signal_curr)
-                signal_prestim_shuffle[i_trial, i_source] = signal_curr
-
-                # average over trials
-                shuffle_avg = np.mean(signal_prestim_shuffle, axis=0)
-
-                max_absval_surrogates[i_shuffle] = np.max(np.abs(shuffle_avg))
-
-    # %% estimate significance threshold
-    max_sorted = np.sort(max_absval_surrogates)
-    signalThresh = max_sorted[-int(nshuffles / percentile)]  # correction?
-
-    # %% binarise
-    signalcn = np.array(signalcn_tuple)
-    signal_binary = signalcn > signalThresh
-
-    return signal_binary

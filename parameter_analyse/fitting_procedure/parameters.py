@@ -1,4 +1,4 @@
-#  Copyright 2021 Aix-Marseille Université
+#  Copyright 2023 Aix-Marseille Université
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 
 common_parameters = {

@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import sqlite3
 import datetime
 import os
@@ -13,6 +15,11 @@ from parameter_analyse.spike_oscilation.python_file.analysis.result_class import
 
 
 def generate_parameter(parameter_default, dict_variable):
+    """
+    generate the parameters
+    :param parameter_default: default parameters
+    :param dict_variable: dictionary of the variable to change
+    """
     param_nest = parameter_default.param_nest
     param_topology = parameter_default.param_topology
     param_connexion = parameter_default.param_connexion
@@ -32,6 +39,11 @@ def generate_parameter(parameter_default, dict_variable):
 
 
 def get_resolution(parameter_default, dict_variable):
+    """
+    generate the resolution
+    :param parameter_default: default parameters
+    :param dict_variable: dictionary of the variable to change
+    """
     if 'sim_resolution' in dict_variable.keys():
         return dict_variable['sim_resolution']
     else:
@@ -41,6 +53,7 @@ def save_parameter(parameters, result_path):
     """
     save the parameters of the simulations in json file
     :param parameters: dictionary of parameters
+    :param result_path: result path
     :return: nothing
     """
     # save the value of all parameters
@@ -49,6 +62,10 @@ def save_parameter(parameters, result_path):
     f.close()
 
 def type_database(variable):
+    """
+    type of variable in the database
+    :param variable: variable to find the type
+    """
     if hasattr(variable, 'dtype'):
         if np.issubdtype(variable, int):
             return 'INTEGER'
@@ -74,6 +91,7 @@ def init_database(data_base, table_name, dict_variable):
     Initialise the connection to the database et create the table
     :param data_base: file where is the database
     :param table_name: the name of the table
+    :param dict_variable: dictionary of the variable to change
     :return: the connexion to the database
     """
     variable = ''
@@ -102,12 +120,14 @@ def init_database(data_base, table_name, dict_variable):
     cur.close()
     con.close()
 
+
 def check_already_analise_database(data_base, table_name, result_path, name_population):
     """
     Check if the analysis was already perform
     :param data_base: path of the database
     :param table_name: name of the table
     :param result_path: folder to analyse
+    :param name_population: name of the population
     """
     con = sqlite3.connect(data_base, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
     cursor = con.cursor()
@@ -121,10 +141,10 @@ def check_already_analise_database(data_base, table_name, result_path, name_popu
 def insert_database(data_base, table_name, results_path, dict_variable, result):
     """
     Insert some result in the database
-    :param con: the connexion to the database
+    :param data_base: path of the database
     :param table_name: the table where insert the value
     :param results_path: the path where is the results
-    :param name_population: the name of the populations
+    :param dict_variable: dictionary of the variable to change
     :param result: the measure of the networks
     :return: nothing
     """
@@ -150,8 +170,7 @@ def run(results_path, parameter_default, dict_variable, begin, end):
     """
     Run one simulation, analyse the simulation and save this result in the database
     :param results_path: the folder where to save spikes
-    :param data_base: the file of the database
-    :param table_name: the name of the table of the database
+    :param parameter_default: default parameters of the simulation
     :param dict_variable : dictionary with the variable change
     :param begin: the beginning of record spike
     :param end: the end of the simulation
@@ -183,6 +202,16 @@ def run(results_path, parameter_default, dict_variable, begin, end):
 
 
 def analysis(results_path, parameter_default, data_base, table_name, dict_variable, begin, end):
+    """
+    run analysis of the output
+    :param results_path: path of the result
+    :param parameter_default: default parameters
+    :param data_base: path of the database
+    :param table_name: name of the table to save
+    :param dict_variable : dictionary with the variable change
+    :param begin: the beginning of record spike
+    :param end: the end of the simulation
+    """
     print('time: ' + str(datetime.datetime.now()) + ' BEGIN ANALYSIS \n')
     # Save analysis in database
     init_database(data_base, table_name, dict_variable)
@@ -218,6 +247,19 @@ def analysis(results_path, parameter_default, data_base, table_name, dict_variab
 
 def run_exploration_2D(path, parameter_default, data_base, table_name, dict_variables, begin, end,
                        analyse=True, simulation=True):
+    """
+    run a simulation
+    :param path: path where to save the result
+    :param parameter_default: default parameters
+    :param data_base: database where to save the analysis
+    :param table_name: table of the database
+    :param dict_variables: dictionary variable
+    :param begin: start analysis
+    :param end: end simulation and analysis
+    :param analyse: boolean for running analysis
+    :param simulation: boolean for running simulation
+    :return:
+    """
     name_variable_1, name_variable_2 = dict_variables.keys()
     print(path)
     if simulation:

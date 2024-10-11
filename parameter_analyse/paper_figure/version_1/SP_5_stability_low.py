@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,7 +16,7 @@ linesize = 1.0
 
 ## path of the data network
 path = os.path.dirname(__file__) + '/../../analyse_dynamic/matlab/'
-path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/master_seed_0/"
+path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/data/master_seed_0/"
 # load bifurcation
 b_30 = loadmat(path + '/b_30/EQ_Low/EQ_Low.mat', chars_as_strings=True, simplify_cells=True)
 b_30['x'][:2] *= 1e3
@@ -38,7 +40,7 @@ network_30 = np.concatenate([np.expand_dims(range(100), axis=1), np.load(path_in
 network_60 = np.concatenate([np.expand_dims(range(100), axis=1), np.load(path_init + '/60.0_mean_var.npy')], axis=1)
 
 ## path of the data mean field
-path = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/time_reduce_low/"
+path = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/data/time_reduce_low/"
 # get firing rate
 firing_rate_0 = np.load(path + '/b_0.0/firing_rate.npy')
 firing_rate_0 = np.concatenate((np.array([np.arange(48.0, 99.0, 1.0)]).swapaxes(0, 1), firing_rate_0), axis=1)

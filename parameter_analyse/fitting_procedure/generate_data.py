@@ -1,4 +1,4 @@
-#  Copyright 2021 Aix-Marseille Université
+#  Copyright 2023 Aix-Marseille Université
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import os
@@ -11,6 +11,7 @@ def compute_rate(data, begin, end, nb):
     :param data: the spike of all neurons between end and begin
     :param begin: the time of the first spike
     :param end: the time of the last spike
+    :param nb: size of the data
     :return: the mean and the standard deviation of firing rate, the maximum and minimum of firing rate
     """
     # get data

@@ -1,7 +1,9 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import os
 import sys
-from parameter_analyse.chek_derivation.helper_function import model, plot_derivation, \
+from parameter_analyse.check_derivation.helper_function import model, plot_derivation, \
     plot_derivation_check, plot_derivation_check_neg
 
 
@@ -135,12 +137,12 @@ if __name__ == "__main__":
                         ranges_adaptation=[np.linspace(0.0, 100.0, 1000), np.linspace(0.0, 10000.0, 1000)],
                         save_name='zoom'
                         )
-    # path_P_excitatory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
-    # path_P_inhibitory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
-    # derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='no_adpt_')
-    # derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='zoom_no_adpt_',
-    #                     ranges_excitatory=[np.linspace(0.0, 1.0, 1000) * 1e-3],
-    #                     ranges_inhibitory=[np.linspace(0.0, 33.0, 1000) * 1e-3, np.linspace(0.0, 1.0, 1000) * 1e-3],
-    #                     ranges_adaptation=[np.linspace(0.0, 3500.0, 1000), np.linspace(0.0, 10000.0, 1000)],
-    #                     )
+    path_P_excitatory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-55.0/E_L_-63.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_2.0/tau_w_500.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
+    path_P_inhibitory = os.path.dirname(os.path.realpath(__file__)) + '/../fitting_procedure/fitting_50hz/C_m_200.0/t_ref_5.0/V_reset_-65.0/E_L_-65.0/g_L_10.0/I_e_0.0/a_0.0/b_0.0/Delta_T_0.5/tau_w_1.0/V_th_-50.0/E_ex_0.0/tau_syn_ex_5.0/E_in_-80.0/tau_syn_in_5.0/V_peak_0.0/N_tot_10000/p_connect_ex_0.05/p_connect_in_0.05/g_0.2/Q_e_1.5/Q_i_5.0/P_no_adpt.npy'
+    derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='no_adpt_')
+    derivation_negative(params_all, path_P_excitatory, path_P_inhibitory, save_name='zoom_no_adpt_',
+                        ranges_excitatory=[np.linspace(0.0, 1.0, 1000) * 1e-3],
+                        ranges_inhibitory=[np.linspace(0.0, 33.0, 1000) * 1e-3, np.linspace(0.0, 1.0, 1000) * 1e-3],
+                        ranges_adaptation=[np.linspace(0.0, 3500.0, 1000), np.linspace(0.0, 10000.0, 1000)],
+                        )
 

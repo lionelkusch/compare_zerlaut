@@ -1,3 +1,5 @@
+#  Copyright 2023 Aix-Marseille Université
+# "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,7 +7,7 @@ from scipy.io.matlab import loadmat
 from parameter_analyse.analyse_dynamic.print_figure.print_stability import print_stability
 
 ## path of the data
-path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/master_seed_0/"
+path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../static/simulation/data/master_seed_0/"
 path = os.path.dirname(__file__) + '/../../analyse_dynamic/matlab/'
 
 ## parameter of the figures
