@@ -5,6 +5,7 @@ import datetime
 from parameter_analyse.static.python_file.parameters import parameter_default
 from parameter_analyse.static.python_file.run.run_exploration import save_parameter, generate_parameter
 from parameter_analyse.static.python_file.simulation.simulation_time_evolve import simulate
+from run_second import get_autocorrelation_time
 
 
 def run_sim(results_path, parameter_default, dict_variable, duration, max_step, extra=0):
@@ -50,4 +51,6 @@ if __name__ == '__main__':
         path = os.path.dirname(os.path.realpath(__file__)) + '/data/time_reduce_low/b_'+str(b)+'/'
         parameter_default.param_nest['local_num_threads'] = 8
         parameter_default.param_topology['mean_w_0'] = 200.0 if b != 0.0 else 0.0
-        run_sim(path, parameter_default, {'b': b, 'rate': 48.0}, 10000.0, 52, extra=0)
+        # run_sim(path, parameter_default, {'b': b, 'rate': 48.0}, 10000.0, 52, extra=0)
+        get_autocorrelation_time(path, firing_rate_ext_init=48.0, firing_rate_end=100.0, increment_firing_rate=1.0,
+                                 interval_time=10000.0)

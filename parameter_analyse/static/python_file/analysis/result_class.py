@@ -10,8 +10,12 @@ class Result_analyse:
         list_single = ['names_population',
                        'synch_Rs_times_init',
                        'synch_Rs_times_end', 'percentage',
-                       'percentage_burst', 'percentage_burst_cv', 'cvs_IFR_0_1ms', 'cvs_IFR_1ms',
-                       'frequency_hist_1_freq', 'frequency_hist_1_val', 'frequency_phase_freq', 'frequency_phase_val',
+                       'percentage_burst', 'percentage_burst_cv', 'frequency_hist_1_freq', 'frequency_hist_1_val',
+                       'frequency_phase_freq', 'frequency_phase_val',
+                       'cvs_IFR_0_1ms', 'max_IFR_0_1ms', 'timescale_0_1ms',
+                       'cvs_IFR_1ms', 'max_IFR_1ms', 'timescale_1ms',
+                        'cvs_IFR_5ms', 'max_IFR_5ms', 'timescale_5ms',
+                       'cvs_IFR_w5ms', 'max_IFR_w5ms', 'timescale_w5ms',
                        ]
         list_mean = ['cvs_ISI', 'lvs_ISI',
                      'burst_cv_begin', 'burst_lv_begin', 'burst_cv_end', 'burst_lv_end'
@@ -45,11 +49,35 @@ class Result_analyse:
         self._save_mean_max('rates', rate)
 
     def save_simple_synchronization(self,
-                                    cvs_IFR_0_1ms,
-                                    cvs_IFR_1ms,
+                                    cvs_IFR_0_1ms, max_hist_0_1, timescale_0_1_ms, autocorrelation_0_1_ms,
+                                    cvs_IFR_1ms, max_hist_1, timescale_1_ms, autocorrelation_1_ms,
+                                    cvs_IFR_5ms, max_hist_5, timescale_5_ms, autocorrelation_5_ms,
+                                    cvs_IFR_w5ms, max_hist_w5, timescale_w5_ms, autocorrelation_w5_ms,
                                     ):
         self.data['cvs_IFR_0_1ms'].append(cvs_IFR_0_1ms)
+        self.data['max_IFR_0_1ms'].append(float(max_hist_0_1))
+        self.data['timescale_0_1ms'].append(float(timescale_0_1_ms))
+        # for i in range(self.max_lag_autocorrelation):
+        #     self.data['autocorrelation_0_1_ms_'+str(i)].append(float(autocorrelation_0_1_ms[i][0]))
+
         self.data['cvs_IFR_1ms'].append(cvs_IFR_1ms)
+        self.data['max_IFR_1ms'].append(float(max_hist_1))
+        self.data['timescale_1ms'].append(float(timescale_1_ms))
+        # for i in range(self.max_lag_autocorrelation):
+        #     self.data['autocorrelation_1_ms_'+str(i)].append(float(autocorrelation_1_ms[i][0]))
+
+        self.data['cvs_IFR_5ms'].append(cvs_IFR_5ms)
+        self.data['max_IFR_5ms'].append(float(max_hist_5))
+        self.data['timescale_5ms'].append(float(timescale_5_ms))
+        # for i in range(self.max_lag_autocorrelation):
+        #     self.data['autocorrelation_5_ms_'+str(i)].append(float(autocorrelation_5_ms[i][0]))
+
+        self.data['cvs_IFR_w5ms'].append(cvs_IFR_w5ms)
+        self.data['max_IFR_w5ms'].append(float(max_hist_w5))
+        self.data['timescale_w5ms'].append(float(timescale_w5_ms))
+        # for i in range(self.max_lag_autocorrelation):
+        #     self.data['autocorrelation_w5_ms_'+str(i)].append(float(autocorrelation_w5_ms[i][0]))
+
 
     def save_irregularity(self, cvs_ISI, lvs_ISI):
         self._save_mean('cvs_ISI', cvs_ISI)
