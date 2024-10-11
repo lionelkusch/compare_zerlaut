@@ -2,7 +2,6 @@
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import numpy as np
 import datetime
-from scipy.signal import butter, lfilter, hilbert
 from scipy import signal
 from elephant.spectral import welch_psd
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools

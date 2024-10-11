@@ -237,3 +237,76 @@ def simulate(results_path, duration, max_step,
             sys.stderr.write('ERROR bad concatenation of spikes file\n')
             exit(1)
         extra_index += 1
+
+def simulate_2(results_path, duration, max_step_1, max_step_2,
+             param_nest, param_topology, param_connexion, param_background, extra=0, shift_1=1.0, shift_2=-1.0):
+    """
+    Run one simulation of simple network
+    :param results_path: the name of file for recording
+    :param duration: duration of each step
+    :param max_step: number of step
+    :param param_nest: parameter for NEST kernel
+    :param param_background: Parameter for stimulation
+    :param param_topology: Dictionary with the parameter for the topology
+    :param param_connexion: Parameter for the connexions
+    :param extra: extra steps after value frequency at the minimum
+    :param shift: shift of the firing rate at every time step
+    """
+    # Initialisation of the network
+    tic = time.time()
+    pyrngs = network_initialisation(results_path, param_nest)
+    excitatory_neurons, inhibitory_neurons = network_initialisation_neurons(results_path, pyrngs, param_topology)
+    toc = time.time() - tic
+    print("Time to initialize the network: %.2f s" % toc)
+
+    # Connection and Device
+    tic = time.time()
+    network_connection(excitatory_neurons, inhibitory_neurons, param_connexion)
+    id_spike_recorder_ex, id_spike_recorder_in, multimeter_ex, multimeter_in, Poisson = network_device(
+        excitatory_neurons, inhibitory_neurons, param_background, param_topology, param_connexion)
+    toc = time.time() - tic
+    print("Time to create the connections and devices: %.2f s" % toc)
+
+    # Simulation
+    firing_rate = param_background['rate']
+    time_interval = 0.0
+    while firing_rate >= 0.0 and time_interval < max_step_1 * duration:
+        nest.SetStatus(Poisson, {'rate': firing_rate})
+        tic = time.time()
+        nest.Simulate(duration)
+
+        if subprocess.call(
+                [os.path.join(os.path.dirname(__file__), '../run/script_partial.sh'), results_path, str(id_spike_recorder_ex.tolist()[0]),
+                 str(id_spike_recorder_in.tolist()[0]), "_1_"+str(np.around(firing_rate))]) == 1:
+            sys.stderr.write('ERROR bad concatenation of spikes file\n')
+            exit(1)
+        firing_rate += shift_1
+        time_interval += duration
+    # Simulation 2
+    while firing_rate >= 0.0 and time_interval < (max_step_1+max_step_2) * duration:
+        nest.SetStatus(Poisson, {'rate': firing_rate})
+        tic = time.time()
+        nest.Simulate(duration)
+
+        if subprocess.call(
+                [os.path.join(os.path.dirname(__file__), '../run/script_partial.sh'), results_path, str(id_spike_recorder_ex.tolist()[0]),
+                 str(id_spike_recorder_in.tolist()[0]), "_2_"+str(np.around(firing_rate))]) == 1:
+            sys.stderr.write('ERROR bad concatenation of spikes file\n')
+            exit(1)
+        firing_rate += shift_2
+        time_interval += duration
+
+    if firing_rate < 0.0:
+        firing_rate = 0.0
+    extra_index = 0
+    while extra_index <= extra:
+        nest.SetStatus(Poisson, {'rate': firing_rate})
+        tic = time.time()
+        nest.Simulate(duration)
+
+        if subprocess.call(
+                [os.path.join(os.path.dirname(__file__), '../run/script_partial.sh'), results_path, str(id_spike_recorder_ex.tolist()[0]),
+                 str(id_spike_recorder_in.tolist()[0]), "extra_"+str(extra_index)+"_"+str(np.around(firing_rate))]) == 1:
+            sys.stderr.write('ERROR bad concatenation of spikes file\n')
+            exit(1)
+        extra_index += 1
