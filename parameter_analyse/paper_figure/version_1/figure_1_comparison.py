@@ -18,12 +18,12 @@ linewidth = 1.0
 marker_size = 3.0
 
 ## load bifurcation
-b_30 = loadmat(path + '/b_30/EQ_Low/EQ_Low.mat', chars_as_strings=True, simplify_cells=True)
+b_30 = loadmat(path + '/b_30/EQ_Low/start/external_input_E_E_f.mat', chars_as_strings=True, simplify_cells=True)
 b_30['x'][:2] *= 1e3
 b_30['x'][-1] *= 1e3
 b_30['x'][2:5] *= 1e6
 
-b_60 = loadmat(path + '/b_60/EQ_Low/EQ_Low.mat', chars_as_strings=True, simplify_cells=True)
+b_60 = loadmat(path + '/b_60/EQ_Low/start/external_input_E_E_f.mat', chars_as_strings=True, simplify_cells=True)
 b_60['x'][:2] *= 1e3
 b_60['x'][-1] *= 1e3
 b_60['x'][2:5] *= 1e6
@@ -58,10 +58,10 @@ plt.plot(network_60[:, 0], network_60[:, 1], 'xg', ms=marker_size, label='b=60')
 # plt.legend(loc='lower right')
 # plt.vlines(0.0, ymin=-30.0, ymax=200.0, color='m')
 plt.xlim(xmax=100.0, xmin=-0.1)
-plt.xticks([0.0, 50.0, 100.0])
+# plt.xticks([0.0, 50.0, 100.0])
 # plt.xlabel("external input", {"fontsize": labelticks_size})
 plt.ylim(ymax=200.0, ymin=-0.1)
-plt.yticks([0.0, 100.0, 200.0])
+# plt.yticks([0.0, 100.0, 200.0])
 plt.ylabel("firing rate population (Hz)", {"fontsize": labelticks_size}, labelpad=0.0)
 plt.tick_params(labelsize=ticks_size)
 plt.title('excitatory population', {"fontsize": labelticks_size})
@@ -83,10 +83,10 @@ plt.plot(network_60[:, 0], network_60[:, 3], 'xg', ms=marker_size, label='b=60')
 # plt.legend(loc='lower right')
 # plt.vlines(0.0, ymin=-30.0, ymax=200.0, color='m')
 plt.xlim(xmax=100.0, xmin=-0.1)
-plt.xticks([0.0, 50.0, 100.0])
+# plt.xticks([0.0, 50.0, 100.0])
 # plt.xlabel("external input", {"fontsize": labelticks_size})
 plt.ylim(ymax=200.0, ymin=-0.1)
-plt.yticks([0.0, 100.0, 200.0])
+# plt.yticks([0.0, 100.0, 200.0])
 # plt.ylabel("firing rate of excitatory population Hz", {"fontsize": labelticks_size})
 plt.tick_params(labelsize=ticks_size)
 plt.title('inhibitory population', {"fontsize": labelticks_size})

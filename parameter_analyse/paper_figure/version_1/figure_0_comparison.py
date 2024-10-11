@@ -13,6 +13,7 @@ path_init = os.path.dirname(os.path.realpath(__file__))
 path = os.path.dirname(__file__) + '/../../analyse_dynamic/matlab/'
 
 ## parameter of the figures
+version = '_v4'
 labelticks_size = 10
 label_legend_size = 7
 ticks_size = 10
@@ -22,12 +23,16 @@ linewidth_stability = 0.5
 marker_size = 5.0
 marker_size_mean = 30.0
 spike_size = 0.006
+color_ex_spike = 'black'#'red'#'black'#'green'#'blue'
+color_ex_mean = 'grey'#'orange'#'grey'#'lime'#'cyan'
+color_in_spike = 'blue'#'blue'#'red'
+color_in_mean = 'cyan'#'cyan'#'orange'
 
 window = 5.0
 dt = 0.1
 begin = 0.0
 end = 500.0
-color = ['red', 'blue']
+color = [color_ex_spike, color_in_spike]
 
 ## load bifurcation
 b_0 = loadmat(path + '/EQ_Low/EQ_low.mat', chars_as_strings=True, simplify_cells=True)
@@ -113,7 +118,7 @@ ax.set_ylim(ymax=200.0, ymin=-0.1)
 ax.set_ylabel("excitatory firing rate (Hz)", {"fontsize": labelticks_size}, labelpad=0.0)
 ax.tick_params(labelsize=ticks_size)
 # plt.title('excitatory population', {"fontsize": labelticks_size})
-ax.annotate('C', xy=(-0.3, 0.95), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+ax.annotate('A', xy=(-0.3, 0.95), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 
 
@@ -127,17 +132,17 @@ ax.set_xlim(xmax=end + 10.0, xmin=begin - 10.0)
 ax.tick_params(axis='both', labelsize=ticks_size)
 ax.set_xlabel('time (ms)', {"fontsize": labelticks_size}, labelpad=2.5)
 ax.set_ylabel('index neuron', {"fontsize": labelticks_size}, labelpad=-5.0)
-ax.annotate('B', xy=(-0.1, 0.8), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+ax.annotate('C', xy=(-0.1, 0.8), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ax = plt.subplot(231)
-ax.plot(times_10[:-int(window / dt)], hist_slide_ex_10, linewidth=linewidth_network, c='r')
-ax.plot(times_10[:-int(window / dt)], hist_slide_in_10, linewidth=linewidth_network, c='b')
-ax.plot(times_10, rateE_10, linewidth=linewidth_mean_field, c='orange')
-ax.plot(times_10, rateI_10, linewidth=linewidth_mean_field, c='cyan')
+ax.plot(times_10[:-int(window / dt)], hist_slide_ex_10, linewidth=linewidth_network, c=color_ex_spike)
+ax.plot(times_10[:-int(window / dt)], hist_slide_in_10, linewidth=linewidth_network, c=color_in_spike)
+ax.plot(times_10, rateE_10, linewidth=linewidth_mean_field, c=color_ex_mean)
+ax.plot(times_10, rateI_10, linewidth=linewidth_mean_field, c=color_in_mean)
 ax.tick_params(axis='both', labelsize=ticks_size)
 ax.set_xticks([])
 ax.set_ylabel('mean firing\nrate (Hz)', {"fontsize": labelticks_size}, labelpad=-1.0)
-ax.annotate('A', xy=(-0.15, 0.80), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
+ax.annotate('B', xy=(-0.15, 0.80), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 # external input = 80Hz
 
@@ -150,10 +155,10 @@ ax.set_xlabel('time (ms)', {"fontsize": labelticks_size}, labelpad=2.5)
 ax.annotate('E', xy=(-0.1, 0.80), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 ax = plt.subplot(233)
-ax.plot(times_80[:-int(window / dt)], hist_slide_ex_80, linewidth=linewidth_network, c='r')
-ax.plot(times_80[:-int(window / dt)], hist_slide_in_80, linewidth=linewidth_network, c='b')
-ax.plot(times_80, rateE_80, linewidth=linewidth_mean_field, c='orange')
-ax.plot(times_80, rateI_80, linewidth=linewidth_mean_field, c='cyan')
+ax.plot(times_80[:-int(window / dt)], hist_slide_ex_80, linewidth=linewidth_network, c=color_ex_spike)
+ax.plot(times_80[:-int(window / dt)], hist_slide_in_80, linewidth=linewidth_network, c=color_in_spike)
+ax.plot(times_80, rateE_80, linewidth=linewidth_mean_field, c=color_ex_mean)
+ax.plot(times_80, rateI_80, linewidth=linewidth_mean_field, c=color_in_mean)
 ax.tick_params(axis='both', labelsize=ticks_size)
 ax.set_xticks([])
 ax.annotate('D', xy=(-0.1, 0.80), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
@@ -161,5 +166,5 @@ ax.annotate('D', xy=(-0.1, 0.80), xycoords='axes fraction', weight='bold', fonts
 
 plt.subplots_adjust(top=0.98, bottom=0.150, left=0.095, right=0.995, wspace=0.33, hspace=0.045)
 
-# plt.show()
-plt.savefig('./figure/figure_0.png', dpi=300)
+plt.show()
+# plt.savefig('./figure/figure_0'+version+'.png', dpi=300)

@@ -97,5 +97,5 @@ for index, (network, firing_rate, b, color, title) in enumerate([
     plt.annotate(letters[index+3], xy=(-0.1, 0.9), xycoords='axes fraction', weight='bold', fontsize=labelticks_size)
 
 plt.subplots_adjust(top=0.95, bottom=0.1, left=0.14, right=0.99, hspace=0.12, wspace=0.29)
-plt.savefig('./figure/SP_figure_5_2.png', dpi=300)
-# plt.show()
+# plt.savefig('./figure/SP_figure_5_2.png', dpi=300)
+plt.show()

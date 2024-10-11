@@ -25,11 +25,13 @@ b_30['x'][2:5] *= 1e6
 b_60 = loadmat(path + '/b_60/EQ_Low/EQ_Low.mat', chars_as_strings=True, simplify_cells=True)
 b_60['x'][:2] *= 1e3
 b_60['x'][-1] *= 1e3
+b_60['x'][-2] *= 1e3
 b_60['x'][2:5] *= 1e6
 
 b_0 = loadmat(path + '/EQ_Low/EQ_low.mat', chars_as_strings=True, simplify_cells=True)
 b_0['x'][:2] *= 1e3
 b_0['x'][-1] *= 1e3
+b_0['x'][-2] *= 1e3
 b_0['x'][2:5] *= 1e6
 b_0['x'] = np.vstack((b_0['x'][:5], np.zeros((1, b_0['x'].shape[1]), ), b_0['x'][5]))
 # b_0['f'] = np.vstack((b_0['f'], np.zeros((1, b_0['f'].shape[1]))))
@@ -71,7 +73,7 @@ for network, b, xmin, xmax, xticks, \
           -0.1,  200.0, [0.0, 100.0, 200.0],
           -0.1,  110.0, [0.0, 55.0, 110.0],
           -0.1,   22.0, [0.0, 10.0, 20.0],
-          -0.1,  5.0, [0.0, 2.5, 5.0],
+          -0.1,  3.0, [0.0, 2.5, 5.0],
           -0.1,  180.0, [0.0, 90.0, 180.0],
           -10.0,  10.0, [-10.0, 0.0, 10.0],
           'b', 2),
@@ -83,7 +85,7 @@ for network, b, xmin, xmax, xticks, \
           -0.1,  200.0, [0.0, 100.0, 200.0],
           -0.1,  100.0, [0.0, 50.0, 100.0],
           -0.1,   20.0, [0.0, 10.0, 20.0],
-          -0.1,  10.0, [0.0, 5.0, 10.0],
+          -0.1,  6000.0, [0.0, 5.0, 10.0],
           -0.1,  10.0, [0.0, 5.0, 10.0],
           -10.0,  10.0, [-7.0, 0.0, 7.0],
           'g', 3)]:
@@ -199,4 +201,5 @@ for network, b, xmin, xmax, xticks, \
 
     plt.subplots_adjust(top=0.960, bottom=0.095, left=0.16, right=0.965, wspace=0.26, hspace=0.215)
     plt.savefig('./figure/SP_figure_'+str(index)+'.png', dpi=300)
+    plt.savefig('./figure/SP_figure_'+str(index)+'.svg', dpi=300)
     # plt.show()
