@@ -140,5 +140,5 @@ plt.annotate('D', xy=(-0.1, 1.05), xycoords='axes fraction', weight='bold', font
 
 plt.subplots_adjust(top=0.95, bottom=0.10, left=0.09, right=0.975, wspace=0.16, hspace=0.15)
 
-# plt.show()
-plt.savefig('./figure/figure_1.png', dpi=300)
+plt.show()
+# plt.savefig('./figure/figure_1.png', dpi=300)

@@ -37,19 +37,30 @@ def plot_spiketrains(path_init, ax, font_size=10.0, tickfont_size=7.0, burst=Fal
 if __name__ == '__main__':
     path_init = os.path.dirname(os.path.realpath(__file__)) + "/../../simulation/"
     path = path_init + '/master_seed_0/_b_60.0_rate_52.0/'; begin = 1000.0; end = 5000.0
-    # path = path_init+'/time_reduce/b_60.0/'; begin=8000.0; end=23000.0
-    plt.figure(figsize=(20, 10))
-    ax = plt.gca()
-    plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
-    # plt.subplots_adjust(top=0.99, bottom=0.11, left=0.05, right=0.98, hspace=0.2, wspace=0.2)
-    plt.show()
+    # # path = path_init+'/time_reduce/b_60.0/'; begin=8000.0; end=23000.0
+    # plt.figure(figsize=(20, 10))
+    # ax = plt.gca()
+    # plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
+    # # plt.subplots_adjust(top=0.99, bottom=0.11, left=0.05, right=0.98, hspace=0.2, wspace=0.2)
+    # plt.show()
+    #
+    # plt.figure(figsize=(20, 10))
+    # ax = plt.gca()
+    # path = path_init + '/short/_b_0.0_rate_10.0/'; begin = 0.0; end = 2000.0
+    # plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
+    # plt.figure(figsize=(20, 10))
+    # ax = plt.gca()
+    # path = path_init + '/short/_b_0.0_rate_60.0/'; begin = 0.0; end = 2000.0
+    # plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
+    # plt.show()
 
+    path = path_init + '/master_seed_0/_b_60.0_rate_96.0/'; begin = 0.0; end = 4000.0
     plt.figure(figsize=(20, 10))
     ax = plt.gca()
-    path = path_init + '/short/_b_0.0_rate_10.0/'; begin = 0.0; end = 2000.0
     plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
+
+    path = path_init + '/master_seed_0/_b_60.0_rate_98.0/'; begin = 0.0; end = 4000.0
     plt.figure(figsize=(20, 10))
     ax = plt.gca()
-    path = path_init + '/short/_b_0.0_rate_60.0/'; begin = 0.0; end = 2000.0
     plot_spiketrains(path, ax, font_size=30.0, tickfont_size=20.0, burst=False, size_mark=0.1, begin=begin, end=end)
     plt.show()
