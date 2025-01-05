@@ -5,11 +5,9 @@ import os
 import json
 from elephant.statistics import isi, cv, lv
 from elephant.spectral import welch_psd
-from elephant.spike_train_correlation import spike_train_timescale, cross_correlation_histogram
-from elephant.conversion import BinnedSpikeTrain
-import quantities as pq
 from scipy.stats import variation
 from scipy.signal import butter, lfilter, hilbert
+from parameter_analyse.static.python_file.analysis.analysis_global import time_scale
 
 from parameter_analyse.spike_oscilation.python_file.analysis.result_class import Result_analyse
 
@@ -213,11 +211,7 @@ def transfom_spike_global(gid, data, begin, end, resolution, limit_burst):
     else:
         hist_1 = None
         frequency_hist = [-1, -1]
-    if int(end - begin) > 5:
-        hist_5 = np.histogram(spikes_concat, bins=int((end - begin) / 5))  # for bins at 3 milisecond
-    else:
-        hist_5 = None
-    return [hist_0_1, hist_1, hist_5, isi_list, cv_list, lv_list, R_list, R_times, percentage,
+    return [hist_0_1, hist_1, isi_list, cv_list, lv_list, R_list, R_times, percentage,
             burst_list_nb, burst_list_count, burst_list_rate, burst_list_interval,
             burst_list_begin_cv, burst_list_begin_lv, burst_list_end_cv, burst_list_end_lv,
             percentage_burst, percentage_burst_cv,
@@ -324,35 +318,12 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
                  Percentage of neurons analyse for the Irregularity]
     """
     # Synchronization and irregularity
-    hist_0_1, hist_1, hist_5, isi_list, cv_list, lv_list, R_list, R_times, percentage, \
+    hist_0_1, hist_1, isi_list, cv_list, lv_list, R_list, R_times, percentage, \
     burst_list_nb, burst_list_count, burst_list_rate, burst_list_interval, \
     burst_list_begin_cv, burst_list_begin_lv, burst_list_end_cv, burst_list_end_lv, \
     percentage_burst, percentage_burst_cv, \
     frequency_hist_0_1, frequency_hist, frequency_phase \
         = transfom_spike_global(gids, data, begin, end, resolution, limit_burst)
-
-    # hist
-    if hist_5 is None:
-        hist_5_variation = None
-        hist_5_max = None
-        hist_5_timescale, hist_5_cc_hist, hist_5_lags = None, None, None
-        PLV_value_5, PLV_angle_5, mean_phase_shift_5 = None, None, None
-    else:
-        hist_5_variation = variation(hist_5[0])
-        hist_5_max = np.max(hist_5[0])
-        hist_5_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_5[0], 0), t_start=begin * pq.ms, t_stop=end * pq.ms,
-                                           bin_size=5 * pq.ms)
-        hist_5_cc_hist, hist_5_lags = cross_correlation_histogram(hist_5_bin_hist, hist_5_bin_hist, window=[-lag, lag],
-                                                                  cross_correlation_coefficient=True)
-        hist_5_timescale = spike_train_timescale(hist_5_bin_hist, max_tau=int(round(lag / 5)) * 5 * pq.ms)
-        if frequency != 0.0 and end - begin > 6000.0:
-            PLV_value_5, PLV_angle_5, mean_phase_shift_5 = compute_PLV_mean_shift(hist_5[0], begin, end, frequency,
-                                                                                  sampling_rate=200,
-                                                                                  remove_init=100,
-                                                                                  remove_start_hilbert=600,
-                                                                                  remove_end=500, sampling_ms=5)
-        else:
-            PLV_value_5, PLV_angle_5, mean_phase_shift_5 = None, None, None
 
     # hist
     if hist_1 is None:
@@ -363,11 +334,7 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
     else:
         hist_1_variation = variation(hist_1[0])
         hist_1_max = np.max(hist_1[0])
-        hist_1_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_1[0], 0), t_start=begin * pq.ms,
-                                           t_stop=end * pq.ms, bin_size=1 * pq.ms)
-        hist_1_cc_hist, hist_1_lags = cross_correlation_histogram(hist_1_bin_hist, hist_1_bin_hist, window=[-lag, lag],
-                                                                  cross_correlation_coefficient=True)
-        hist_1_timescale = spike_train_timescale(hist_1_bin_hist, max_tau=lag * pq.ms)
+        hist_1_cc_hist, hist_1_lags, hist_1_timescale = time_scale(hist_1, dt=1., duration=end-begin)
         if frequency != 0.0 and end - begin > 6000.0:
             PLV_value_1, PLV_angle_1, mean_phase_shift_1 = compute_PLV_mean_shift(hist_1[0], begin, end, frequency,
                                                                                   sampling_rate=1e3)
@@ -380,56 +347,23 @@ def compute_irregularity_synchronization(result_global, gids, data, begin, end, 
         hist_0_1_max = None
         hist_0_1_timescale, hist_0_1_cc_hist, hist_0_1_lags = None, None, None
         PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1 = None, None, None
-        hist_window_5_variation = None
-        hist_window_5_max = None
-        hist_window_5_timescale, hist_window_5_cc_hist, hist_window_5_lags = None, None, None
-        PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5 = None, None, None
     else:
         hist_0_1_variation = variation(hist_0_1[0])
         hist_0_1_max = np.max(hist_0_1[0])
-        hist_0_1_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_0_1[0], 0), t_start=begin * pq.ms,
-                                             t_stop=end * pq.ms, bin_size=0.1 * pq.ms)
-        hist_0_1_cc_hist, hist_0_1_lags = cross_correlation_histogram(hist_0_1_bin_hist, hist_0_1_bin_hist,
-                                                                    window=[-lag, lag],
-                                                                    cross_correlation_coefficient=True)
-        hist_0_1_timescale = spike_train_timescale(hist_0_1_bin_hist, max_tau=lag * pq.ms)
+        hist_0_1_cc_hist, hist_0_1_lags, hist_0_1_timescale = time_scale(hist_0_1, dt=0.1, duration=end-begin)
         if frequency != 0.0 and end - begin > 6000.0:
             PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1 = compute_PLV_mean_shift(hist_0_1[0], begin, end,
                                                                                         frequency, sampling_rate=1e4,
                                                                                         sampling_ms=0.1)
         else:
             PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1 = None, None, None
-        hist_window_5 = slidding_window(hist_0_1[0], 50)
-        hist_window_5_variation = variation(hist_window_5)
-        hist_window_5_max = np.max(hist_window_5)
-        hist_window_5_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_window_5, 0), t_start=begin * pq.ms,
-                                                  t_stop=(end - 5) * pq.ms, bin_size=0.1 * pq.ms)
-        hist_window_5_cc_hist, hist_1_lags = cross_correlation_histogram(hist_window_5_bin_hist, hist_window_5_bin_hist,
-                                                                         window=[-lag, lag],
-                                                                         cross_correlation_coefficient=True)
-        hist_window_5_timescale = spike_train_timescale(hist_window_5_bin_hist, max_tau=lag * pq.ms)
-        if frequency != 0.0 and end - begin > 6000.0:
-            PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5 = compute_PLV_mean_shift(hist_window_5,
-                                                                                                       begin, end - 5,
-                                                                                                       frequency,
-                                                                                                       sampling_rate=1e4,
-                                                                                                       sampling_ms=0.1)
-        else:
-            PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5 = None, None, None
 
     result_global.save_simple_synchronization(hist_0_1_variation, hist_0_1_max,
-                                              hist_0_1_timescale, hist_0_1_cc_hist[int(len(hist_1_lags) / 2):],
+                                              hist_0_1_timescale, hist_0_1_cc_hist,
                                               PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1,
                                               hist_1_variation, hist_1_max,
-                                              hist_1_timescale, hist_1_cc_hist[int(len(hist_1_lags) / 2):],
+                                              hist_1_timescale, hist_1_cc_hist,
                                               PLV_value_1, PLV_angle_1, mean_phase_shift_1,
-                                              hist_5_variation, hist_5_max,
-                                              hist_5_timescale, hist_5_cc_hist[int(len(hist_5_lags) / 2):],
-                                              PLV_value_5, PLV_angle_5, mean_phase_shift_5,
-                                              hist_window_5_variation, hist_window_5_max,
-                                              hist_window_5_timescale,
-                                              hist_window_5_cc_hist[int(len(hist_1_lags) / 2):],
-                                              PLV_value_window_5, PLV_angle_window_5, mean_phase_shift_window_5,
                                               )
 
     # Inter-spike interval

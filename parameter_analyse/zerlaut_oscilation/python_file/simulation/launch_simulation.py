@@ -20,6 +20,10 @@ def run_rate_deterministe(rate_frequency):
     duration = rate_frequency['duration']
     database = rate_frequency['database']
     table_name = rate_frequency['table_name']
+    if 'T' in rate_frequency.keys():
+        T = rate_frequency['T']
+    else:
+        T = 5.0
 
     # import function
     import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
@@ -28,6 +32,7 @@ def run_rate_deterministe(rate_frequency):
         insert_database, check_already_analyse_database
     from parameter_analyse.zerlaut_oscilation.python_file.parameters.parameter_default import Parameter
     parameters = Parameter()
+    parameters.parameter_model['T'] = T
     parameters.parameter_integrator['stochastic'] = False
     parameters.parameter_model['initial_condition']["external_input_excitatory_to_excitatory"] = [rate * 1e-3,
                                                                                                   rate * 1e-3]
@@ -119,13 +124,13 @@ def run_rate_stochastic(rate_frequency):
 
 
 if __name__ == "__main__":
-    # # test 1
-    # run_rate_deterministe({
-    #     'rate': 7.0, 'frequency': 30.0, 'duration': 20001.0,
-    #     'path': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/',
-    #     'database': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/database.db',
-    #     'table_name': "exploration"
-    #     })
+    # test 1
+    run_rate_deterministe({
+        'rate': 7.0, 'frequency': 30.0, 'duration': 20001.0,
+        'path': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/',
+        'database': os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/database.db',
+        'table_name': "exploration"
+        })
 
 
     p = mp.ProcessingPool(ncpus=8)
@@ -134,7 +139,7 @@ if __name__ == "__main__":
     table_name = "exploration"
     duration = 20001.0
     init_database(database, table_name)
-    for rate in [7.0, 0.0, 2.5]:
+    for rate in [0.0, 2.5, 7.0]:
         list_parameters = []
         if not os.path.exists(path_simulation + "/rate_" + str(rate)):
             os.mkdir(path_simulation + "/rate_" + str(rate))
@@ -158,3 +163,40 @@ if __name__ == "__main__":
                      'duration': duration, 'database': database, 'table_name': table_name})
         p.map(dill.copy(run_rate_stochastic), list_parameters)
 
+
+    p = mp.ProcessingPool(ncpus=8)
+    path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/T_20/'
+    database = path_simulation + "/database.db"
+    table_name = "exploration"
+    duration = 20001.0
+    init_database(database, table_name)
+    for rate in [0.0, 2.5, 7.0]:
+        list_parameters = []
+        if not os.path.exists(path_simulation + "/rate_" + str(rate)):
+            os.mkdir(path_simulation + "/rate_" + str(rate))
+        for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
+            list_parameters.append({'rate': rate, 'frequency': frequency, 'path': path_simulation,
+                                    'duration': duration, 'database': database, 'table_name': table_name, 'T':20.0})
+        p.map(dill.copy(run_rate_deterministe), list_parameters)
+
+    # Impact of T
+    import shutil
+    p = mp.ProcessingPool(ncpus=8)
+    table_name = "exploration"
+    duration = 20001.0
+    for T in [150, 200, 250, 300]: #np.arange(0.1, 1.0, 0.1): #range(1, 6):
+        # T = np.around(T, decimals=1)
+        path_simulation = os.path.dirname(os.path.realpath(__file__)) + '/../../simulation/deterministe/T_'+str(T)+'/'
+        if not os.path.exists(path_simulation):
+            os.mkdir(path_simulation)
+            database = path_simulation + "/database.db"
+            init_database(database, table_name)
+            for rate in [7.0, 2.5, 0.0]:
+                list_parameters = []
+                if not os.path.exists(path_simulation + "/rate_" + str(rate)):
+                    os.mkdir(path_simulation + "/rate_" + str(rate))
+                for frequency in np.concatenate(([1], np.arange(5., 51., 5.))):
+                    list_parameters.append({'rate': rate, 'frequency': frequency, 'path': path_simulation,
+                                            'duration': duration, 'database': database, 'table_name': table_name, 'T':float(T)})
+                p.map(dill.copy(run_rate_deterministe), list_parameters)
+                shutil.rmtree(path_simulation + "/rate_" + str(rate))

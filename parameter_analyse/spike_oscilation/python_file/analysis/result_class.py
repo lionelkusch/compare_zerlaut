@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Result_analyse:
-    def __init__(self, max_lag_autocorrelation=50):
+    def __init__(self, max_lag_autocorrelation=100):
         self.max_lag_autocorrelation = max_lag_autocorrelation
         self.data = {}
         list_single = ['names_population',
@@ -16,16 +16,7 @@ class Result_analyse:
                        'PLV_0_1ms', 'PLV_angle_0_1ms', 'MeanPhaseShift_0_1ms',
                        'cvs_IFR_1ms', 'max_IFR_1ms', 'timescale_1ms',
                        'PLV_1ms', 'PLV_angle_1ms', 'MeanPhaseShift_1ms',
-                        'cvs_IFR_5ms', 'max_IFR_5ms', 'timescale_5ms',
-                       'PLV_5ms', 'PLV_angle_5ms', 'MeanPhaseShift_5ms',
-                       'cvs_IFR_w5ms', 'max_IFR_w5ms', 'timescale_w5ms',
-                       'PLV_w5ms', 'PLV_angle_w5ms', 'MeanPhaseShift_w5ms',
                        ]
-        # for i in range(max_lag_autocorrelation):
-        #     list_single.append('autocorrelation_0_1_ms_'+str(i))
-        #     list_single.append('autocorrelation_1_ms_'+str(i))
-        #     list_single.append('autocorrelation_5_ms_'+str(i))
-        #     list_single.append('autocorrelation_w5_ms_' + str(i))
         list_mean = ['cvs_ISI', 'lvs_ISI',
                      'burst_cv_begin', 'burst_lv_begin', 'burst_cv_end', 'burst_lv_end'
                      ]
@@ -43,6 +34,10 @@ class Result_analyse:
             self.data[i + '_std'] = []
             self.data[i + '_max'] = []
             self.data[i + '_min'] = []
+        for i in range(self.max_lag_autocorrelation*10):
+            self.data['autocorrelation_0_1_ms_'+str(i)] = []
+        for i in range(self.max_lag_autocorrelation):
+            self.data['autocorrelation_1_ms_'+str(i)] = []
 
     def empty(self):
         for key in self.data.keys():
@@ -62,16 +57,12 @@ class Result_analyse:
                                     PLV_value_0_1, PLV_angle_0_1, mean_phase_shift_0_1,
                                     cvs_IFR_1ms, max_hist_1, timescale_1_ms, autocorrelation_1_ms,
                                     PLV_value_1, PLV_angle_1, mean_phase_shift_1,
-                                    cvs_IFR_5ms, max_hist_5, timescale_5_ms, autocorrelation_5_ms,
-                                    PLV_value_5, PLV_angle_5, mean_phase_shift_5,
-                                    cvs_IFR_w5ms, max_hist_w5, timescale_w5_ms, autocorrelation_w5_ms,
-                                    PLV_value_w5, PLV_angle_w5, mean_phase_shift_w5
                                     ):
         self.data['cvs_IFR_0_1ms'].append(cvs_IFR_0_1ms)
         self.data['max_IFR_0_1ms'].append(float(max_hist_0_1))
         self.data['timescale_0_1ms'].append(float(timescale_0_1_ms))
-        # for i in range(self.max_lag_autocorrelation):
-        #     self.data['autocorrelation_0_1_ms_'+str(i)].append(float(autocorrelation_0_1_ms[i][0]))
+        for i in range(self.max_lag_autocorrelation*10):
+            self.data['autocorrelation_0_1_ms_'+str(i)].append(float(autocorrelation_0_1_ms[i]))
         self.data['PLV_0_1ms'].append(PLV_value_0_1)
         self.data['PLV_angle_0_1ms'].append(PLV_angle_0_1)
         self.data['MeanPhaseShift_0_1ms'].append(mean_phase_shift_0_1)
@@ -79,29 +70,12 @@ class Result_analyse:
         self.data['cvs_IFR_1ms'].append(cvs_IFR_1ms)
         self.data['max_IFR_1ms'].append(float(max_hist_1))
         self.data['timescale_1ms'].append(float(timescale_1_ms))
-        # for i in range(self.max_lag_autocorrelation):
-        #     self.data['autocorrelation_1_ms_'+str(i)].append(float(autocorrelation_1_ms[i][0]))
+        for i in range(self.max_lag_autocorrelation):
+            self.data['autocorrelation_1_ms_'+str(i)].append(float(autocorrelation_1_ms[i]))
         self.data['PLV_1ms'].append(PLV_value_1)
         self.data['PLV_angle_1ms'].append(PLV_angle_1)
         self.data['MeanPhaseShift_1ms'].append(mean_phase_shift_1)
 
-        self.data['cvs_IFR_5ms'].append(cvs_IFR_5ms)
-        self.data['max_IFR_5ms'].append(float(max_hist_5))
-        self.data['timescale_5ms'].append(float(timescale_5_ms))
-        # for i in range(self.max_lag_autocorrelation):
-        #     self.data['autocorrelation_5_ms_'+str(i)].append(float(autocorrelation_5_ms[i][0]))
-        self.data['PLV_5ms'].append(PLV_value_5)
-        self.data['PLV_angle_5ms'].append(PLV_angle_5)
-        self.data['MeanPhaseShift_5ms'].append(mean_phase_shift_5)
-
-        self.data['cvs_IFR_w5ms'].append(cvs_IFR_w5ms)
-        self.data['max_IFR_w5ms'].append(float(max_hist_w5))
-        self.data['timescale_w5ms'].append(float(timescale_w5_ms))
-        # for i in range(self.max_lag_autocorrelation):
-        #     self.data['autocorrelation_w5_ms_'+str(i)].append(float(autocorrelation_w5_ms[i][0]))
-        self.data['PLV_w5ms'].append(PLV_value_w5)
-        self.data['PLV_angle_w5ms'].append(PLV_angle_w5)
-        self.data['MeanPhaseShift_w5ms'].append(mean_phase_shift_w5)
 
 
     def save_irregularity(self, cvs_ISI, lvs_ISI):

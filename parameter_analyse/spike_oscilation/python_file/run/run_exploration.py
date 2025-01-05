@@ -156,7 +156,11 @@ def insert_database(data_base, table_name, results_path, dict_variable, result):
                 'path_file': results_path}
         data.update(dict_variable)
         for key in result.keys():
-            data[key] = result[key][pop]
+            try:
+                data[key] = result[key][pop]
+            except IndexError:
+                print(key, pop)
+                raise IndexError
         list_data.append(tuple(data.values()))
     keys = ','.join(data.keys())
     question_marks = ','.join(list('?' * len(data)))

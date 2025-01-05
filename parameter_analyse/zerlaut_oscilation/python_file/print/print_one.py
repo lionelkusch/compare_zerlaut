@@ -2,6 +2,7 @@
 # "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements; and to You under the Apache License, Version 2.0. "
 import parameter_analyse.zerlaut_oscilation.python_file.run.tools_simulation as tools
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def plot_result(path_simulation, begin, end, region = 19):
@@ -24,9 +25,13 @@ def plot_result(path_simulation, begin, end, region = 19):
     adaptationI = result[0][1][:, 6, :]
     noise = result[0][1][:, 7, :]
     external_input_excitatory_to_excitatory = result[0][1][:, 8, :]
+    external_input_excitatory_to_excitatory[np.where(external_input_excitatory_to_excitatory < 0)] = 0.0
     external_input_excitatory_to_inhibitory = result[0][1][:, 9, :]
+    external_input_excitatory_to_inhibitory[np.where(external_input_excitatory_to_inhibitory < 0)] = 0.0
     external_input_inhibitory_to_excitatory = result[0][1][:, 10, :]
+    external_input_inhibitory_to_excitatory[np.where(external_input_inhibitory_to_excitatory < 0)] = 0.0
     external_input_inhibitory_to_inhibitory = result[0][1][:, 11, :]
+    external_input_inhibitory_to_inhibitory[np.where(external_input_inhibitory_to_inhibitory < 0)] = 0.0
 
     plt.figure()
     plt.plot(times, rateE, label='excitatory')

@@ -13,7 +13,7 @@ path_init = os.path.dirname(os.path.realpath(__file__))
 path = os.path.dirname(__file__) + '/../../analyse_dynamic/matlab/'
 
 ## parameter of the figures
-version = '_v4'
+version = '_v1_5'
 labelticks_size = 10
 label_legend_size = 7
 ticks_size = 10
@@ -21,17 +21,17 @@ linewidth_mean_field = 1.0
 linewidth_stability = 0.5
 marker_size_mean = 30.0
 marker_size = 5.0
-color_ex_spike = 'black'#'green'#'blue'
-color_ex_mean = 'grey'#'lime'#'cyan'
-color_in_spike = 'blue'#'red'
-color_in_mean = 'cyan'#'orange'
+color_ex_spike = 'blue' #'black'#'green'#'blue'
+color_ex_mean = 'cyan' #'grey'#'lime'#'cyan'
+color_in_spike = 'red'#'blue'#'red'
+color_in_mean = 'orange'#'cyan'#'orange'
 
 window = 5.0
 dt = 0.1
 begin = 0.0
-end = 2000.0
+end = 100.0
 rate = 50.0
-spike_size = 0.0006 if rate > 70.0 else 0.006
+spike_size = 0.01 if rate > 70.0 else 0.01
 linewidth_network = 0.05 if rate > 70.0 else 0.5
 color = [color_ex_spike, color_in_spike]
 
@@ -103,7 +103,7 @@ print(hist_slide_ex_b_30[0], hist_slide_in_b_30[0])
 print(hist_slide_ex_b_60[0], hist_slide_in_b_60[0])
 
 ## make figure
-fig = plt.figure(figsize=(6.8, 3.))
+fig = plt.figure(figsize=(6.8, 3.), dpi=600)
 
 ## excitatory population
 ax = plt.subplot(231)
@@ -119,7 +119,7 @@ ax.set_title('b=0.0pA')
 
 ax = plt.subplot(234)
 for pop, [neurons_id, times_spike] in enumerate(data_pop_all_b_0.values()):
-    ax.plot(times_spike, neurons_id, '.', color=color[pop], markersize=spike_size)
+    ax.plot(times_spike, neurons_id, ',', color=color[pop], markersize=spike_size)
 ax.set_xlim(xmax=end + 10.0, xmin=begin - 10.0)
 ax.tick_params(axis='both', labelsize=ticks_size)
 ax.set_xlabel('time (ms)', {"fontsize": labelticks_size}, labelpad=2.5)
@@ -141,7 +141,7 @@ ax.set_title('b=30.0pA')
 
 ax = plt.subplot(235)
 for pop, [neurons_id, times_spike] in enumerate(data_pop_all_b_30.values()):
-    ax.plot(times_spike, neurons_id, '.', color=color[pop], markersize=spike_size)
+    ax.plot(times_spike, neurons_id, ',', color=color[pop], markersize=spike_size)
 ax.set_xlim(xmax=end + 10.0, xmin=begin - 10.0)
 ax.tick_params(axis='both', labelsize=ticks_size)
 ax.set_xlabel('time (ms)', {"fontsize": labelticks_size}, labelpad=2.5)
@@ -163,7 +163,7 @@ ax.set_title('b=60.0pA')
 
 ax = plt.subplot(236)
 for pop, [neurons_id, times_spike] in enumerate(data_pop_all_b_60.values()):
-    ax.plot(times_spike, neurons_id, '.', color=color[pop], markersize=spike_size)
+    ax.plot(times_spike, neurons_id, ',', color=color[pop], markersize=spike_size)
 ax.set_xlim(xmax=end + 10.0, xmin=begin - 10.0)
 ax.tick_params(axis='both', labelsize=ticks_size)
 ax.set_xlabel('time (ms)', {"fontsize": labelticks_size}, labelpad=2.5)
@@ -174,4 +174,8 @@ ax.annotate('F', xy=(-0.08, 0.95), xycoords='axes fraction', weight='bold', font
 plt.subplots_adjust(top=0.92, bottom=0.150, left=0.095, right=0.975, wspace=0.115, hspace=0.045)
 
 # plt.show()
-plt.savefig('./figure/figure_0_b_rate_'+str(rate)+version+'.png', dpi=300)
+plt.savefig('./figure/figure_0_b_rate_'+str(rate)+version+'.png', dpi=600)
+plt.savefig('./figure/figure_0_b_rate_'+str(rate)+version+'.tiff', dpi=600)
+plt.savefig('./figure/figure_0_b_rate_'+str(rate)+version+'.jpeg', dpi=600)
+plt.savefig('./figure/figure_0_b_rate_'+str(rate)+version+'.svg')
+plt.savefig('./figure/figure_0_b_rate_'+str(rate)+version+'.pdf')

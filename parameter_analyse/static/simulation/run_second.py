@@ -6,10 +6,7 @@ from parameter_analyse.static.python_file.parameters import parameter_default
 from parameter_analyse.static.python_file.run.run_exploration import save_parameter, generate_parameter
 from parameter_analyse.static.python_file.simulation.simulation_time_evolve import simulate
 from parameter_analyse.static.python_file.plot.helper_function import get_gids_all, load_spike_all_long
-from elephant.spike_train_correlation import spike_train_timescale, cross_correlation_histogram
-from elephant.conversion import BinnedSpikeTrain
-import quantities as pq
-from parameter_analyse.static.python_file.analysis.analysis_global import slidding_window
+from parameter_analyse.static.python_file.analysis.analysis_global import time_scale
 import numpy as np
 
 
@@ -74,12 +71,6 @@ def get_autocorrelation_time(path_init,
     hist_1_cc_hist = []
     hist_1_lags = []
     hist_1_timescale = []
-    hist_5_cc_hist = []
-    hist_5_lags = []
-    hist_5_timescale = []
-    hist_w5_cc_hist = []
-    hist_w5_lags = []
-    hist_w5_timescale = []
     data_pop_all = load_spike_all_long(path_init, firing_rate_ext_init, firing_rate_end, increment_firing_rate)
 
     for index_fr, firing_rate in enumerate(np.arange(firing_rate_ext_init, firing_rate_end, increment_firing_rate)):
@@ -88,49 +79,22 @@ def get_autocorrelation_time(path_init,
                              data_pop_all[name_firing_rate]['inhibitory'].shape[0] / nb_in / (interval_time * 1e-3)])
         for spikes_concat in [data_pop_all[name_firing_rate]['excitatory'][:, 1], data_pop_all[name_firing_rate]['inhibitory'][:, 1]]:
             hist_0_1 = np.histogram(spikes_concat, bins=int(interval_time * 10))
-            hist_0_1_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_0_1[0], 0), t_start=0 * pq.ms,
-                                                 t_stop=interval_time * pq.ms, bin_size=0.1 * pq.ms)
-            hist_0_1_cc_hist_tmp, hist_0_1_lags_tmp = cross_correlation_histogram(hist_0_1_bin_hist, hist_0_1_bin_hist,
-                                                                                  window=[-lag, lag],
-                                                                                  cross_correlation_coefficient=True)
+            hist_0_1_cc_hist_tmp, hist_0_1_lags_tmp, hist_0_1_timescale_tmp = time_scale(hist_0_1, dt=0.1, duration=interval_time)
             hist_0_1_cc_hist.append(hist_0_1_cc_hist_tmp)
             hist_0_1_lags.append(hist_0_1_lags_tmp)
-            hist_0_1_timescale.append(spike_train_timescale(hist_0_1_bin_hist, max_tau=lag * pq.ms))
+            hist_0_1_timescale.append(hist_0_1_timescale_tmp)
             hist_1 = np.histogram(spikes_concat, bins=int(interval_time))
-            hist_1_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_1[0], 0), t_start=0 * pq.ms,
-                                               t_stop=interval_time * pq.ms, bin_size=1. * pq.ms)
-            hist_1_cc_hist_tmp, hist_1_lags_tmp = cross_correlation_histogram(hist_1_bin_hist, hist_1_bin_hist,
-                                                                              window=[-lag, lag],
-                                                                              cross_correlation_coefficient=True)
+            hist_1_cc_hist_tmp, hist_1_lags_tmp, hist_1_timescale_tmp = time_scale(hist_1, dt=1., duration=interval_time)
             hist_1_cc_hist.append(hist_1_cc_hist_tmp)
             hist_1_lags.append(hist_1_lags_tmp)
-            hist_1_timescale.append(spike_train_timescale(hist_1_bin_hist, max_tau=lag * pq.ms))
-            hist_5 = np.histogram(spikes_concat, bins=int(interval_time/5))
-            hist_5_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_5[0], 0), t_start=0 * pq.ms,
-                                               t_stop=interval_time * pq.ms, bin_size=5 * pq.ms)
-            hist_5_cc_hist_tmp, hist_5_lags_tmp = cross_correlation_histogram(hist_5_bin_hist, hist_5_bin_hist,
-                                                                              window=[-lag, lag],
-                                                                              cross_correlation_coefficient=True)
-            hist_5_cc_hist.append(hist_5_cc_hist_tmp)
-            hist_5_lags.append(hist_5_lags_tmp)
-            hist_5_timescale.append(spike_train_timescale(hist_5_bin_hist, max_tau=int(round(lag / 5)) * 5 * pq.ms))
-            hist_w5 = slidding_window(hist_0_1[0], 50)
-            hist_w5_bin_hist = BinnedSpikeTrain(np.expand_dims(hist_w5, 0), t_start=0 * pq.ms,
-                                                t_stop=(interval_time-5) * pq.ms, bin_size=0.1 * pq.ms)
-            hist_w5_cc_hist_tmp, hist_w5_lags_tmp = cross_correlation_histogram(hist_w5_bin_hist, hist_w5_bin_hist,
-                                                                                window=[-lag, lag],
-                                                                                cross_correlation_coefficient=True)
-            hist_w5_cc_hist.append(hist_w5_cc_hist_tmp)
-            hist_w5_lags.append(hist_w5_lags_tmp)
-            hist_w5_timescale.append(spike_train_timescale(hist_w5_bin_hist, max_tau=lag * pq.ms))
+            hist_1_timescale.append(hist_1_timescale_tmp)
 
-    np.save(path_init + '/result.npy', np.array([['input', 'firing_rate', 'hist_0_1_cc_hist',
-                                                  'hist_0_1_lags', 'hist_0_1_timescale', 'hist_1_cc_hist', 'hist_1_lags', 'hist_1_timescale', 'hist_5_cc_hist',
-                                                  'hist_5_lags', 'hist_5_timescale', 'hist_w5_cc_hist', 'hist_w5_lags', 'hist_w5_timescale'],
+    np.save(path_init + '/result_1.npy', np.array([['input', 'firing_rate', 'hist_0_1_cc_hist',
+                                                  'hist_0_1_lags', 'hist_0_1_timescale', 'hist_1_cc_hist', 'hist_1_lags', 'hist_1_timescale'],
                                                  np.arange(firing_rate_ext_init, firing_rate_end, increment_firing_rate),
-                                                 firing_rates, hist_0_1_cc_hist,
-                                                 hist_0_1_lags, hist_0_1_timescale, hist_1_cc_hist, hist_1_lags, hist_1_timescale, hist_5_cc_hist,
-                                                 hist_5_lags, hist_5_timescale, hist_w5_cc_hist, hist_w5_lags, hist_w5_timescale]))
+                                                   firing_rates, hist_0_1_cc_hist,
+                                                   hist_0_1_lags, hist_0_1_timescale, hist_1_cc_hist,
+                                                   hist_1_lags, hist_1_timescale]))
 
 if __name__ == '__main__':
     for b in [0.0, 30., 60.]:

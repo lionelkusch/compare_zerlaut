@@ -44,12 +44,12 @@ ticks_size = 12
 size_point = 1.0
 ## path of the data
 path = os.path.dirname(__file__) + '/../../spike_oscilation/simulation/'
-data_base_network_0 = path + '/simulation/rate_0.0/amplitude_frequency.db'
-data_base_network_7 = path + '/simulation/rate_7.0/amplitude_frequency.db'
-data_base_network_amplitude = path + '/simulation/rate_amplitude/amplitude_frequency.db'
-data_base_network_adp_0 = path + '/simulation_b_60/rate_0.0/amplitude_frequency.db'
-data_base_network_adp_7 = path + '/simulation_b_60/rate_7.0/amplitude_frequency.db'
-data_base_network_adp_amplitude = path + '/simulation_b_60/rate_amplitude/amplitude_frequency.db'
+data_base_network_0 = path + '/simulation/rate_0.0/amplitude_frequency_1.db'
+data_base_network_7 = path + '/simulation/rate_7.0/amplitude_frequency_1.db'
+data_base_network_amplitude = path + '/simulation/rate_amplitude/amplitude_frequency_1.db'
+data_base_network_adp_0 = path + '/simulation_b_60/rate_0.0/amplitude_frequency_1.db'
+data_base_network_adp_7 = path + '/simulation_b_60/rate_7.0/amplitude_frequency_1.db'
+data_base_network_adp_amplitude = path + '/simulation_b_60/rate_amplitude/amplitude_frequency_1.db'
 ## information for databased
 table_name_network = 'first_exploration'
 population = 'excitatory'
@@ -63,13 +63,13 @@ for index, data_base in enumerate([data_base_network_amplitude, data_base_networ
                                    data_base_network_adp_amplitude, data_base_network_adp_0, data_base_network_adp_7]):
     ax = axs[index // 3, index % 3]
     data_network = getData(data_base, table_name_network, list_variable, population)
-    id = np.where(np.logical_and(data_network['timescale_w5ms'], data_network['ISI_min']))
-    X, Y, Z = grid(data_network['amplitude'], data_network['frequency'], data_network['timescale_w5ms'], res=False,
+    id = np.where(np.logical_and(data_network['timescale_0_1ms'], data_network['ISI_min']))
+    X, Y, Z = grid(data_network['amplitude'], data_network['frequency'], data_network['timescale_0_1ms'], res=False,
                    resX=None, resY=None, id=id)
     X1, Y1, Z1 = grid(data_network['amplitude'], data_network['frequency'], data_network['ISI_min'], res=False,
                       resX=None, resY=None, id=id)
-    draw_contour(fig, ax, X, Y, Z, [0.0, 6.0, 15.0, 30.0, 45.0, 70.0],
-                 '', '', '', '', 0.0, 70.0, 10.0, 11.0, color_bar=(index % 3 == 2))
+    draw_contour(fig, ax, X, Y, Z, [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0],
+                 '', '', '', '', 0.0, 5.0, 10.0, 11.0, color_bar=(index % 3 == 2))
     draw_point(ax, X, Y, size=size_point)
     draw_line_level(ax, X, Y, Z - Z1, False, 0.0, 'red')
 
@@ -103,5 +103,5 @@ for index, data_base in enumerate([data_base_network_amplitude, data_base_networ
 
 
 plt.subplots_adjust(top=0.96, bottom=0.085, left=0.08, right=0.965, wspace=0.19, hspace=0.105)
-# plt.show()
-plt.savefig('./figure/figure_3.png', dpi=300)
+plt.show()
+# plt.savefig('./figure/figure_3.png', dpi=300)

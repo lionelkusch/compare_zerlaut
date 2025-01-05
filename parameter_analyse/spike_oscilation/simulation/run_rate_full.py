@@ -16,27 +16,27 @@ parameter_default.param_background['rate_equals_amplitude'] = False
 # comments for testing analysis
 # analysis(path + '_frequency_1.0_amplitude_3.0/', parameter_default, path + 'amplitude_frequency_test.db',
 #          'first_exploration', {'frequency': 1.0, 'amplitude': 3.0}, 2500.0, 20000.0)
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation/rate_7.0/'
 parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 0.0
 parameter_default.param_background['rate'] = 7.0
 parameter_default.param_background['rate_equals_amplitude'] = False
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation/rate_amplitude/'
 parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 0.0
 parameter_default.param_background['rate'] = 0.0
 parameter_default.param_background['rate_equals_amplitude'] = True
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 # for adaptation
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation_b_60/rate_0.0/'
@@ -44,27 +44,27 @@ parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 60.0
 parameter_default.param_background['rate'] = 0.0
 parameter_default.param_background['rate_equals_amplitude'] = False
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation_b_60/rate_7.0/'
 parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 60.0
 parameter_default.param_background['rate'] = 7.0
 parameter_default.param_background['rate_equals_amplitude'] = False
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation_b_60/rate_amplitude/'
 parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 60.0
 parameter_default.param_background['rate'] = 0.0
 parameter_default.param_background['rate_equals_amplitude'] = True
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 # more
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation/rate_2.5/'
@@ -72,15 +72,15 @@ parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 0.0
 parameter_default.param_background['rate'] = 2.5
 parameter_default.param_background['rate_equals_amplitude'] = False
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2500.0, 20000.0, analyse=True, simulation=True)
+                   2500.0, 20000.0, analyse=True, simulation=False)
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/simulation_b_60/rate_2.5/'
 parameter_default.param_nest['local_num_threads'] = 8
 parameter_default.param_topology['excitatory_param']['b'] = 60.0
 parameter_default.param_background['rate'] = 2.5
 parameter_default.param_background['rate_equals_amplitude'] = False
-run_exploration_2D(path, parameter_default, path + 'amplitude_frequency.db', 'first_exploration',
+run_exploration_2D(path, parameter_default, path + 'amplitude_frequency_1.db', 'first_exploration',
                    {'frequency': frequencies, 'amplitude': amplitude},
-                   2000.0, 20000.0, analyse=True, simulation=False)
+                   2500.0, 20000.0, analyse=True, simulation=False)
